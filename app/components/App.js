@@ -4,6 +4,7 @@
 
 import React, {PropTypes as T} from 'react'
 import {Text, View} from 'react-native'
+import Ionicons from 'react-native-vector-icons/Ionicons'
 
 import {Router, Scene, Actions} from 'react-native-router-flux';
 
@@ -36,12 +37,14 @@ const SequenceItem = ({id}) => (
 )
 
 
-const SoundList = () => (
-  <View style={{margin: 128}}>
-    <Text>SoundList</Text>
-    <Text onPress={() => Actions.soundItem({id: 1})}>SoundItem 1</Text>
-  </View>
-)
+// const SoundList = () => (
+//   <View style={{margin: 128}}>
+//     <Text>SoundList</Text>
+//     <Text onPress={() => Actions.soundItem({id: 1})}>SoundItem 1</Text>
+//   </View>
+// )
+
+import SoundList from './SoundList'
 
 const SoundItem = ({id}) => (
   <View style={{margin: 128}}>
@@ -52,27 +55,41 @@ const SoundItem = ({id}) => (
 
 
 
-const TabIcon = ({ selected, title }) => {
-  return (
-    <Text style={{color: selected ? 'red' :'black'}}>{title}</Text>
-  );
+// const TabIcon = ({ selected, title }) => {
+//   return (
+//     <Text style={{color: selected ? 'red' :'black'}}>{title}</Text>
+//   );
+// }
+const title2icon = {
+  Practices:  'ios-alarm-outline',
+  Sequences: 'ios-albums-outline',
+  Sounds: 'ios-musical-notes'
 }
 
+
+const TabIcon = ({ selected, title }) => (
+  <View style={{alignItems: 'center'}}>
+    <Ionicons style={{color: selected? 'red' : 'black'}} name={title2icon[title] || 'logo-apple'}/>
+    <Text style={{fontSize: 6, color: selected? 'red' : 'black'}}>{title}</Text>
+  </View>
+)
+
+const plus = () => <Ionicons name="md-add" size={20}/>
 
 export default () => (
   <Router>
     <Scene key="root">
-      <Scene key="tabbar" tabs>
-        <Scene key="practices" title="practices" icon={TabIcon}>
-          <Scene key="practiceList" component={PracticeList} title="PracticeList" rightTitle="Add" onRight={() => { console.log('clicked ')}}/>
+      <Scene key="tabbar" tabs tabBarStyle={{backgroundColor: 'white'}}>
+        <Scene key="practices" title="Practices" icon={TabIcon}>
+          <Scene key="practiceList" component={PracticeList} title="Practices" renderRightButton={plus} onRight={() => { onsole.log('clicked ')}}/>
           <Scene key="practiceItem" component={PracticeItem} title="PracticeItem"/>
       </Scene>
-      <Scene key="sequences" title="sequences" icon={TabIcon}>
-        <Scene key="sequenceList" component={SequenceList} title="SequenceList" />
+      <Scene key="sequences" title="Sequences" icon={TabIcon}>
+        <Scene key="sequenceList" component={SequenceList} title="Sequences" renderRightButton={plus} onRight={() => { onsole.log('clicked ')}}/>
         <Scene key="sequenceItem" component={SequenceItem} title="SequenceItem"/>
       </Scene>
-        <Scene key="sounds" title="sounds" icon={TabIcon}>
-          <Scene key="soundList" component={SoundList} title="soundList" />
+        <Scene key="sounds" title="Sounds" icon={TabIcon}>
+          <Scene key="soundList" component={SoundList} title="Sounds" renderRightButton={plus} onRight={() => { onsole.log('clicked ')}}/>
           <Scene key="soundItem" component={SoundItem} title="soundItem"/>
         </Scene>
       </Scene>
