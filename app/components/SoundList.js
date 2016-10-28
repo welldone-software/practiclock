@@ -28,12 +28,19 @@ const data = {
 
 let order = Object.keys(data)
 
+const normalStyle = {padding: 25, backgroundColor: "#F8F8F8", borderBottomWidth:1, borderColor: '#eee'};
+const activeStyle = [normalStyle, {borderWidth: 1, borderColor: '#aaa'}]
 
-const RowComponent =({data, sortHandlers}) => (
-  <TouchableHighlight underlayColor={'#eee'} style={{padding: 25, backgroundColor: "#F8F8F8", borderBottomWidth:1, borderColor: '#eee'}} {...sortHandlers}>
+
+const RowComponent =({data, active, sortHandlers}) => (
+  <TouchableHighlight underlayColor={'#eee'}
+                      style={active? activeStyle: normalStyle} {...sortHandlers}>
     <Text>{data.text}</Text>
   </TouchableHighlight>
 )
+
+const onRenderRow = (data, section, index, highlightfn, active) =>
+  <RowComponent data={data} active={active}/>
 
 export default () => (
   <SortableListView
@@ -43,6 +50,6 @@ export default () => (
     onRowMoved={e => {
       order = order.splice(e.to, 0, order.splice(e.from, 1)[0]);
     }}
-    renderRow={row => <RowComponent data={row} />}
+    renderRow={onRenderRow}
   />
 )

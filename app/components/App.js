@@ -18,7 +18,7 @@ const PracticeList = () => (
 const PracticeItem = ({id}) => (
   <View style={{margin: 128}}>
     <Text>PracticeItem {id}</Text>
-    <Text onPress={Actions.practiceList}>back</Text>
+    <Text onPress={Actions.pop}>back</Text>
   </View>
 )
 
@@ -32,7 +32,7 @@ const SequenceList = () => (
 const SequenceItem = ({id}) => (
   <View style={{margin: 128}}>
     <Text>SequenceItem {id}</Text>
-    <Text onPress={Actions.sequenceList}>back</Text>
+    <Text onPress={Actions.pop}>back</Text>
   </View>
 )
 
@@ -49,7 +49,7 @@ import SoundList from './SoundList'
 const SoundItem = ({id}) => (
   <View style={{margin: 128}}>
     <Text>SoundItem {id}</Text>
-    <Text onPress={Actions.soundList}>back</Text>
+    <Text onPress={Actions.pop}>back</Text>
   </View>
 )
 
@@ -69,8 +69,8 @@ const title2icon = {
 
 const TabIcon = ({ selected, title }) => (
   <View style={{alignItems: 'center'}}>
-    <Ionicons style={{color: selected? 'red' : 'black'}} name={title2icon[title] || 'logo-apple'}/>
-    <Text style={{fontSize: 6, color: selected? 'red' : 'black'}}>{title}</Text>
+    <Ionicons style={{color: selected? 'red' : 'black'}} size={20} name={title2icon[title] || 'logo-apple'}/>
+    <Text style={{fontSize: 12, color: selected? 'red' : 'black'}}>{title}</Text>
   </View>
 )
 
@@ -80,6 +80,10 @@ export default () => (
   <Router>
     <Scene key="root">
       <Scene key="tabbar" tabs tabBarStyle={{backgroundColor: 'white'}}>
+        <Scene key="sounds" title="Sounds" icon={TabIcon}>
+          <Scene key="soundList" component={SoundList} title="Sounds" renderRightButton={plus} onRight={() => { onsole.log('clicked ')}}/>
+          <Scene key="soundItem" component={SoundItem} title="soundItem"/>
+        </Scene>
         <Scene key="practices" title="Practices" icon={TabIcon}>
           <Scene key="practiceList" component={PracticeList} title="Practices" renderRightButton={plus} onRight={() => { onsole.log('clicked ')}}/>
           <Scene key="practiceItem" component={PracticeItem} title="PracticeItem"/>
@@ -88,10 +92,7 @@ export default () => (
         <Scene key="sequenceList" component={SequenceList} title="Sequences" renderRightButton={plus} onRight={() => { onsole.log('clicked ')}}/>
         <Scene key="sequenceItem" component={SequenceItem} title="SequenceItem"/>
       </Scene>
-        <Scene key="sounds" title="Sounds" icon={TabIcon}>
-          <Scene key="soundList" component={SoundList} title="Sounds" renderRightButton={plus} onRight={() => { onsole.log('clicked ')}}/>
-          <Scene key="soundItem" component={SoundItem} title="soundItem"/>
-        </Scene>
+
       </Scene>
     </Scene>
   </Router>
