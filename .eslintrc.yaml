@@ -1,0 +1,5 @@
+extends:
+  - react-native
+rules:
+  no-use-before-define: 0
+  react/display-name: [1, { ignoreTranspilerName: true }]
