@@ -1,6 +1,5 @@
 // @flow
 import {ActionConst} from 'react-native-router-flux'
-import {REHYDRATE} from 'redux-persist/constants'
 
 export function navigation(state = { scene: {} }, action = {}) {
     switch (action.type) {

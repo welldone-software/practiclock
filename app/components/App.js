@@ -1,22 +1,31 @@
 //@flow
-import React, {PropTypes as T} from 'react'
-import {Text, View} from 'react-native'
+import React, {PropTypes as T, Component} from 'react'
+import {Text, View, TouchableOpacity} from 'react-native'
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import {Router, Scene, Actions} from 'react-native-router-flux'
 import { connect, Provider } from 'react-redux'
 import SoundList from './SoundList'
+import PracticeCreateModal from './PracticeCreateModal'
 import configureStore from '../store'
 import {practices} from '../store/actions'
 
 const RouterWithRedux = connect()(Router)
 const store = configureStore()
 
-const PracticeList = () => (
-  <View style={{margin: 128}}>
-    <Text>PracticeList</Text>
-    <Text onPress={() => Actions.practiceItem({id: 132})}>PracticeItem 1</Text>
-  </View>
-)
+const Plus = () => <Ionicons name="md-add" size={20} />
+
+class PracticeList extends Component {
+    static renderRightButton() {
+        return <TouchableOpacity onPress={() => Actions.practiceCreate()}><Plus /></TouchableOpacity>
+    }
+
+    render() {
+        return (<View style={{margin: 128}}>
+                    <Text>PracticeList</Text>
+                    <Text onPress={() => Actions.practiceItem({id: 132})}>PracticeItem 1</Text>
+              </View>)
+    }
+}
 
 const PracticeItem = ({id}) => (
   <View style={{margin: 128}}>
@@ -24,6 +33,13 @@ const PracticeItem = ({id}) => (
     <Text onPress={Actions.pop}>back</Text>
   </View>
 )
+
+// const PracticeCreate = () => (
+//   <View style={{margin: 128}}>
+//     <Text>New</Text>
+//     <Text onPress={Actions.pop}>back</Text>
+//   </View>
+// )
 
 const SequenceList = () => (
   <View style={{margin: 128}}>
@@ -67,8 +83,6 @@ const TabIcon = ({ selected, title }) => (
   </View>
 )
 
-const Plus = () => <Ionicons name="md-add" size={20} />
-
 export default () => {
   return (
     <Provider store={store}>
@@ -80,8 +94,9 @@ export default () => {
                         <Scene key="soundItem" component={SoundItem} title="soundItem"/>
                     </Scene>
                     <Scene key="practices" title="Practices" icon={TabIcon}>
-                        <Scene key="practiceList" component={PracticeList} title="Practices" renderRightButton={Plus} onRight={() => { console.log('clicked ')}}/>
+                        <Scene key="practiceList" component={PracticeList} title="Practices"/>
                         <Scene key="practiceItem" component={PracticeItem} title="PracticeItem"/>
+                        <Scene key="practiceCreate" component={PracticeCreateModal} title="New Practice" direction="vertical" hideTabBar />
                     </Scene>
                     <Scene key="sequences" title="Sequences" icon={TabIcon}>
                         <Scene key="sequenceList" component={SequenceList} title="Sequences" renderRightButton={Plus} onRight={() => { console.log('clicked ')}}/>
