@@ -1,12 +1,15 @@
 //@flow
-
-'use strict'
-
 import React, {PropTypes as T} from 'react'
 import {Text, View} from 'react-native'
 import Ionicons from 'react-native-vector-icons/Ionicons'
+import {Router, Scene, Actions} from 'react-native-router-flux'
+import { connect, Provider } from 'react-redux'
+import SoundList from './SoundList'
+import configureStore from '../store'
+import {practices} from '../store/actions'
 
-import {Router, Scene, Actions} from 'react-native-router-flux';
+const RouterWithRedux = connect()(Router)
+const store = configureStore()
 
 const PracticeList = () => (
   <View style={{margin: 128}}>
@@ -44,8 +47,6 @@ const SequenceItem = ({id}) => (
 //   </View>
 // )
 
-import SoundList from './SoundList'
-
 const SoundItem = ({id}) => (
   <View style={{margin: 128}}>
     <Text>SoundItem {id}</Text>
@@ -53,19 +54,11 @@ const SoundItem = ({id}) => (
   </View>
 )
 
-
-
-// const TabIcon = ({ selected, title }) => {
-//   return (
-//     <Text style={{color: selected ? 'red' :'black'}}>{title}</Text>
-//   );
-// }
 const title2icon = {
   Practices:  'ios-alarm-outline',
   Sequences: 'ios-albums-outline',
   Sounds: 'ios-musical-notes'
 }
-
 
 const TabIcon = ({ selected, title }) => (
   <View style={{alignItems: 'center'}}>
@@ -74,26 +67,32 @@ const TabIcon = ({ selected, title }) => (
   </View>
 )
 
-const plus = () => <Ionicons name="md-add" size={20}/>
+const Plus = () => <Ionicons name="md-add" size={20} />
 
-export default () => (
-  <Router>
-    <Scene key="root">
-      <Scene key="tabbar" tabs tabBarStyle={{backgroundColor: 'white'}}>
-        <Scene key="sounds" title="Sounds" icon={TabIcon}>
-          <Scene key="soundList" component={SoundList} title="Sounds" renderRightButton={plus} onRight={() => { onsole.log('clicked ')}}/>
-          <Scene key="soundItem" component={SoundItem} title="soundItem"/>
-        </Scene>
-        <Scene key="practices" title="Practices" icon={TabIcon}>
-          <Scene key="practiceList" component={PracticeList} title="Practices" renderRightButton={plus} onRight={() => { onsole.log('clicked ')}}/>
-          <Scene key="practiceItem" component={PracticeItem} title="PracticeItem"/>
-      </Scene>
-      <Scene key="sequences" title="Sequences" icon={TabIcon}>
-        <Scene key="sequenceList" component={SequenceList} title="Sequences" renderRightButton={plus} onRight={() => { onsole.log('clicked ')}}/>
-        <Scene key="sequenceItem" component={SequenceItem} title="SequenceItem"/>
-      </Scene>
-
-      </Scene>
-    </Scene>
-  </Router>
+export default () => {
+  setTimeout(() => {
+    store.dispatch(practices.edit(1477828618749, { test: 2 }))
+  }, 1000)
+  return (
+    <Provider store={store}>
+        <RouterWithRedux>
+            <Scene key="root">
+                <Scene key="tabbar" tabs tabBarStyle={{backgroundColor: 'white'}}>
+                    <Scene key="sounds" title="Sounds" icon={TabIcon}>
+                        <Scene key="soundList" component={SoundList} title="Sounds" renderRightButton={Plus} onRight={() => { console.log('clicked ')}}/>
+                        <Scene key="soundItem" component={SoundItem} title="soundItem"/>
+                    </Scene>
+                    <Scene key="practices" title="Practices" icon={TabIcon}>
+                        <Scene key="practiceList" component={PracticeList} title="Practices" renderRightButton={Plus} onRight={() => { console.log('clicked ')}}/>
+                        <Scene key="practiceItem" component={PracticeItem} title="PracticeItem"/>
+                    </Scene>
+                    <Scene key="sequences" title="Sequences" icon={TabIcon}>
+                        <Scene key="sequenceList" component={SequenceList} title="Sequences" renderRightButton={Plus} onRight={() => { console.log('clicked ')}}/>
+                        <Scene key="sequenceItem" component={SequenceItem} title="SequenceItem"/>
+                    </Scene>
+                </Scene>
+            </Scene>
+        </RouterWithRedux>
+    </Provider>
 )
+}

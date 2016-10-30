@@ -1,18 +1,13 @@
 // @flow
-
-import { createStore, combineReducers } from 'redux'
+import {createStore, combineReducers} from 'redux'
+import {persistStore, autoRehydrate} from 'redux-persist'
+import {AsyncStorage} from 'react-native'
 import devTools from 'remote-redux-devtools'
-//import {navigation} from './reducers'
+import {navigation, practices} from './reducers'
 
-
-const reducer = combineReducers({
-  //navigation
-})
-
-export default function configureStore(initialState?: Object){
-  return createStore(reducer, initialState, devTools())
-}
-
-
-
-
+export default function configureStore() {
+  const reducer = combineReducers({ navigation, practices })
+  const store = createStore(reducer, undefined, autoRehydrate(), devTools())
+  persistStore(store, {storage: AsyncStorage})
+  return store;
+};
