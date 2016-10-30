@@ -70,9 +70,6 @@ const TabIcon = ({ selected, title }) => (
 const Plus = () => <Ionicons name="md-add" size={20} />
 
 export default () => {
-  setTimeout(() => {
-    store.dispatch(practices.edit(1477828618749, { test: 2 }))
-  }, 1000)
   return (
     <Provider store={store}>
         <RouterWithRedux>
