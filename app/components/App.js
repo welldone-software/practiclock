@@ -19,6 +19,7 @@ import { connect, Provider } from 'react-redux'
 import SoundList from './SoundList'
 import PracticeCreate from './PracticeCreate'
 import PracticeList from './PracticeList'
+import PracticeView from './PracticeView'
 import configureStore from '../store'
 import {practices} from '../store/actions'
 
@@ -26,13 +27,6 @@ const RouterWithRedux = connect()(Router)
 const store = configureStore()
 
 const Plus = () => <Ionicons name="md-add" size={20} />
-
-const PracticeItem = ({id}) => (
-  <View style={{margin: 128}}>
-    <Text>PracticeItem {id}</Text>
-    <Text onPress={Actions.pop}>back</Text>
-  </View>
-)
 
 const SequenceList = () => (
   <View style={{margin: 128}}>
@@ -44,13 +38,6 @@ const SequenceList = () => (
 const SequenceItem = ({id}) => (
   <View style={{margin: 128}}>
     <Text>SequenceItem {id}</Text>
-    <Text onPress={Actions.pop}>back</Text>
-  </View>
-)
-
-const SoundItem = ({id}) => (
-  <View style={{margin: 128}}>
-    <Text>SoundItem {id}</Text>
     <Text onPress={Actions.pop}>back</Text>
   </View>
 )
@@ -77,11 +64,10 @@ export default () => {
                           <Scene key="tabbar" tabs tabBarStyle={{backgroundColor: 'white'}}>
                               <Scene key="sounds" title="Sounds" icon={TabIcon}>
                                   <Scene key="soundList" component={SoundList} title="Sounds" renderRightButton={Plus} onRight={() => { console.log('clicked ')}}/>
-                                  <Scene key="soundItem" component={SoundItem} title="soundItem"/>
                               </Scene>
                               <Scene key="practices" title="Practices" icon={TabIcon}>
                                   <Scene key="practiceList" component={PracticeList} title="Practices"/>
-                                  <Scene key="practiceItem" component={PracticeItem} title="PracticeItem"/>
+                                  <Scene key="practiceView" component={PracticeView} title="Practice"/>
                               </Scene>
                               <Scene key="sequences" title="Sequences" icon={TabIcon}>
                                   <Scene key="sequenceList" component={SequenceList} title="Sequences" renderRightButton={Plus} onRight={() => { console.log('clicked ')}}/>

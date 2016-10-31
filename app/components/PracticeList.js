@@ -5,6 +5,7 @@ import {
     StyleSheet,
     Text,
     TouchableOpacity,
+    TouchableHighlight,
     View
 } from 'react-native'
 import {bindActionCreators} from 'redux'
@@ -69,11 +70,13 @@ const Row = (props) => {
             close={props.close}
             scroll={props.onScroll}
         >
-            <View style={styles.row}>
-                <Text style={styles.text}>
-                    {props.title}
-                </Text>
-            </View>
+            <TouchableHighlight onPress={() => Actions.practiceView({id: props.id})}>
+                <View style={styles.row}>
+                    <Text style={styles.text}>
+                        {props.title}
+                    </Text>
+                </View>
+            </TouchableHighlight>
         </SwipeOut>
     )
 }
@@ -127,7 +130,6 @@ class PracticeList extends Component {
     renderSeparator = (sectionId, rowId) => <View key={rowId} style={styles.separator} />
 
     render() {
-        console.log(this.props)
         const {
             dataSource,
             scrollEnabled
