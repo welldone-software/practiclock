@@ -51,7 +51,7 @@ const Row = (props) => {
             component: <FontAwesome name="edit" size={25} style={styles.button} />,
             color: '#157EFB',
             backgroundColor: 'blue',
-            onPress: () => console.log(arguments)
+            onPress: () => Actions.practiceEdit({id: props.id})
         },
         {
             component: <FontAwesome name="trash" size={25} style={styles.button} />,

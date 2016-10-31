@@ -13,44 +13,38 @@ import {bindActionCreators} from 'redux'
 import {connect} from 'react-redux'
 import {practices as practicesActions} from '../store/actions'
 
-class PracticeCreate extends Component {
-    state = {
-        titile: '',
-        duration: 0,
-        repeat: 0
-    }
-
+class PracticeEdit extends Component {
     onTitleChange = title => this.setState({title})
     onDurationChange = duration => this.setState({duration: Math.round(duration * 60)})
     onRepetitionChange = repeat => this.setState({repeat: Math.round(repeat * 30)})
 
-    onSubmit = () => {
-        const {title, duration, repeat} = this.state
-        this.props.add({ title, duration, repeat })
-        Actions.pop()
+    constructor(props) {
+        super(props)
+        this.state = {
+            ...props.practices.find(item => item.id === props.id)
+        }
     }
 
-    renderLeftButton = () => {
-        return (
-            <TouchableOpacity style={styles.navBarLeftButton} onPress={Actions.pop}>
-                <Text style={styles.navBarText}>Cancel</Text>
-            </TouchableOpacity>
-        )
+    componentWillReceiveProps(nextProps) {
+        this.setState({...nextProps.practices.find(item => item.id === nextProps.id)})
+    }
+
+    componentDidMount() {
+        Actions.refresh({renderRightButton: this.renderRightButton})
+    }
+
+    onSubmit = () => {
+        const {id, edit} = this.props
+        edit(id, this.state)
+        Actions.pop()
     }
 
     renderRightButton = () => {
         return (
             <TouchableOpacity style={styles.navBarRightButton} onPress={this.onSubmit}>
-                <Text style={styles.navBarText}>Create</Text>
+                <Text style={styles.navBarText}>Save</Text>
             </TouchableOpacity>
         )
-    }
-
-    componentDidMount() {
-        Actions.refresh({
-            renderLeftButton: this.renderLeftButton,
-            renderRightButton: this.renderRightButton
-        })
     }
 
     render() {
@@ -72,9 +66,10 @@ class PracticeCreate extends Component {
                         <Text style={styles.formLabel}>Duration</Text>
                         <Text style={styles.previewValue}>{duration === 60 ? '1h' : duration + 'min'}</Text>
                     </View>
-                    <Slider 
-                        style={styles.durationSlider} 
+                    <Slider
+                        style={styles.durationSlider}
                         onValueChange={this.onDurationChange}
+                        value={duration / 60}
                     />
                 </View>
                 <View style={styles.formSection}>
@@ -82,9 +77,10 @@ class PracticeCreate extends Component {
                         <Text style={styles.formLabel}>Repeat</Text>
                         <Text style={styles.previewValue}>{repeat}</Text>
                     </View>
-                    <Slider 
-                        style={styles.durationSlider} 
+                    <Slider
+                        style={styles.durationSlider}
                         onValueChange={this.onRepetitionChange}
+                        value={repeat / 30}
                     />
                 </View>
             </View>
@@ -132,4 +128,4 @@ const styles = StyleSheet.create({
 export default connect(
     state => state.practices,
     dispatch => bindActionCreators(practicesActions, dispatch)
-)(PracticeCreate)
+)(PracticeEdit)

@@ -20,6 +20,7 @@ import SoundList from './SoundList'
 import PracticeCreate from './PracticeCreate'
 import PracticeList from './PracticeList'
 import PracticeView from './PracticeView'
+import PracticeEdit from './PracticeEdit'
 import configureStore from '../store'
 import {practices} from '../store/actions'
 
@@ -68,6 +69,7 @@ export default () => {
                               <Scene key="practices" title="Practices" icon={TabIcon}>
                                   <Scene key="practiceList" component={PracticeList} title="Practices"/>
                                   <Scene key="practiceView" component={PracticeView} title="Practice"/>
+                                  <Scene key="practiceEdit" component={PracticeEdit} title="Practice"/>
                               </Scene>
                               <Scene key="sequences" title="Sequences" icon={TabIcon}>
                                   <Scene key="sequenceList" component={SequenceList} title="Sequences" renderRightButton={Plus} onRight={() => { console.log('clicked ')}}/>

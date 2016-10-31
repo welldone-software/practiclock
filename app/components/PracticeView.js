@@ -28,7 +28,7 @@ class PracticeView extends Component {
     }
 
     onEdit = () => {
-        Actions.pop()
+        Actions.practiceEdit({id: this.state.id})
     }
 
     renderRightButton = () => {
