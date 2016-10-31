@@ -13,7 +13,7 @@ const navigationMiddleware = store => next => action => {
 
     switch (type) {
       case REHYDRATE:
-          Actions[payload.navigation.scene.parent]()
+          if (payload.navigation) Actions[payload.navigation.scene.parent]()
           break
       default:
           break
