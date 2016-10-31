@@ -21,18 +21,12 @@ import PracticeCreate from './PracticeCreate'
 import configureStore from '../store'
 import {practices} from '../store/actions'
 
-console.log(ActionConst)
-
 const RouterWithRedux = connect()(Router)
 const store = configureStore()
 
 const Plus = () => <Ionicons name="md-add" size={20} />
 
-class PracticeList extends Component {
-    state = {
-        modalVisible: false
-    }
-    
+class PracticeList extends Component {    
     static renderRightButton() {
         return <TouchableOpacity onPress={Actions.practiceCreate}><Plus /></TouchableOpacity>
     }

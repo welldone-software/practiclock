@@ -8,10 +8,6 @@ export function navigation(state = { scene: {} }, action = {}) {
                 ...state,
                 scene: action.scene,
             }
-        // case REHYDRATE:
-        //     const incoming = action.payload.navigation
-        //     if (incoming) return { ...state, scene: incoming.scene }
-        //     return state
         default:
             return state
     }
