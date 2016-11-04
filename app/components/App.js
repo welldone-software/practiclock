@@ -12,29 +12,21 @@ import {
     Router,
     Scene,
     Actions,
-    ActionConst,
     Modal
 } from 'react-native-router-flux'
 import { connect, Provider } from 'react-redux'
-import SoundList from './SoundList'
 import PracticeCreate from './PracticeCreate'
 import PracticeList from './PracticeList'
 import PracticeView from './PracticeView'
 import PracticeEdit from './PracticeEdit'
+import ExerciseCreate from './ExerciseCreate'
+import ExerciseList from './ExerciseList'
 import configureStore from '../store'
-import {practices} from '../store/actions'
 
 const RouterWithRedux = connect()(Router)
 const store = configureStore()
 
 const Plus = () => <Ionicons name="md-add" size={20} />
-
-const SequenceList = () => (
-  <View style={{margin: 128}}>
-    <Text>SequenceList</Text>
-    <Text onPress={() => Actions.sequenceItem({id: 111})}>SequenceItem 1</Text>
-  </View>
-)
 
 const SequenceItem = ({id}) => (
   <View style={{margin: 128}}>
@@ -45,8 +37,7 @@ const SequenceItem = ({id}) => (
 
 const title2icon = {
     Practices:  'ios-alarm-outline',
-    Sequences: 'ios-albums-outline',
-    Sounds: 'ios-musical-notes'
+    Exercises: 'ios-albums-outline',
 }
 
 const TabIcon = ({ selected, title }) => (
@@ -63,21 +54,21 @@ export default () => {
                   <Scene key="modal" component={Modal}>
                       <Scene key="root">
                           <Scene key="tabbar" tabs tabBarStyle={{backgroundColor: 'white'}}>
-                              <Scene key="sounds" title="Sounds" icon={TabIcon}>
-                                  <Scene key="soundList" component={SoundList} title="Sounds" renderRightButton={Plus} onRight={() => { console.log('clicked ')}}/>
-                              </Scene>
                               <Scene key="practices" title="Practices" icon={TabIcon}>
                                   <Scene key="practiceList" component={PracticeList} title="Practices"/>
                                   <Scene key="practiceView" component={PracticeView} title="Practice"/>
                                   <Scene key="practiceEdit" component={PracticeEdit} title="Practice"/>
                               </Scene>
-                              <Scene key="sequences" title="Sequences" icon={TabIcon}>
-                                  <Scene key="sequenceList" component={SequenceList} title="Sequences" renderRightButton={Plus} onRight={() => { console.log('clicked ')}}/>
-                                  <Scene key="sequenceItem" component={SequenceItem} title="SequenceItem"/>
+                              <Scene key="exercises" title="Exercises" icon={TabIcon}>
+                                  <Scene key="exerciseList" component={ExerciseList} title="Exercises"/>
+                                  <Scene key="exerciseItem" component={SequenceItem} title="Exercise"/>
                               </Scene>
                           </Scene>
                           <Scene key="practiceCreate" direction="vertical">
-                              <Scene key="practiceNew" component={PracticeCreate} title="New Practice" hideTabBar />
+                              <Scene key="practiceNew" component={PracticeCreate} title="New Practice" hideTabBar/>
+                          </Scene>
+                          <Scene key="exerciseCreate" direction="vertical">
+                              <Scene key="exerciseNew" component={ExerciseCreate} title="New Exercise" hideTabBar/>
                           </Scene>
                       </Scene>
                   </Scene>

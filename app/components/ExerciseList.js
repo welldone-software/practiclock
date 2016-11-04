@@ -14,7 +14,7 @@ import {Actions} from 'react-native-router-flux'
 import FontAwesome from 'react-native-vector-icons/FontAwesome'
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import SwipeOut from 'react-native-swipeout'
-import {practices as practicesActions} from '../store/actions'
+import {exercises as exercisesActions} from '../store/actions'
 
 const styles = StyleSheet.create({
     list: {
@@ -51,7 +51,7 @@ const Row = (props) => {
             component: <FontAwesome name="edit" size={25} style={styles.button} />,
             color: '#157EFB',
             backgroundColor: 'blue',
-            onPress: () => Actions.practiceEdit({id: props.id})
+            onPress: () => Actions.exerciseEdit({id: props.id})
         },
         {
             component: <FontAwesome name="trash" size={25} style={styles.button} />,
@@ -70,7 +70,7 @@ const Row = (props) => {
             close={props.close}
             scroll={props.onScroll}
         >
-            <TouchableHighlight onPress={() => Actions.practiceView({id: props.id})}>
+            <TouchableHighlight onPress={() => Actions.exerciseView({id: props.id})}>
                 <View style={styles.row}>
                     <Text style={styles.text}>
                         {props.title}
@@ -81,10 +81,10 @@ const Row = (props) => {
     )
 }
 
-class PracticeList extends Component {
+class ExerciseList extends Component {
     static renderRightButton() {
         return (
-            <TouchableOpacity onPress={Actions.practiceCreate}>
+            <TouchableOpacity onPress={Actions.exerciseCreate}>
                 <Ionicons name="md-add" size={20} />
             </TouchableOpacity>
         )
@@ -96,19 +96,19 @@ class PracticeList extends Component {
             rowHasChanged: (r1, r2) => r1 !== r2 || this.state.scrollEnabled
         })
         this.state = {
-            dataSource: ds.cloneWithRows(this.props.practices),
+            dataSource: ds.cloneWithRows(this.props.exercises),
             scrollEnabled: true
         }
     }
 
     componentWillReceiveProps(nextProps) {
-        this.setState({ dataSource: this.state.dataSource.cloneWithRows(nextProps.practices) })
+        this.setState({ dataSource: this.state.dataSource.cloneWithRows(nextProps.exercises) })
     }
 
     onSwipe = (id) => {
         this.setState({
             swipeActiveID: id,
-            dataSource: this.state.dataSource.cloneWithRows(this.props.practices)
+            dataSource: this.state.dataSource.cloneWithRows(this.props.exercises)
         })
     }
 
@@ -117,11 +117,12 @@ class PracticeList extends Component {
     }
 
     renderRow = (data) => {
+        console.log(this.props)
         return (
             <Row {...data}
                  onSwipe={this.onSwipe}
                  onScroll={this.onScroll}
-                 onDeleteButtonPress={(id) => this.props.remove(id)}
+                 onDeleteButtonPress={id => this.props.remove(id)}
                  close={this.state.swipeActiveID !== data.id}
             />
         )
@@ -149,6 +150,7 @@ class PracticeList extends Component {
 }
 
 export default connect(
-    state => state.practices,
-    dispatch => bindActionCreators(practicesActions, dispatch)
-)(PracticeList)
+    state => state.exercises,
+    dispatch => bindActionCreators(exercisesActions, dispatch)
+)(ExerciseList)
+

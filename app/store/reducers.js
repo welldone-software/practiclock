@@ -48,35 +48,35 @@ export function practices(state = { practices: [] }, action = {}) {
     }
 }
 
-export function sequences(state = { sequences: [] }, action = {}) {
+export function exercises(state = { exercises: [] }, action = {}) {
     const {type, payload} = action
 
     switch (type) {
-        case '@SEQUENCES_ADD':
+        case '@EXERCISES_ADD':
             return {
                 ...state,
-                sequences: [
-                    ...state.sequences, 
+                exercises: [
+                    ...state.exercises,
                     { 
                         ...payload.data,
                         id: Date.now()
                     }
                 ]
             }
-        case '@SEQUENCES_EDIT':
+        case '@EXERCISES_EDIT':
             const {id, data} = payload
-            const sequences = [...state.sequences]
-            const item = sequences.find(item => item.id === id)
+            const exercises = [...state.exercises]
+            const item = exercises.find(item => item.id === id)
             Object.assign(item, data)
 
             return {
                 ...state,
-                sequences
+                exercises
             }
-        case '@SEQUENCES_REMOVE':
+        case '@EXERCISES_REMOVE':
             return {
                 ...state,
-                sequences: state.sequences.filter(item => item.id !== payload.id)
+                exercises: state.exercises.filter(item => item.id !== payload.id)
             }
         default:
             return state

@@ -3,9 +3,8 @@ import {createStore, combineReducers, compose, applyMiddleware} from 'redux'
 import {persistStore, autoRehydrate} from 'redux-persist'
 import {AsyncStorage} from 'react-native'
 import devTools from 'remote-redux-devtools'
-import {Actions} from 'react-native-router-flux';  
 import {REHYDRATE} from 'redux-persist/constants'
-import {navigation, practices} from './reducers'
+import {navigation, practices, exercises} from './reducers'
 
 const navigationMiddleware = store => next => action => {
     const result = next(action)
@@ -25,7 +24,7 @@ const navigationMiddleware = store => next => action => {
 const middleware = [navigationMiddleware] 
 
 export default function configureStore() {
-    const reducer = combineReducers({ navigation, practices })
+    const reducer = combineReducers({ navigation, practices, exercises })
     const enhancer = compose(
         applyMiddleware(...middleware),
         autoRehydrate()
