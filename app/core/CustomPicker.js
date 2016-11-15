@@ -21,7 +21,8 @@ const styles = StyleSheet.create({
         width: SCREEN_WIDTH,
         justifyContent: 'center',
         alignItems: 'center',
-        padding: 0
+        padding: 0,
+        backgroundColor: '#fff'
     },
     buttons: {
         width: SCREEN_WIDTH,

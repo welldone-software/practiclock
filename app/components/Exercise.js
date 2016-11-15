@@ -64,7 +64,7 @@ const IntervalPicker = ({current = 0, onChange}) => {
     return (
          <View>
             <View style={styles.wrapper}>
-                <Text style={styles.preview}>Interval</Text>
+                <Text style={styles.preview}>Pause</Text>
                 <Text style={styles.preview}>{current === 60 ? '1h' : current + 'min'}</Text>
             </View>
             <View>
@@ -77,7 +77,7 @@ const IntervalPicker = ({current = 0, onChange}) => {
     )
 }
 
-const ItemComponent = ({index, data, onDeleteButtonPress, onSwipe, close, onScroll}) => {
+const Item = ({index, data, onDeleteButtonPress, onSwipe, close, onScroll}) => {
     const styles = StyleSheet.create({
         wrapper: {
             flexDirection: 'row',
@@ -110,21 +110,23 @@ const ItemComponent = ({index, data, onDeleteButtonPress, onSwipe, close, onScro
             close={close}
             scroll={onScroll}
         >
-            {data.type === Types.INTERVAL &&
-                <View style={styles.wrapper}>
-                    <Text>Pause</Text>
-                    <Text>{data.value === 60 ? '1h' : data.value + 'min'}</Text>
-                </View>
-            }
-            
-            {data.type === Types.PRACTICE &&
-                <Text>{data.title}</Text>
-            }
+            <View styles={styles.item}>
+                {data.type === Types.INTERVAL &&
+                    <View style={styles.wrapper}>
+                        <Text>Pause</Text>
+                        <Text>{data.value === 60 ? '1h' : data.value + 'min'}</Text>
+                    </View>
+                }
+                
+                {data.type === Types.PRACTICE &&
+                    <Text>{data.title}</Text>
+                }
+            </View>
         </SwipeOut>
     )
 }
 
-class ExerciseCreate extends Component {
+class Exercise extends Component {
     onTitleChange = title => this.setState({title})
 
     _data = []
@@ -159,11 +161,19 @@ class ExerciseCreate extends Component {
 
     onSubmit = () => {
         const {title} = this.state
-        this.props.exercises.add({title})
+        this.props.add({title, data: this._data})
+        Actions.pop()
+    }
+
+    onBack = () => {
+        const {title} = this.state
+        this.props.edit(this.props.id, {title, data: this._data})
         Actions.pop()
     }
 
     renderLeftButton = () => {
+        if (this.props.id) return null
+
         return (
             <TouchableOpacity style={styles.navBarLeftButton} onPress={Actions.pop}>
                 <Text style={styles.navBarText}>Cancel</Text>
@@ -172,6 +182,8 @@ class ExerciseCreate extends Component {
     }
 
     renderRightButton = () => {
+        if (this.props.id) return null
+
         return (
             <TouchableOpacity style={styles.navBarRightButton} onPress={this.onSubmit}>
                 <Text style={styles.navBarText}>Create</Text>
@@ -218,7 +230,7 @@ class ExerciseCreate extends Component {
         item = Object.assign({}, item, { type: data.type })
         
         return (
-            <ItemComponent 
+            <Item
                 index={index}
                 data={item}
                 onSwipe={this.onSwipe}
@@ -231,12 +243,14 @@ class ExerciseCreate extends Component {
 
     constructor(props) {
         super(props)
+
+        const exercise = props.exercises.exercises.find(item => item.id === props.id)
         const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2 || this.state.scrollEnabled})
         this.state = {
             showPracticePicker: false,
             showIntervalPicker: false,
-            title: '',
-            data: ds.cloneWithRows(this._data),
+            title: exercise ? exercise.title : '',
+            data: ds.cloneWithRows(exercise ? exercise.data : this._data),
             scrollEnabled: true
         }
     }
@@ -244,7 +258,8 @@ class ExerciseCreate extends Component {
     componentDidMount() {
         Actions.refresh({
             renderLeftButton: this.renderLeftButton,
-            renderRightButton: this.renderRightButton
+            renderRightButton: this.renderRightButton,
+            onBack: this.onBack
         })
     }
 
@@ -253,7 +268,6 @@ class ExerciseCreate extends Component {
         return (
             <View style={styles.scene}>
                 <View style={styles.formSection}>
-                    <Text style={styles.formLabel}>Title</Text>
                     <TextInput
                         editable
                         style={styles.titleInput}
@@ -267,7 +281,7 @@ class ExerciseCreate extends Component {
                         enableEmptySections={true}
                         style={styles.list}
                         dataSource={data}
-                        renderRow={(data, s, index) => this.renderRow(data, Number(index))}
+                        renderRow={(data, _, index) => this.renderRow(data, Number(index))}
                     />
                 </View>
                 <View style={styles.formSection}>
@@ -317,9 +331,6 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-between'
     },
-    formLabel: {
-        fontSize: 18
-    },
     titleInput: {
         height: 60
     },
@@ -333,6 +344,13 @@ const styles = StyleSheet.create({
     },
     picker: {
         width: SCREEN_WIDTH
+    },
+    item: {
+        flex: 1,
+        padding: 25,
+        flexDirection: 'row',
+        alignItems: 'center',
+        backgroundColor: '#FFF'
     }
 })
 
@@ -342,4 +360,4 @@ export default connect(
         return {exercises, practices}
     },
     dispatch => bindActionCreators(exercisesActions, dispatch)
-)(ExerciseCreate)
+)(Exercise)

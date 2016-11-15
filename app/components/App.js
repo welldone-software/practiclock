@@ -19,7 +19,7 @@ import PracticeCreate from './PracticeCreate'
 import PracticeList from './PracticeList'
 import PracticeView from './PracticeView'
 import PracticeEdit from './PracticeEdit'
-import ExerciseCreate from './ExerciseCreate'
+import Exercise from './Exercise'
 import ExerciseList from './ExerciseList'
 import configureStore from '../store'
 
@@ -61,14 +61,14 @@ export default () => {
                               </Scene>
                               <Scene key="exercises" title="Exercises" icon={TabIcon}>
                                   <Scene key="exerciseList" component={ExerciseList} title="Exercises"/>
-                                  <Scene key="exerciseItem" component={SequenceItem} title="Exercise"/>
+                                  <Scene key="exerciseView" component={Exercise} title="Exercise"/>
                               </Scene>
                           </Scene>
                           <Scene key="practiceCreate" direction="vertical">
                               <Scene key="practiceNew" component={PracticeCreate} title="New Practice" hideTabBar/>
                           </Scene>
                           <Scene key="exerciseCreate" direction="vertical">
-                              <Scene key="exerciseNew" component={ExerciseCreate} title="New Exercise" hideTabBar/>
+                              <Scene key="exerciseNew" component={Exercise} title="New Exercise" hideTabBar/>
                           </Scene>
                       </Scene>
                   </Scene>
