@@ -1,10 +1,14 @@
 //@flow
 import React, {Component, PropTypes} from 'react'
 import {
+    Animated,
     Dimensions,
+    Easing,
+    Image,
     ListView,
     Modal,
     Picker,
+    ScrollView,
     Slider,
     StyleSheet,
     Text,
@@ -17,6 +21,7 @@ import {bindActionCreators} from 'redux'
 import {connect} from 'react-redux'
 import FontAwesome from 'react-native-vector-icons/FontAwesome'
 import SwipeOut from 'react-native-swipeout'
+import SortableList from 'react-native-sortable-list';
 import CustomPicker from '../core/CustomPicker'
 import {exercises as exercisesActions} from '../store/actions'
 
@@ -77,97 +82,122 @@ const IntervalPicker = ({current = 0, onChange}) => {
     )
 }
 
-const Item = ({index, data, onDeleteButtonPress, onSwipe, close, onScroll}) => {
-    const styles = StyleSheet.create({
-        wrapper: {
-            flexDirection: 'row',
-            justifyContent: 'space-between'
-        },
-        buttons: {
-            paddingTop: 24,
-            paddingBottom: 24,
-            paddingLeft: 26,
-            paddingRight: 26,
-            color: '#FFF'
+class Row extends Component {
+    state = {
+        style: {
+            shadowRadius: new Animated.Value(2),
+            transform: [{scale: new Animated.Value(1)}],
         }
-    })
+    }
 
-    const buttons = [
-        {
-            component: <FontAwesome name="trash" size={25} style={styles.buttons} />,
-            color: '#FC3D39',
-            backgroundColor: 'red',
-            onPress: () => onDeleteButtonPress(index)
+    componentWillReceiveProps(nextProps) {
+        if (this.props.active === nextProps.active) return
+
+        if (nextProps.active) {
+            this.startActivationAnimation()
+        } else {
+            this.startDeactivationAnimation()
         }
-    ]
+    }
 
-    return (
-        <SwipeOut
-            right={buttons}
-            autoClose
-            backgroundColor="#FFF"
-            onOpen={() => onSwipe(index)}
-            close={close}
-            scroll={onScroll}
-        >
-            <View styles={styles.item}>
-                {data.type === Types.INTERVAL &&
-                    <View style={styles.wrapper}>
-                        <Text>Pause</Text>
-                        <Text>{data.value === 60 ? '1h' : data.value + 'min'}</Text>
+    startActivationAnimation = () => {
+        const {style} = this.state
+
+        Animated.parallel([
+            Animated.timing(style.transform[0].scale, {
+                duration: 100,
+                easing: Easing.out(Easing.quad),
+                toValue: 1.1
+            }),
+            Animated.timing(style.shadowRadius, {
+                duration: 100,
+                easing: Easing.out(Easing.quad),
+                toValue: 10
+            })
+        ]).start()
+    }
+
+    startDeactivationAnimation = () => {
+        const {style} = this.state
+
+        Animated.parallel([
+            Animated.timing(style.transform[0].scale, {
+                duration: 100,
+                easing: Easing.out(Easing.quad),
+                toValue: 1
+            }),
+            Animated.timing(style.shadowRadius, {
+                duration: 100,
+                easing: Easing.out(Easing.quad),
+                toValue: 2
+            })
+        ]).start()
+    }
+
+    render() {
+        const {
+            data,
+            index,
+            active,
+            onDelete,
+        } = this.props
+
+        return (
+            <Animated.View 
+                style={[
+                    styles.row,
+                    this.state.style,
+                ]}
+            >
+                <View style={styles.item}>
+                    <View>
+                        {data.type === Types.INTERVAL &&
+                            <View style={styles.wrapper}>
+                                <Text>Pause</Text>
+                                <Text>{data.value === 60 ? '1h' : data.value + 'min'}</Text>
+                            </View>
+                        }
+                        
+                        {data.type === Types.PRACTICE &&
+                            <Text>{data.title}</Text>
+                        }
                     </View>
-                }
-                
-                {data.type === Types.PRACTICE &&
-                    <Text>{data.title}</Text>
-                }
-            </View>
-        </SwipeOut>
-    )
+                    <View>
+                        <TouchableOpacity
+                            onPress={() => onDelete(index)}
+                        >
+                            <FontAwesome name="trash" size={25} style={styles.itemButton} />
+                        </TouchableOpacity>
+                    </View>
+                </View>
+            </Animated.View>
+        )
+    }
 }
 
 class Exercise extends Component {
     onTitleChange = title => this.setState({title})
 
-    _data = []
+    onDelete = (index) => {
+        const tmp = {...this.state.data}
+        delete tmp[index]
 
-    onSwipeItem = (index) => {
-        this.setState({
-            swipeActiveIndex: index,
-            data: this.state.data.cloneWithRows(this._data)
-        })
-    }
+        const data = Object.assign({}, 
+            Object.keys(tmp).map(key => tmp[key])
+        )
 
-    onDeleteButtonPress = (index) => {
-        this._data = this._data.filter((_, i) => i !== index)
-
-        this.setState({
-            swipeActiveIndex: null,
-            scrollEnabled: true,
-            data: this.state.data.cloneWithRows(this._data)
-        })
-    }
-
-    onSwipe = (index) => {
-        this.setState({
-            swipeActiveIndex: index,
-            data: this.state.data.cloneWithRows(this._data)
-        })
-    }
-
-    onScroll = (scrollEnabled) => {
-        this.setState({scrollEnabled})
+        this.setState({data, shouldRerender: true}, () => this.setState({ shouldRerender: false }))
     }
 
     onSubmit = () => {
-        const {title} = this.state
-        this.props.add({title, data: this._data})
+        const {title, data} = this.state
+        this.props.add({title, data})
         Actions.pop()
     }
 
     onBack = () => {
-        const {title} = this.state
-        this.props.edit(this.props.id, {title, data: this._data})
+        const {title, data} = this.state
+        this.props.edit(this.props.id, {title, data})
         Actions.pop()
     }
 
@@ -192,30 +222,40 @@ class Exercise extends Component {
     }
 
     onPracticeSelected = (id) => {
-        this._data = this._data.concat({
+        const data = {...this.state.data} 
+        const index = Object.keys(data).length;
+
+        data[index] = {
             id: id,
             type: Types.PRACTICE
-        })
+        }
+
+        console.log(data)
 
         this.setState({
             showPracticePicker: false, 
-            data: this.state.data.cloneWithRows(this._data)
-        })
+            data,
+            shouldRerender: true
+        }, () => this.setState({ shouldRerender: false }))
     }
 
     onIntervalSelected = (value) => {
-        this._data = this._data.concat({
+        const data = {...this.state.data} 
+        const index = Object.keys(data).length;
+
+        data[index] = {
             value,
             type: Types.INTERVAL
-        })
+        }
 
         this.setState({
             showIntervalPicker: false, 
-            data: this.state.data.cloneWithRows(this._data)
-        })
+            data,
+            shouldRerender: true
+        }, () => this.setState({ shouldRerender: false }))
     }
 
-    renderRow = (data, index) => {
+    renderRow = (data, index, active) => {
         let item
 
         switch (data.type) {
@@ -230,28 +270,31 @@ class Exercise extends Component {
         item = Object.assign({}, item, { type: data.type })
         
         return (
-            <Item
-                index={index}
+            <Row 
                 data={item}
-                onSwipe={this.onSwipe}
-                onScroll={this.onScroll}
-                onDeleteButtonPress={this.onDeleteButtonPress}
-                close={this.state.swipeActiveIndex !== index}
+                active={active}
+                index={index} 
+                onDelete={this.onDelete}
             />
         )
     }
 
+    onOrderChange = (order) => {
+        const tmp = {...this.state.data}
+        const data = Object.assign({}, order.map(key => tmp[key]))
+        this.setState({data})
+    }
+
     constructor(props) {
         super(props)
-
-        const exercise = props.exercises.exercises.find(item => item.id === props.id)
-        const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2 || this.state.scrollEnabled})
+        const exercise = props.exercises.exercises.find(item => item.id === props.id) || { title: '', data: {}}
         this.state = {
             showPracticePicker: false,
             showIntervalPicker: false,
-            title: exercise ? exercise.title : '',
-            data: ds.cloneWithRows(exercise ? exercise.data : this._data),
-            scrollEnabled: true
+            title: exercise.title,
+            data: exercise.data,
+            scrollEnabled: true,
+            isMounted: false
         }
     }
 
@@ -261,35 +304,50 @@ class Exercise extends Component {
             renderRightButton: this.renderRightButton,
             onBack: this.onBack
         })
+        this.setState({isMounted: true})
     }
 
     render() {
-        const {title, selectedPractice, data} = this.state
+        const {title, selectedPractice, data, isMounted, shouldRerender} = this.state
+
+        if (!isMounted) return null 
+        if (shouldRerender) return null
+
         return (
             <View style={styles.scene}>
-                <View style={styles.formSection}>
+                <View style={styles.title}>
                     <TextInput
                         editable
-                        style={styles.titleInput}
+                        style={styles.input}
                         placeholder="Type here to set name of exercise"
                         onChangeText={this.onTitleChange}
                         value={title}
                     />
                 </View>
-                <View style={styles.formSection}>
-                    <ListView
-                        enableEmptySections={true}
-                        style={styles.list}
-                        dataSource={data}
-                        renderRow={(data, _, index) => this.renderRow(data, Number(index))}
-                    />
+
+                <View style={styles.wrapper}>
+                    <View style={styles.container}>
+                        <SortableList
+                            contentContainerStyle={styles.content}
+                            data={data}
+                            renderRow={({data, active, index}) => this.renderRow(data, index, active)}
+                            onChangeOrder={(order) => this.onOrderChange(order)}
+                        />
+                    </View>
                 </View>
-                <View style={styles.formSection}>
-                    <TouchableOpacity onPress={() => this.setState({showPracticePicker: true})}>
-                        <Text>Add practice</Text>
+
+                <View style={styles.buttons}>
+                    <TouchableOpacity
+                        style={styles.button} 
+                        onPress={() => this.setState({showPracticePicker: true})}
+                    >
+                        <Text style={styles.buttonText}>Add practice</Text>
                     </TouchableOpacity>
-                    <TouchableOpacity onPress={() => this.setState({showIntervalPicker: true})}>
-                        <Text>Add pause</Text>
+                    <TouchableOpacity
+                        style={styles.button}
+                        onPress={() => this.setState({showIntervalPicker: true})}
+                    >
+                        <Text style={styles.buttonText}>Add pause</Text>
                     </TouchableOpacity>
                 </View>
 
@@ -324,33 +382,78 @@ const styles = StyleSheet.create({
     navBarRightButton: {
         paddingRight: 10
     },
-    formSection: {
-        paddingTop: 20
+    title: {
+        flex: 1,
+        maxHeight: 60
     },
-    formLableWrapper: {
-        flexDirection: 'row',
-        justifyContent: 'space-between'
-    },
-    titleInput: {
+    input: {
         height: 60
     },
-    list: {
-        // flex: 1
+    container: {
+        flex: 1,
+        alignItems: 'center',
+        backgroundColor: '#eee',
+    },
+    content: {
+        width: SCREEN_WIDTH - 10,
+    },
+    wrapper: {
+        flex: 1,
     },
     scene: {
         flex: 1,
+        flexDirection: 'column',
         marginTop: 60,
-        padding: 10
+        padding: 5
+    },
+    buttons: {
+        flex: 1,
+        maxHeight: 160
+    },
+    button: {
+        padding: 10,
+        marginTop: 10,
+        borderRadius: 5,
+        borderWidth: 1,
+        borderStyle: 'solid',
+        borderColor: '#1579fb'
+    },
+    buttonText: {
+        color: '#1579FB',
+        textAlign: 'center'
+    },
+    itemButton: {
+        paddingTop: 24,
+        paddingBottom: 24,
+        paddingLeft: 26,
+        paddingRight: 26,
+        color: '#fc3d39'
     },
     picker: {
         width: SCREEN_WIDTH
     },
     item: {
         flex: 1,
-        padding: 25,
         flexDirection: 'row',
+        justifyContent: 'space-between',
         alignItems: 'center',
         backgroundColor: '#FFF'
+    },
+    row: {
+        flexDirection: 'row',
+        backgroundColor: 'white',
+        padding: 16,
+        marginVertical: 1,
+        height: 80,
+        width: SCREEN_WIDTH - 10,
+        borderRadius: 2,
+        shadowColor: 'rgba(0,0,0,0.2)',
+        shadowOpacity: 1,
+        shadowOffset: {
+            height: 2, 
+            width: 2
+        },
+        shadowRadius: 2
     }
 })
 

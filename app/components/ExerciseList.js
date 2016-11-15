@@ -111,7 +111,6 @@ class ExerciseList extends Component {
     }
 
     renderRow = (data) => {
-        console.log(this.props)
         return (
             <Row {...data}
                  onSwipe={this.onSwipe}
