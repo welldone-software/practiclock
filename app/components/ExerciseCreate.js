@@ -15,74 +15,147 @@ import {
 import {Actions} from 'react-native-router-flux'
 import {bindActionCreators} from 'redux'
 import {connect} from 'react-redux'
+import FontAwesome from 'react-native-vector-icons/FontAwesome'
+import SwipeOut from 'react-native-swipeout'
+import CustomPicker from '../core/CustomPicker'
 import {exercises as exercisesActions} from '../store/actions'
 
 const SCREEN_WIDTH = Dimensions.get('window').width
 
-class PracticePicker extends Component {
-    static propTypes = {
-        items: PropTypes.array.isRequired,
-        selected: PropTypes.number,
-        visible: PropTypes.bool,
-        onCancel: PropTypes.func,
-        onSelect: PropTypes.func
-    }
-
-    onSelectValue = selected => this.setState({selected})
-
-    constructor(props) {
-        super(props)
-        this.state = {
-            selected: props.selected
-        }
-    }
-
-    componentWillReceiveProps(props) {
-        this.setState({selected: props.selected})
-    }
-
-    render() {
-        const {items, visible, onCancel, onSelect} = this.props
-        const {selected} = this.state
-        return (
-            <Modal
-                animationType={'slide'}
-                transparent={true}
-                visible={visible}>
-                <View style={styles.pickerContainer}>
-                    <View style={styles.pickerWrapper}>
-                        <View style={styles.pickerButtons}>
-                            <TouchableOpacity onPress={onCancel}>
-                                <Text>Cancel</Text>
-                            </TouchableOpacity>
-                            <TouchableOpacity onPress={() => onSelect(selected)}>
-                                <Text>Confirm</Text>
-                            </TouchableOpacity>
-                        </View>
-                        <View>
-                            <Picker
-                                style={styles.picker}
-                                selectedValue={selected}
-                                onValueChange={(value) => this.onSelectValue(value)}
-                                mode="dropdown"
-                            >
-                                {items.map(item => <Picker.Item label={item.title} value={item.id} key={item.id}/>)}
-                            </Picker>
-                        </View>
-                    </View>
-                </View>
-            </Modal>
-        )
-    }
+const Types = {
+    PRACTICE: 'PRACTICE',
+    INTERVAL: 'INTERVAL'
 }
 
-const ItemComponent = ({data}) => {
-    console.log(1)
-    return <Text>Test</Text>
+const PracticePicker = ({items, current, onChange}) => {
+    const styles = StyleSheet.create({
+        picker: {
+            width: SCREEN_WIDTH
+        }
+    })
+
+    return (
+        <Picker
+            style={styles.picker}
+            selectedValue={current}
+            onValueChange={onChange}
+            mode="dropdown"
+        >
+            {items.map(item => <Picker.Item label={item.title} value={item.id} key={item.id} />)}
+        </Picker>
+    )
+}
+
+const IntervalPicker = ({current = 0, onChange}) => {
+    const styles = StyleSheet.create({
+        wrapper: {
+            flexDirection: 'row',
+            justifyContent: 'space-between'
+        },
+        slider: {
+            marginTop: 16,
+            width: SCREEN_WIDTH
+        },
+        preview: {
+            fontSize: 18
+        }
+    })
+
+    return (
+         <View>
+            <View style={styles.wrapper}>
+                <Text style={styles.preview}>Interval</Text>
+                <Text style={styles.preview}>{current === 60 ? '1h' : current + 'min'}</Text>
+            </View>
+            <View>
+                <Slider 
+                    style={styles.slider} 
+                    onValueChange={(value) => onChange(Math.round(value * 60))}
+                />
+            </View>
+        </View>
+    )
+}
+
+const ItemComponent = ({index, data, onDeleteButtonPress, onSwipe, close, onScroll}) => {
+    const styles = StyleSheet.create({
+        wrapper: {
+            flexDirection: 'row',
+            justifyContent: 'space-between'
+        },
+        buttons: {
+            paddingTop: 24,
+            paddingBottom: 24,
+            paddingLeft: 26,
+            paddingRight: 26,
+            color: '#FFF'
+        }
+    })
+
+    const buttons = [
+        {
+            component: <FontAwesome name="trash" size={25} style={styles.buttons} />,
+            color: '#FC3D39',
+            backgroundColor: 'red',
+            onPress: () => onDeleteButtonPress(index)
+        }
+    ]
+
+    return (
+        <SwipeOut
+            right={buttons}
+            autoClose
+            backgroundColor="#FFF"
+            onOpen={() => onSwipe(index)}
+            close={close}
+            scroll={onScroll}
+        >
+            {data.type === Types.INTERVAL &&
+                <View style={styles.wrapper}>
+                    <Text>Pause</Text>
+                    <Text>{data.value === 60 ? '1h' : data.value + 'min'}</Text>
+                </View>
+            }
+            
+            {data.type === Types.PRACTICE &&
+                <Text>{data.title}</Text>
+            }
+        </SwipeOut>
+    )
 }
 
 class ExerciseCreate extends Component {
     onTitleChange = title => this.setState({title})
+
+    _data = []
+
+    onSwipeItem = (index) => {
+        this.setState({
+            swipeActiveIndex: index,
+            data: this.state.data.cloneWithRows(this._data)
+        })
+    }
+
+    onDeleteButtonPress = (index) => {
+        this._data = this._data.filter((_, i) => i !== index)
+
+        this.setState({
+            swipeActiveIndex: null,
+            scrollEnabled: true,
+            data: this.state.data.cloneWithRows(this._data)
+        })
+    }
+
+    onSwipe = (index) => {
+        this.setState({
+            swipeActiveIndex: index,
+            data: this.state.data.cloneWithRows(this._data)
+        })
+    }
+
+    onScroll = (scrollEnabled) => {
+        this.setState({scrollEnabled})
+    }
 
     onSubmit = () => {
         const {title} = this.state
@@ -107,25 +180,64 @@ class ExerciseCreate extends Component {
     }
 
     onPracticeSelected = (id) => {
-        // const practice = this.props.practices.practices.find(item => item.id === id)
-        this._data = [...this._data, id]
+        this._data = this._data.concat({
+            id: id,
+            type: Types.PRACTICE
+        })
+
         this.setState({
             showPracticePicker: false, 
-            data: this.state.data.cloneWithRows([...this.state.data, id])
+            data: this.state.data.cloneWithRows(this._data)
         })
     }
 
-    onAddPause = () => {}
+    onIntervalSelected = (value) => {
+        this._data = this._data.concat({
+            value,
+            type: Types.INTERVAL
+        })
 
-    _data = [1, 2]
+        this.setState({
+            showIntervalPicker: false, 
+            data: this.state.data.cloneWithRows(this._data)
+        })
+    }
+
+    renderRow = (data, index) => {
+        let item
+
+        switch (data.type) {
+            case Types.INTERVAL:
+                item = data
+                break
+            case Types.PRACTICE:
+                item = this.props.practices.practices.find(item => item.id === data.id)
+                break
+        }
+
+        item = Object.assign({}, item, { type: data.type })
+        
+        return (
+            <ItemComponent 
+                index={index}
+                data={item}
+                onSwipe={this.onSwipe}
+                onScroll={this.onScroll}
+                onDeleteButtonPress={this.onDeleteButtonPress}
+                close={this.state.swipeActiveIndex !== index}
+            />
+        )
+    }
 
     constructor(props) {
         super(props)
-        const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2})
+        const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2 || this.state.scrollEnabled})
         this.state = {
             showPracticePicker: false,
+            showIntervalPicker: false,
             title: '',
-            data: ds.cloneWithRows([1,2])
+            data: ds.cloneWithRows(this._data),
+            scrollEnabled: true
         }
     }
 
@@ -152,25 +264,36 @@ class ExerciseCreate extends Component {
                 </View>
                 <View style={styles.formSection}>
                     <ListView
+                        enableEmptySections={true}
                         style={styles.list}
                         dataSource={data}
-                        renderRow={row => <ItemComponent data={row}/>}
+                        renderRow={(data, s, index) => this.renderRow(data, Number(index))}
                     />
                 </View>
                 <View style={styles.formSection}>
                     <TouchableOpacity onPress={() => this.setState({showPracticePicker: true})}>
                         <Text>Add practice</Text>
                     </TouchableOpacity>
-                    <TouchableOpacity onPress={this.onAddPause}>
+                    <TouchableOpacity onPress={() => this.setState({showIntervalPicker: true})}>
                         <Text>Add pause</Text>
                     </TouchableOpacity>
                 </View>
-                <PracticePicker 
-                    items={this.props.practices.practices}
+
+                <CustomPicker
                     visible={this.state.showPracticePicker}
                     onCancel={() => this.setState({showPracticePicker: false})}
                     onSelect={this.onPracticeSelected}
-                />
+                >
+                    <PracticePicker items={this.props.practices.practices} />
+                </CustomPicker>
+                
+                <CustomPicker
+                    visible={this.state.showIntervalPicker}
+                    onCancel={() => this.setState({showIntervalPicker: false})}
+                    onSelect={this.onIntervalSelected}
+                >
+                    <IntervalPicker />
+                </CustomPicker>
             </View>
         )
     }
@@ -203,32 +326,13 @@ const styles = StyleSheet.create({
     list: {
         // flex: 1
     },
-    picker: {
-        width: SCREEN_WIDTH
-    },
-    pickerContainer: {
-        flex: 1,
-        justifyContent: 'flex-end',
-        alignItems: 'center'
-    },
-    pickerWrapper: {
-        width: SCREEN_WIDTH,
-        justifyContent: 'center',
-        alignItems: 'center',
-        padding: 0
-    },
-    pickerButtons: {
-        width: SCREEN_WIDTH,
-        padding: 8,
-        borderTopWidth: 0.5,
-        borderTopColor: 'lightgrey',
-        justifyContent: 'space-between',
-        flexDirection:'row'
-    },
     scene: {
         flex: 1,
         marginTop: 60,
         padding: 10
+    },
+    picker: {
+        width: SCREEN_WIDTH
     }
 })
 
