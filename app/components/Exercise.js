@@ -308,10 +308,15 @@ class Exercise extends Component {
     }
 
     render() {
-        const {title, selectedPractice, data, isMounted, shouldRerender} = this.state
+        const {
+            title,
+            selectedPractice,
+            data,
+            isMounted,
+            shouldRerender
+        } = this.state
 
-        if (!isMounted) return null 
-        if (shouldRerender) return null
+        if (!isMounted || shouldRerender) return null 
 
         return (
             <View style={styles.scene}>

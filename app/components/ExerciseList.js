@@ -45,6 +45,52 @@ const styles = StyleSheet.create({
     }
 })
 
+const Empty = (props) => {
+    const styles = StyleSheet.create({
+         scene: {
+            flex: 1,
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'center',
+            backgroundColor: '#eee'
+        },
+        button: {
+            flex: 1,
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'center',
+            width: 80,
+            maxHeight: 80,
+            borderRadius: 40,
+            backgroundColor: '#fff',
+            shadowColor: 'rgba(0,0,0,0.2)',
+            shadowOpacity: 1,
+            shadowOffset: {
+                height: 2, 
+                width: 0
+            },
+            shadowRadius: 5 
+        },
+        icon: {
+            color: '#6d6d6d'
+        },
+        text: {
+            marginTop: 20,
+            color: '#6d6d6d',
+            fontSize: 10
+        }
+    })
+
+    return (
+        <View style={styles.scene}>
+            <TouchableOpacity onPress={Actions.exerciseCreate} style={styles.button}>
+                <Ionicons name="md-add" size={34} style={styles.icon} />
+            </TouchableOpacity>
+            <Text style={styles.text}>CREATE YOUR FIRST EXERCISE</Text>
+        </View>
+    )
+}
+
 const Row = (props) => {
     const swipeButtons = [
         {
@@ -76,14 +122,6 @@ const Row = (props) => {
 }
 
 class ExerciseList extends Component {
-    static renderRightButton() {
-        return (
-            <TouchableOpacity onPress={Actions.exerciseCreate}>
-                <Ionicons name="md-add" size={20} />
-            </TouchableOpacity>
-        )
-    }
-
     constructor(props) {
         super(props)
         const ds = new ListView.DataSource({
@@ -96,7 +134,32 @@ class ExerciseList extends Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        this.setState({ dataSource: this.state.dataSource.cloneWithRows(nextProps.exercises) })
+        this.setState({dataSource: this.state.dataSource.cloneWithRows(nextProps.exercises)})
+        if (nextProps.exercises !== this.props.exercises) {
+            Actions.refresh({
+                renderRightButton: this.renderRightButton,
+                hideNavBar: !Boolean(nextProps.exercises.length)
+            })
+        }
+    }
+
+    componentDidMount() {
+        Actions.refresh({
+            renderRightButton: this.renderRightButton,
+            hideNavBar: !Boolean(this.props.exercises.length)
+        })
+    }
+
+    renderRightButton = () => {
+        if (this.props.exercises.length) {
+            return (
+                <TouchableOpacity onPress={Actions.exerciseCreate}>
+                    <Ionicons name="md-add" size={20} />
+                </TouchableOpacity>
+            )
+        } else {
+            return null
+        }
     }
 
     onSwipe = (id) => {
@@ -129,16 +192,22 @@ class ExerciseList extends Component {
             scrollEnabled
         } = this.state
 
-        return (
-            <ListView
-                style={styles.list}
-                dataSource={dataSource}
-                scrollEnabled={scrollEnabled}
-                renderRow={this.renderRow}
-                renderSeparator={this.renderSeparator}
-                enableEmptySections
-            />
-        )
+        if (this.props.exercises.length) {
+            return (
+                <ListView
+                    style={styles.list}
+                    dataSource={dataSource}
+                    scrollEnabled={scrollEnabled}
+                    renderRow={this.renderRow}
+                    renderSeparator={this.renderSeparator}
+                    enableEmptySections
+                />
+            )
+        } else {
+            return (
+                <Empty />
+            )
+        }
     }
 }
 
