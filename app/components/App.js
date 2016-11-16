@@ -42,8 +42,22 @@ const title2icon = {
 
 const TabIcon = ({ selected, title }) => (
     <View style={{alignItems: 'center'}}>
-        <Ionicons style={{color: selected? 'red' : 'black'}} size={20} name={title2icon[title] || 'logo-apple'}/>
-        <Text style={{fontSize: 12, color: selected? 'red' : 'black'}}>{title}</Text>
+        <Ionicons 
+            style={{
+                color: '#fff'
+            }} 
+            size={20} 
+            name={title2icon[title] || 'logo-apple'}
+        />
+        <Text 
+            style={{
+                fontSize: 12,
+                color: '#fff',
+                fontWeight: selected ? '900' : 'normal'
+            }}
+        >
+            {title}
+        </Text>
     </View>
 )
 
@@ -53,7 +67,11 @@ export default () => {
             <RouterWithRedux>
                   <Scene key="modal" component={Modal}>
                       <Scene key="root">
-                          <Scene key="tabbar" tabs tabBarStyle={{backgroundColor: 'white'}}>
+                         <Scene
+                            key="tabbar"
+                            tabs
+                            tabBarStyle={{backgroundColor: '#79909b'}}
+                          >
                               <Scene key="practices" title="Practices" icon={TabIcon}>
                                   <Scene key="practiceList" component={PracticeList} title="Practices"/>
                                   <Scene key="practiceView" component={PracticeView} title="Practice"/>
