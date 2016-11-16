@@ -17,6 +17,22 @@ import SwipeOut from 'react-native-swipeout'
 import {exercises as exercisesActions} from '../store/actions'
 
 const styles = StyleSheet.create({
+    navbar: {
+        backgroundColor: '#34b6f2',
+        shadowColor: 'rgba(0,0,0,0.2)',
+        shadowOpacity: 1,
+        shadowOffset: {
+            height: 4, 
+            width: 2
+        },
+        borderBottomWidth: 0
+    },
+    title: {
+        color: '#0c5999'
+    },
+    buttonCreate: {
+        color: '#0c5999'
+    },
     list: {
         marginTop: 64
     },
@@ -135,9 +151,11 @@ class ExerciseList extends Component {
 
     componentWillReceiveProps(nextProps) {
         this.setState({dataSource: this.state.dataSource.cloneWithRows(nextProps.exercises)})
-        if (nextProps.exercises !== this.props.exercises) {
+        if (nextProps.exercises !== this.props.exercises || nextProps.from !== null) {
             Actions.refresh({
                 renderRightButton: this.renderRightButton,
+                navigationBarStyle: styles.navbar,
+                titleStyle: styles.title,
                 hideNavBar: !Boolean(nextProps.exercises.length)
             })
         }
@@ -146,6 +164,8 @@ class ExerciseList extends Component {
     componentDidMount() {
         Actions.refresh({
             renderRightButton: this.renderRightButton,
+            navigationBarStyle: styles.navbar,
+            titleStyle: styles.title,
             hideNavBar: !Boolean(this.props.exercises.length)
         })
     }
@@ -154,7 +174,7 @@ class ExerciseList extends Component {
         if (this.props.exercises.length) {
             return (
                 <TouchableOpacity onPress={Actions.exerciseCreate}>
-                    <Ionicons name="md-add" size={20} />
+                    <Ionicons name="md-add" size={20} style={styles.buttonCreate} />
                 </TouchableOpacity>
             )
         } else {

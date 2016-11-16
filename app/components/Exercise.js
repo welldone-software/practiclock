@@ -230,8 +230,6 @@ class Exercise extends Component {
             type: Types.PRACTICE
         }
 
-        console.log(data)
-
         this.setState({
             showPracticePicker: false, 
             data,
@@ -302,7 +300,8 @@ class Exercise extends Component {
         Actions.refresh({
             renderLeftButton: this.renderLeftButton,
             renderRightButton: this.renderRightButton,
-            onBack: this.onBack
+            onBack: this.onBack,
+            navigationBarStyle: styles.navbar
         })
         this.setState({isMounted: true})
     }
@@ -377,14 +376,26 @@ class Exercise extends Component {
 }
 
 const styles = StyleSheet.create({
+    navbar: {
+        backgroundColor: '#f9bb2d',
+        shadowColor: 'rgba(0,0,0,0.2)',
+        shadowOpacity: 1,
+        shadowOffset: {
+            height: 4, 
+            width: 2
+        },
+        borderBottomWidth: 0
+    },
     navBarText: {
-        fontSize: 16,
+        fontSize: 18,
         marginVertical: 5
     },
     navBarLeftButton: {
+        marginTop: -2,
         paddingLeft: 10
     },
     navBarRightButton: {
+        marginTop: -5,
         paddingRight: 10
     },
     title: {
@@ -424,7 +435,7 @@ const styles = StyleSheet.create({
         borderColor: '#1579fb'
     },
     buttonText: {
-        color: '#1579FB',
+        color: '#1579fb',
         textAlign: 'center'
     },
     itemButton: {

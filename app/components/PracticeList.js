@@ -17,6 +17,22 @@ import SwipeOut from 'react-native-swipeout'
 import {practices as practicesActions} from '../store/actions'
 
 const styles = StyleSheet.create({
+    navbar: {
+        backgroundColor: '#66bb6a',
+        shadowColor: 'rgba(0,0,0,0.2)',
+        shadowOpacity: 1,
+        shadowOffset: {
+            height: 4, 
+            width: 2
+        },
+        borderBottomWidth: 0
+    },
+    title: {
+        color: '#108043'
+    },
+    buttonCreate: {
+        color: '#108043'
+    },
     list: {
         marginTop: 64
     },
@@ -25,7 +41,7 @@ const styles = StyleSheet.create({
         padding: 25,
         flexDirection: 'row',
         alignItems: 'center',
-        backgroundColor: '#FFF',
+        backgroundColor: '#fff',
     },
     text: {
         marginLeft: 12,
@@ -41,7 +57,7 @@ const styles = StyleSheet.create({
         paddingBottom: 24,
         paddingLeft: 26,
         paddingRight: 26,
-        color: '#FFF'
+        color: '#fff'
     }
 })
 
@@ -82,14 +98,6 @@ const Row = (props) => {
 }
 
 class PracticeList extends Component {
-    static renderRightButton() {
-        return (
-            <TouchableOpacity onPress={Actions.practiceCreate}>
-                <Ionicons name="md-add" size={20} />
-            </TouchableOpacity>
-        )
-    }
-
     constructor(props) {
         super(props)
         const ds = new ListView.DataSource({
@@ -101,8 +109,32 @@ class PracticeList extends Component {
         }
     }
 
+    componentDidMount() {
+        Actions.refresh({
+            renderRightButton: this.renderRightButton,
+            navigationBarStyle: styles.navbar,
+            titleStyle: styles.title
+        })
+    }
+
     componentWillReceiveProps(nextProps) {
         this.setState({ dataSource: this.state.dataSource.cloneWithRows(nextProps.practices) })
+
+        if (nextProps.practices !== this.props.practices || nextProps.from !== null) {
+            Actions.refresh({
+                renderRightButton: this.renderRightButton,
+                navigationBarStyle: styles.navbar,
+                titleStyle: styles.title
+            })
+        }
+    }
+
+    renderRightButton = () => {
+        return (
+            <TouchableOpacity onPress={Actions.practiceCreate}>
+                <Ionicons name="md-add" size={20} style={styles.buttonCreate} />
+            </TouchableOpacity>
+        )
     }
 
     onSwipe = (id) => {
