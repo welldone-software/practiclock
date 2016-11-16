@@ -61,6 +61,52 @@ const styles = StyleSheet.create({
     }
 })
 
+const Empty = (props) => {
+    const styles = StyleSheet.create({
+         scene: {
+            flex: 1,
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'center',
+            backgroundColor: '#eee'
+        },
+        button: {
+            flex: 1,
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'center',
+            width: 80,
+            maxHeight: 80,
+            borderRadius: 40,
+            backgroundColor: '#fff',
+            shadowColor: 'rgba(0,0,0,0.2)',
+            shadowOpacity: 1,
+            shadowOffset: {
+                height: 2, 
+                width: 0
+            },
+            shadowRadius: 5 
+        },
+        icon: {
+            color: '#6d6d6d'
+        },
+        text: {
+            marginTop: 20,
+            color: '#6d6d6d',
+            fontSize: 10
+        }
+    })
+
+    return (
+        <View style={styles.scene}>
+            <TouchableOpacity onPress={Actions.practiceCreate} style={styles.button}>
+                <Ionicons name="md-add" size={34} style={styles.icon} />
+            </TouchableOpacity>
+            <Text style={styles.text}>CREATE YOUR FIRST PRACTICE</Text>
+        </View>
+    )
+}
+
 const Row = (props) => {
     const swipeButtons = [
         {
@@ -113,7 +159,8 @@ class PracticeList extends Component {
         Actions.refresh({
             renderRightButton: this.renderRightButton,
             navigationBarStyle: styles.navbar,
-            titleStyle: styles.title
+            titleStyle: styles.title,
+            hideNavBar: !Boolean(this.props.practices.length)
         })
     }
 
@@ -124,7 +171,8 @@ class PracticeList extends Component {
             Actions.refresh({
                 renderRightButton: this.renderRightButton,
                 navigationBarStyle: styles.navbar,
-                titleStyle: styles.title
+                titleStyle: styles.title,
+                hideNavBar: !Boolean(this.props.practices.length)
             })
         }
     }
@@ -167,16 +215,20 @@ class PracticeList extends Component {
             scrollEnabled
         } = this.state
 
-        return (
-            <ListView
-                style={styles.list}
-                dataSource={dataSource}
-                scrollEnabled={scrollEnabled}
-                renderRow={this.renderRow}
-                renderSeparator={this.renderSeparator}
-                enableEmptySections
-            />
-        )
+         if (this.props.practices.length) {
+            return (
+                <ListView
+                    style={styles.list}
+                    dataSource={dataSource}
+                    scrollEnabled={scrollEnabled}
+                    renderRow={this.renderRow}
+                    renderSeparator={this.renderSeparator}
+                    enableEmptySections
+                />
+            )
+        } else {
+            return <Empty />
+        }
     }
 }
 

@@ -61,6 +61,29 @@ const styles = StyleSheet.create({
     }
 })
 
+const NoPracticeScreen = (props) => {
+    const styles = StyleSheet.create({
+         scene: {
+            flex: 1,
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'center',
+            backgroundColor: '#eee'
+        },
+        text: {
+            marginTop: 20,
+            color: '#6d6d6d',
+            fontSize: 10
+        }
+    })
+
+    return (
+        <View style={styles.scene}>
+            <Text style={styles.text}>PLEASE CREATE AT LEAST ONE PRACTICE FIRST</Text>
+        </View>
+    )
+}
+
 const Empty = (props) => {
     const styles = StyleSheet.create({
          scene: {
@@ -144,19 +167,19 @@ class ExerciseList extends Component {
             rowHasChanged: (r1, r2) => r1 !== r2 || this.state.scrollEnabled
         })
         this.state = {
-            dataSource: ds.cloneWithRows(this.props.exercises),
+            dataSource: ds.cloneWithRows(this.props.exercises.exercises),
             scrollEnabled: true
         }
     }
 
     componentWillReceiveProps(nextProps) {
-        this.setState({dataSource: this.state.dataSource.cloneWithRows(nextProps.exercises)})
-        if (nextProps.exercises !== this.props.exercises || nextProps.from !== null) {
+        this.setState({dataSource: this.state.dataSource.cloneWithRows(nextProps.exercises.exercises)})
+        if (nextProps.exercises.exercises !== this.props.exercises.exercises || nextProps.from !== null) {
             Actions.refresh({
                 renderRightButton: this.renderRightButton,
                 navigationBarStyle: styles.navbar,
                 titleStyle: styles.title,
-                hideNavBar: !Boolean(nextProps.exercises.length)
+                hideNavBar: !Boolean(nextProps.exercises.exercises.length)
             })
         }
     }
@@ -166,7 +189,7 @@ class ExerciseList extends Component {
             renderRightButton: this.renderRightButton,
             navigationBarStyle: styles.navbar,
             titleStyle: styles.title,
-            hideNavBar: !Boolean(this.props.exercises.length)
+            hideNavBar: !Boolean(this.props.exercises.exercises.length)
         })
     }
 
@@ -185,7 +208,7 @@ class ExerciseList extends Component {
     onSwipe = (id) => {
         this.setState({
             swipeActiveID: id,
-            dataSource: this.state.dataSource.cloneWithRows(this.props.exercises)
+            dataSource: this.state.dataSource.cloneWithRows(this.props.exercises.exercises)
         })
     }
 
@@ -212,7 +235,11 @@ class ExerciseList extends Component {
             scrollEnabled
         } = this.state
 
-        if (this.props.exercises.length) {
+        if (!this.props.practices.practices.length) {
+            return <NoPracticeScreen />
+        }
+
+        if (this.props.exercises.exercises.length) {
             return (
                 <ListView
                     style={styles.list}
@@ -224,15 +251,16 @@ class ExerciseList extends Component {
                 />
             )
         } else {
-            return (
-                <Empty />
-            )
+            return <Empty />
         }
     }
 }
 
 export default connect(
-    state => state.exercises,
+    state => {
+        const {exercises, practices} = state
+        return {exercises, practices}
+    },
     dispatch => bindActionCreators(exercisesActions, dispatch)
 )(ExerciseList)
 
