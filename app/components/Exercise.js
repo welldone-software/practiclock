@@ -20,8 +20,7 @@ import {Actions} from 'react-native-router-flux'
 import {bindActionCreators} from 'redux'
 import {connect} from 'react-redux'
 import FontAwesome from 'react-native-vector-icons/FontAwesome'
-import SwipeOut from 'react-native-swipeout'
-import SortableList from 'react-native-sortable-list';
+import SortableList from 'react-native-sortable-list'
 import CustomPicker from '../core/CustomPicker'
 import {exercises as exercisesActions} from '../store/actions'
 
@@ -138,7 +137,6 @@ class Row extends Component {
         const {
             data,
             index,
-            active,
             onDelete,
         } = this.props
 
@@ -222,6 +220,7 @@ class Exercise extends Component {
     }
 
     onPracticeSelected = (id) => {
+        console.log(id)
         const data = {...this.state.data} 
         const index = Object.keys(data).length;
 
@@ -256,6 +255,8 @@ class Exercise extends Component {
     renderRow = (data, index, active) => {
         let item
 
+        console.log(data)
+
         switch (data.type) {
             case Types.INTERVAL:
                 item = data
@@ -266,7 +267,7 @@ class Exercise extends Component {
         }
 
         item = Object.assign({}, item, { type: data.type })
-        
+
         return (
             <Row 
                 data={item}
@@ -309,7 +310,6 @@ class Exercise extends Component {
     render() {
         const {
             title,
-            selectedPractice,
             data,
             isMounted,
             shouldRerender
@@ -329,29 +329,31 @@ class Exercise extends Component {
                     />
                 </View>
 
-                <View style={styles.wrapper}>
-                    <View style={styles.container}>
-                        <SortableList
-                            contentContainerStyle={styles.content}
-                            data={data}
-                            renderRow={({data, active, index}) => this.renderRow(data, index, active)}
-                            onChangeOrder={(order) => this.onOrderChange(order)}
-                        />
+                {Object.keys(data).length !== 0 &&
+                    <View style={styles.wrapper}>
+                        <View style={styles.container}>
+                            <SortableList
+                                contentContainerStyle={styles.content}
+                                data={data}
+                                renderRow={({data, active, index}) => this.renderRow(data, index, active)}
+                                onChangeOrder={(order) => this.onOrderChange(order)}
+                            />
+                        </View>
                     </View>
-                </View>
+                }
 
                 <View style={styles.buttons}>
                     <TouchableOpacity
                         style={styles.button} 
                         onPress={() => this.setState({showPracticePicker: true})}
                     >
-                        <Text style={styles.buttonText}>Add practice</Text>
+                        <Text style={styles.buttonText}>ADD PRACTICE</Text>
                     </TouchableOpacity>
                     <TouchableOpacity
                         style={styles.button}
                         onPress={() => this.setState({showIntervalPicker: true})}
                     >
-                        <Text style={styles.buttonText}>Add pause</Text>
+                        <Text style={styles.buttonText}>ADD PAUSE</Text>
                     </TouchableOpacity>
                 </View>
 
@@ -359,6 +361,7 @@ class Exercise extends Component {
                     visible={this.state.showPracticePicker}
                     onCancel={() => this.setState({showPracticePicker: false})}
                     onSelect={this.onPracticeSelected}
+                    current={this.props.practices.practices[0].id}
                 >
                     <PracticePicker items={this.props.practices.practices} />
                 </CustomPicker>
@@ -408,13 +411,15 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         alignItems: 'center',
-        backgroundColor: '#eee',
+        backgroundColor: '#fff',
     },
     content: {
         width: SCREEN_WIDTH - 10,
     },
     wrapper: {
         flex: 1,
+        flexDirection: 'column',
+        justifyContent: 'space-between'
     },
     scene: {
         flex: 1,
@@ -423,26 +428,18 @@ const styles = StyleSheet.create({
         padding: 5
     },
     buttons: {
-        flex: 1,
-        maxHeight: 160
+        maxHeight: 160,
+        marginBottom: 50
     },
     button: {
         padding: 10,
         marginTop: 10,
-        borderRadius: 5,
-        borderWidth: 1,
-        borderStyle: 'solid',
-        borderColor: '#1579fb'
     },
     buttonText: {
-        color: '#1579fb',
+        color: '#212121',
         textAlign: 'center'
     },
     itemButton: {
-        paddingTop: 24,
-        paddingBottom: 24,
-        paddingLeft: 26,
-        paddingRight: 26,
         color: '#fc3d39'
     },
     picker: {
@@ -462,14 +459,12 @@ const styles = StyleSheet.create({
         marginVertical: 1,
         height: 80,
         width: SCREEN_WIDTH - 10,
-        borderRadius: 2,
         shadowColor: 'rgba(0,0,0,0.2)',
         shadowOpacity: 1,
         shadowOffset: {
-            height: 2, 
-            width: 2
-        },
-        shadowRadius: 2
+            height: 1,
+            width: 0
+        }
     }
 })
 

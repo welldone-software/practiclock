@@ -194,7 +194,7 @@ class ExerciseList extends Component {
     }
 
     renderRightButton = () => {
-        if (this.props.exercises.length) {
+        if (this.props.exercises.exercises.length) {
             return (
                 <TouchableOpacity onPress={Actions.exerciseCreate}>
                     <Ionicons name="md-add" size={20} style={styles.buttonCreate} />

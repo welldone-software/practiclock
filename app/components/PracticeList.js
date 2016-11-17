@@ -172,7 +172,7 @@ class PracticeList extends Component {
                 renderRightButton: this.renderRightButton,
                 navigationBarStyle: styles.navbar,
                 titleStyle: styles.title,
-                hideNavBar: !Boolean(this.props.practices.length)
+                hideNavBar: !Boolean(nextProps.practices.length)
             })
         }
     }
