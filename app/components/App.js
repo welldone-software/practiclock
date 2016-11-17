@@ -9,10 +9,11 @@ import {
 } from 'react-native'
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import {
-    Router,
-    Scene,
     Actions,
-    Modal
+    ActionConst,
+    Modal,
+    Router,
+    Scene
 } from 'react-native-router-flux'
 import { connect, Provider } from 'react-redux'
 import PracticeCreate from './PracticeCreate'
@@ -65,31 +66,41 @@ export default () => {
     return (
         <Provider store={store}>
             <RouterWithRedux>
-                  <Scene key="modal" component={Modal}>
-                      <Scene key="root">
-                         <Scene
+                <Scene key="modal" component={Modal}>
+                    <Scene key="root">
+                        <Scene
                             key="tabbar"
                             tabs
                             tabBarStyle={{backgroundColor: '#79909b'}}
                           >
-                              <Scene key="practices" title="Practices" icon={TabIcon}>
-                                  <Scene key="practiceList" component={PracticeList} title="Practices"/>
-                                  <Scene key="practiceView" component={PracticeView} title="Practice"/>
-                                  <Scene key="practiceEdit" component={PracticeEdit} title="Practice"/>
-                              </Scene>
-                              <Scene key="exercises" title="Exercises" icon={TabIcon}>
-                                  <Scene key="exerciseList" component={ExerciseList} title="Exercises"/>
-                                  <Scene key="exerciseView" component={Exercise} title="Exercise"/>
-                              </Scene>
-                          </Scene>
-                          <Scene key="practiceCreate" direction="vertical">
-                              <Scene key="practiceNew" component={PracticeCreate} title="New Practice" hideTabBar/>
-                          </Scene>
-                          <Scene key="exerciseCreate" direction="vertical">
-                              <Scene key="exerciseNew" component={Exercise} title="New Exercise" hideTabBar/>
-                          </Scene>
-                      </Scene>
-                  </Scene>
+                            <Scene 
+                                key="practices"
+                                title="Practices"
+                                icon={TabIcon} 
+                                onPress={()=> Actions.practiceList({type: ActionConst.REFRESH, timestamp: Date.now()})}
+                            >
+                                <Scene key="practiceList" component={PracticeList} title="Practices"/>
+                                <Scene key="practiceView" component={PracticeView} title="Practice"/>
+                                <Scene key="practiceEdit" component={PracticeEdit} title="Practice"/>
+                            </Scene>
+                            <Scene 
+                                key="exercises"
+                                title="Exercises"
+                                icon={TabIcon}
+                                onPress={()=> Actions.exerciseList({type: ActionConst.REFRESH, timestamp: Date.now()})}
+                            >
+                                <Scene key="exerciseList" component={ExerciseList} title="Exercises"/>
+                                <Scene key="exerciseView" component={Exercise} title="Exercise"/>
+                            </Scene>
+                        </Scene>
+                        <Scene key="practiceCreate" direction="vertical">
+                            <Scene key="practiceNew" component={PracticeCreate} title="New Practice" hideTabBar/>
+                        </Scene>
+                        <Scene key="exerciseCreate" direction="vertical">
+                            <Scene key="exerciseNew" component={Exercise} title="New Exercise" hideTabBar/>
+                        </Scene>
+                    </Scene>
+                </Scene>
             </RouterWithRedux>
         </Provider>
     )

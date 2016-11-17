@@ -249,7 +249,7 @@ class Exercise extends Component {
             showIntervalPicker: false, 
             data,
             shouldRerender: true
-        }, () => this.setState({ shouldRerender: false }))
+        }, () => this.setState({shouldRerender: false}))
     }
 
     renderRow = (data, index, active) => {
@@ -264,7 +264,7 @@ class Exercise extends Component {
                 break
         }
 
-        item = Object.assign({}, item, { type: data.type })
+        item = Object.assign({}, item, {type: data.type})
 
         return (
             <Row 
@@ -292,7 +292,7 @@ class Exercise extends Component {
 
     constructor(props) {
         super(props)
-        const exercise = props.exercises.exercises.find(item => item.id === props.id) || { title: '', data: {}}
+        const exercise = props.exercises.exercises.find(item => item.id === props.id) || {title: '', data: {}}
         this.state = {
             showPracticePicker: false,
             showIntervalPicker: false,
@@ -304,13 +304,12 @@ class Exercise extends Component {
     }
 
     componentDidMount() {
-        Actions.refresh({
+        Actions.refresh(Object.assign({
             renderLeftButton: this.renderLeftButton,
             renderRightButton: this.renderRightButton,
-            renderBackButton: this.renderBackButton,
             onBack: this.onBack,
             navigationBarStyle: styles.navbar
-        })
+        }, this.props.id ? {renderBackButton: this.renderBackButton} : {}))
         this.setState({isMounted: true})
     }
 
