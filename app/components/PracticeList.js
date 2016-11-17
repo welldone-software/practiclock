@@ -110,12 +110,6 @@ const Empty = (props) => {
 const Row = (props) => {
     const swipeButtons = [
         {
-            component: <FontAwesome name="edit" size={25} style={styles.button} />,
-            color: '#157EFB',
-            backgroundColor: 'blue',
-            onPress: () => Actions.practiceEdit({id: props.id})
-        },
-        {
             component: <FontAwesome name="trash" size={25} style={styles.button} />,
             color: '#FC3D39',
             backgroundColor: 'red',

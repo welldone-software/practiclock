@@ -185,7 +185,7 @@ class Exercise extends Component {
             Object.keys(tmp).map(key => tmp[key])
         )
 
-        this.setState({data, shouldRerender: true}, () => this.setState({ shouldRerender: false }))
+        this.setState({data, shouldRerender: true}, () => this.setState({shouldRerender: false}))
     }
 
     onSubmit = () => {

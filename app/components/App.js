@@ -16,10 +16,8 @@ import {
     Scene
 } from 'react-native-router-flux'
 import { connect, Provider } from 'react-redux'
-import PracticeCreate from './PracticeCreate'
+import Practice from './Practice'
 import PracticeList from './PracticeList'
-import PracticeView from './PracticeView'
-import PracticeEdit from './PracticeEdit'
 import Exercise from './Exercise'
 import ExerciseList from './ExerciseList'
 import configureStore from '../store'
@@ -77,31 +75,23 @@ export default () => {
                                 key="practices"
                                 title="Practices"
                                 icon={TabIcon} 
-                                onPress={()=> {
-                                    Actions.practiceList({type: ActionConst.REFRESH, timestamp: Date.now()})
-                                    Actions.practiceView({type: ActionConst.BACK_ACTION})
-                                    Actions.practiceEdit({type: ActionConst.BACK_ACTION})
-                                }}
+                                onPress={()=> Actions.practiceList({type: ActionConst.REFRESH, timestamp: Date.now()})}
                             >
                                 <Scene key="practiceList" component={PracticeList} title="Practices"/>
-                                <Scene key="practiceView" component={PracticeView} title="Practice"/>
-                                <Scene key="practiceEdit" component={PracticeEdit} title="Practice"/>
+                                <Scene key="practiceView" component={Practice} title="Practice" hideTabBar/>
                             </Scene>
                             <Scene 
                                 key="exercises"
                                 title="Exercises"
                                 icon={TabIcon}
-                                onPress={()=> {
-                                    Actions.exerciseList({type: ActionConst.REFRESH, timestamp: Date.now()})
-                                    Actions.exerciseView({type: ActionConst.BACK_ACTION})
-                                }}
+                                onPress={()=> Actions.exerciseList({type: ActionConst.REFRESH, timestamp: Date.now()})}
                             >
                                 <Scene key="exerciseList" component={ExerciseList} title="Exercises"/>
-                                <Scene key="exerciseView" component={Exercise} title="Exercise"/>
+                                <Scene key="exerciseView" component={Exercise} title="Exercise" hideTabBar/>
                             </Scene>
                         </Scene>
                         <Scene key="practiceCreate" direction="vertical">
-                            <Scene key="practiceNew" component={PracticeCreate} title="New Practice" hideTabBar/>
+                            <Scene key="practiceNew" component={Practice} title="New Practice" hideTabBar/>
                         </Scene>
                         <Scene key="exerciseCreate" direction="vertical">
                             <Scene key="exerciseNew" component={Exercise} title="New Exercise" hideTabBar/>
