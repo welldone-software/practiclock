@@ -77,7 +77,11 @@ export default () => {
                                 key="practices"
                                 title="Practices"
                                 icon={TabIcon} 
-                                onPress={()=> Actions.practiceList({type: ActionConst.REFRESH, timestamp: Date.now()})}
+                                onPress={()=> {
+                                    Actions.practiceList({type: ActionConst.REFRESH, timestamp: Date.now()})
+                                    Actions.practiceView({type: ActionConst.BACK_ACTION})
+                                    Actions.practiceEdit({type: ActionConst.BACK_ACTION})
+                                }}
                             >
                                 <Scene key="practiceList" component={PracticeList} title="Practices"/>
                                 <Scene key="practiceView" component={PracticeView} title="Practice"/>
@@ -87,7 +91,10 @@ export default () => {
                                 key="exercises"
                                 title="Exercises"
                                 icon={TabIcon}
-                                onPress={()=> Actions.exerciseList({type: ActionConst.REFRESH, timestamp: Date.now()})}
+                                onPress={()=> {
+                                    Actions.exerciseList({type: ActionConst.REFRESH, timestamp: Date.now()})
+                                    Actions.exerciseView({type: ActionConst.BACK_ACTION})
+                                }}
                             >
                                 <Scene key="exerciseList" component={ExerciseList} title="Exercises"/>
                                 <Scene key="exerciseView" component={Exercise} title="Exercise"/>
