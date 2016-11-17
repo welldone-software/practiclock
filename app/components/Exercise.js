@@ -283,7 +283,6 @@ class Exercise extends Component {
     }
 
     renderBackButton = () => {
-                // <FontAwesome name="chevron-left" size={20} />
         return (
             <TouchableOpacity onPress={this.onBack}>
                 <Ionicons name="ios-arrow-back-outline" size={30} />
@@ -337,7 +336,7 @@ class Exercise extends Component {
                     />
                 </View>
 
-                {Object.keys(data).length &&
+                {Object.keys(data).length !== 0 &&
                     <View style={styles.wrapper}>
                         <View style={styles.container}>
                             <SortableList

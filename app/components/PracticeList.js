@@ -167,7 +167,7 @@ class PracticeList extends Component {
     componentWillReceiveProps(nextProps) {
         this.setState({ dataSource: this.state.dataSource.cloneWithRows(nextProps.practices) })
 
-        if (nextProps.practices !== this.props.practices || nextProps.from !== null) {
+        if (JSON.stringify(nextProps) !== JSON.stringify(this.props)) {
             Actions.refresh({
                 renderRightButton: this.renderRightButton,
                 navigationBarStyle: styles.navbar,

@@ -174,35 +174,33 @@ class ExerciseList extends Component {
 
     componentWillReceiveProps(nextProps) {
         this.setState({dataSource: this.state.dataSource.cloneWithRows(nextProps.exercises.exercises)})
-        if (nextProps.exercises.exercises !== this.props.exercises.exercises || nextProps.from !== null) {
+        const {exercises, practices} = nextProps
+        if (JSON.stringify(nextProps) !== JSON.stringify(this.props)) {
             Actions.refresh({
                 renderRightButton: this.renderRightButton,
                 navigationBarStyle: styles.navbar,
                 titleStyle: styles.title,
-                hideNavBar: !Boolean(nextProps.exercises.exercises.length)
+                hideNavBar: !Boolean(exercises.exercises.length) || !Boolean(practices.practices.length)
             })
         }
     }
 
     componentDidMount() {
+        const {exercises, practices} = this.props
         Actions.refresh({
             renderRightButton: this.renderRightButton,
             navigationBarStyle: styles.navbar,
             titleStyle: styles.title,
-            hideNavBar: !Boolean(this.props.exercises.exercises.length)
+            hideNavBar: !Boolean(exercises.exercises.length) || !Boolean(practices.practices.length)
         })
     }
 
     renderRightButton = () => {
-        if (this.props.exercises.exercises.length) {
-            return (
-                <TouchableOpacity onPress={Actions.exerciseCreate}>
-                    <Ionicons name="md-add" size={20} style={styles.buttonCreate} />
-                </TouchableOpacity>
-            )
-        } else {
-            return null
-        }
+        return (
+            <TouchableOpacity onPress={Actions.exerciseCreate}>
+                <Ionicons name="md-add" size={20} style={styles.buttonCreate} />
+            </TouchableOpacity>
+        )
     }
 
     onSwipe = (id) => {
