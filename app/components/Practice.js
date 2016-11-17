@@ -54,7 +54,7 @@ class Practice extends Component {
     renderBackButton = () => {
         return (
             <TouchableOpacity onPress={this.onBack}>
-                <Ionicons name="ios-arrow-back-outline" size={30} />
+                <Ionicons name="ios-arrow-back-outline" size={30} style={styles.buttonBack} />
             </TouchableOpacity>
         )
     }
@@ -73,6 +73,8 @@ class Practice extends Component {
         Actions.refresh(Object.assign({
             renderLeftButton: this.renderLeftButton,
             renderRightButton: this.renderRightButton,
+            navigationBarStyle: styles.navbar,
+            titleStyle: styles.title,
             onBack: this.onBack,
         }, this.props.id ? {renderBackButton: this.renderBackButton} : {}))
     }
@@ -124,15 +126,34 @@ class Practice extends Component {
 }
 
 const styles = StyleSheet.create({
+    navbar: {
+        backgroundColor: '#E37475',
+        shadowColor: 'rgba(0,0,0,0.2)',
+        shadowOpacity: 1,
+        shadowOffset: {
+            height: 4, 
+            width: 2
+        },
+        borderBottomWidth: 0
+    },
     navBarText: {
-        fontSize: 16,
-        marginVertical: 5
+        fontSize: 18,
+        marginVertical: 5,
+        color: '#b51f23'
     },
     navBarLeftButton: {
+        marginTop: -2,
         paddingLeft: 10
     },
     navBarRightButton: {
+        marginTop: -5,
         paddingRight: 10
+    },
+    title: {
+        color: '#b51f23'
+    },
+    buttonBack: {
+        color: '#b51f23'
     },
     formSection: {
         paddingTop: 20
