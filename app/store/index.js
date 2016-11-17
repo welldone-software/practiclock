@@ -1,6 +1,7 @@
 // @flow
 import {createStore, combineReducers, compose, applyMiddleware} from 'redux'
 import {persistStore, autoRehydrate} from 'redux-persist'
+import thunk from 'redux-thunk'
 import {AsyncStorage} from 'react-native'
 import devTools from 'remote-redux-devtools'
 import {REHYDRATE} from 'redux-persist/constants'
@@ -22,7 +23,7 @@ const navigationMiddleware = store => next => action => {
     return result
 }
 
-const middleware = [navigationMiddleware] 
+const middleware = [thunk, navigationMiddleware] 
 
 export default function configureStore() {
     const reducer = combineReducers({ navigation, practices, exercises })

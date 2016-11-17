@@ -20,6 +20,7 @@ import {Actions} from 'react-native-router-flux'
 import {bindActionCreators} from 'redux'
 import {connect} from 'react-redux'
 import FontAwesome from 'react-native-vector-icons/FontAwesome'
+import Ionicons from 'react-native-vector-icons/Ionicons'
 import SortableList from 'react-native-sortable-list'
 import CustomPicker from '../core/CustomPicker'
 import {exercises as exercisesActions} from '../store/actions'
@@ -220,7 +221,6 @@ class Exercise extends Component {
     }
 
     onPracticeSelected = (id) => {
-        console.log(id)
         const data = {...this.state.data} 
         const index = Object.keys(data).length;
 
@@ -255,8 +255,6 @@ class Exercise extends Component {
     renderRow = (data, index, active) => {
         let item
 
-        console.log(data)
-
         switch (data.type) {
             case Types.INTERVAL:
                 item = data
@@ -284,6 +282,15 @@ class Exercise extends Component {
         this.setState({data})
     }
 
+    renderBackButton = () => {
+                // <FontAwesome name="chevron-left" size={20} />
+        return (
+            <TouchableOpacity onPress={this.onBack}>
+                <Ionicons name="ios-arrow-back-outline" size={30} />
+            </TouchableOpacity>
+        )
+    }
+
     constructor(props) {
         super(props)
         const exercise = props.exercises.exercises.find(item => item.id === props.id) || { title: '', data: {}}
@@ -301,6 +308,7 @@ class Exercise extends Component {
         Actions.refresh({
             renderLeftButton: this.renderLeftButton,
             renderRightButton: this.renderRightButton,
+            renderBackButton: this.renderBackButton,
             onBack: this.onBack,
             navigationBarStyle: styles.navbar
         })
@@ -329,7 +337,7 @@ class Exercise extends Component {
                     />
                 </View>
 
-                {Object.keys(data).length !== 0 &&
+                {Object.keys(data).length &&
                     <View style={styles.wrapper}>
                         <View style={styles.container}>
                             <SortableList
