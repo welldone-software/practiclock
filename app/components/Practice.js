@@ -1,6 +1,8 @@
 //@flow
 import React, {Component} from 'react'
 import {
+    Dimensions,
+    Picker,
     Slider,
     StyleSheet,
     Text,
@@ -12,22 +14,63 @@ import {Actions} from 'react-native-router-flux'
 import {bindActionCreators} from 'redux'
 import {connect} from 'react-redux'
 import Ionicons from 'react-native-vector-icons/Ionicons'
+import Sound from 'react-native-sound'
+import CustomPicker from '../core/CustomPicker'
 import {practices as practicesActions} from '../store/actions'
+
+const SCREEN_WIDTH = Dimensions.get('window').width
+export const SOUNDS = ['1.mp3', '2.mp3', '3.mp3', '4.mp3']
+
+class SoundPicker extends Component {
+    state = {
+        sound: null
+    }
+    
+    componentWillUnmount() {
+        this.stop()
+    }
+
+    onChangeValue = (value) => {
+        this.stop()
+        const sound = new Sound(value, Sound.MAIN_BUNDLE, error => {if (!error) sound.play()})
+        this.setState({sound})
+        this.props.onChange(value)
+    }
+
+    stop = () => {
+        if (this.state.sound) this.state.sound.stop()
+    }
+
+    render() {
+        const {current, items} = this.props
+        return (
+            <Picker
+                style={styles.picker}
+                selectedValue={current}
+                onValueChange={this.onChangeValue}
+                mode="dropdown"
+            >
+                {items.map(item => <Picker.Item label={item} value={item} key={item} />)}
+            </Picker>
+        )
+    }
+}
 
 class Practice extends Component {
     onTitleChange = title => this.setState({title})
     onDurationChange = duration => this.setState({duration})
     onRepetitionChange = repeat => this.setState({repeat})
+    onSoundSelected = sound => this.setState({sound, showSoundPicker: false})
 
     onSubmit = () => {
-        const {title, duration, repeat} = this.state
-        this.props.add({ title, duration, repeat })
+        const {title, duration, repeat, sound} = this.state
+        this.props.add({ title, duration, repeat, sound })
         Actions.pop()
     }
 
     onBack = () => {
-        const {title, duration, repeat} = this.state
-        this.props.edit(this.props.id, { title, duration, repeat })
+        const {title, duration, repeat, sound} = this.state
+        this.props.edit(this.props.id, { title, duration, repeat, sound })
         Actions.pop()
     }
 
@@ -59,14 +102,10 @@ class Practice extends Component {
         )
     }
 
-     constructor(props) {
+    constructor(props) {
         super(props)
         const practice = props.practices.find(item => item.id === props.id) || {duration: 1, title: '', repeat: 1}
-        this.state = {
-            title: practice.title,
-            duration: practice.duration,
-            repeat: practice.repeat
-        }
+        this.state = {...practice, showSoundPicker: false}
     }
 
     componentDidMount() {
@@ -80,7 +119,7 @@ class Practice extends Component {
     }
 
     render() {
-        const {duration, title, repeat} = this.state
+        const {duration, title, repeat, sound} = this.state
         return (
             <View style={styles.scene}>
                 <View style={styles.formSection}>
@@ -120,6 +159,26 @@ class Practice extends Component {
                         value={repeat}
                     />
                 </View>
+
+                <View style={styles.formSection}>
+                    <TouchableOpacity
+                        onPress={() => this.setState({showSoundPicker: true})}
+                    >
+                        <View style={styles.formLableWrapper}>
+                            <Text style={styles.formLabel}>Sound</Text>
+                            <Text style={styles.previewValue}>{sound}</Text>
+                        </View>
+                    </TouchableOpacity>
+                </View>
+
+                <CustomPicker
+                    visible={this.state.showSoundPicker}
+                    onCancel={() => this.setState({showSoundPicker: false})}
+                    onSelect={this.onSoundSelected}
+                    current={sound}
+                >
+                    <SoundPicker items={SOUNDS} />
+                </CustomPicker>
             </View>
         )
     }
@@ -173,6 +232,9 @@ const styles = StyleSheet.create({
     },
     durationSlider: {
         marginTop: 16
+    },
+    picker: {
+        width: SCREEN_WIDTH
     },
     scene: {
         flex: 1,

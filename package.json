@@ -12,6 +12,7 @@
     "react-native": "^0.37.0",
     "react-native-router-flux": "^3.37.0",
     "react-native-sortable-list": "0.0.2",
+    "react-native-sound": "^0.8.3",
     "react-native-swipeout": "git://github.com/dancormier/react-native-swipeout.git",
     "react-native-vector-icons": "^3.0.0",
     "react-redux": "^4.4.5",
