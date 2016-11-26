@@ -27,7 +27,7 @@ import {exercises as exercisesActions} from '../store/actions'
 
 const SCREEN_WIDTH = Dimensions.get('window').width
 
-const Types = {
+export const Types = {
     PRACTICE: 'PRACTICE',
     INTERVAL: 'INTERVAL'
 }
@@ -200,6 +200,12 @@ class Exercise extends Component {
         Actions.pop()
     }
 
+    onPressPlayButton = () => {
+        const {title, data} = this.state
+        this.props.edit(this.props.id, {title, data})
+        Actions.playerOpen({id: this.props.id})
+    }
+
     renderLeftButton = () => {
         if (this.props.id) return null
 
@@ -211,13 +217,19 @@ class Exercise extends Component {
     }
 
     renderRightButton = () => {
-        if (this.props.id) return null
-
-        return (
-            <TouchableOpacity style={styles.navBarRightButton} onPress={this.onSubmit}>
-                <Text style={styles.navBarText}>Create</Text>
-            </TouchableOpacity>
-        )
+        if (this.props.id) {
+            return (
+                <TouchableOpacity style={styles.navBarRightButton} onPress={this.onPressPlayButton}>
+                    <Text style={styles.navBarText}>Play</Text>
+                </TouchableOpacity>
+            )
+        } else {
+            return (
+                <TouchableOpacity style={styles.navBarRightButton} onPress={this.onSubmit}>
+                    <Text style={styles.navBarText}>Create</Text>
+                </TouchableOpacity>
+            )
+        }
     }
 
     onPracticeSelected = (id) => {

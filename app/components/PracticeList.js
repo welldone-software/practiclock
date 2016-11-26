@@ -63,7 +63,7 @@ const styles = StyleSheet.create({
 
 const Empty = (props) => {
     const styles = StyleSheet.create({
-         scene: {
+        scene: {
             flex: 1,
             flexDirection: 'column',
             alignItems: 'center',

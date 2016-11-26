@@ -20,6 +20,7 @@ import Practice from './Practice'
 import PracticeList from './PracticeList'
 import Exercise from './Exercise'
 import ExerciseList from './ExerciseList'
+import Player from './Player'
 import configureStore from '../store'
 
 const RouterWithRedux = connect()(Router)
@@ -35,8 +36,8 @@ const SequenceItem = ({id}) => (
 )
 
 const title2icon = {
-    Practices:  'ios-alarm-outline',
-    Exercises: 'ios-albums-outline',
+    Practices: 'ios-alarm-outline',
+    Exercises: 'ios-albums-outline'
 }
 
 const TabIcon = ({ selected, title }) => (
@@ -95,6 +96,9 @@ export default () => {
                         </Scene>
                         <Scene key="exerciseCreate" direction="vertical">
                             <Scene key="exerciseNew" component={Exercise} title="New Exercise" hideTabBar/>
+                        </Scene>
+                        <Scene key="playerOpen" direction="vertical">
+                            <Scene key="play" component={Player} title="Player" hideTabBar/>
                         </Scene>
                     </Scene>
                 </Scene>
