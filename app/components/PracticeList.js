@@ -50,6 +50,9 @@ const styles = StyleSheet.create({
         borderBottomWidth: 1,
         borderBottomColor: '#eee'
     },
+    rowTitle: {
+        fontSize: 16
+    },
     rowContent: {
         width: SCREEN_WIDTH,
         flexDirection: 'row',
@@ -59,10 +62,11 @@ const styles = StyleSheet.create({
     rowOrderButton: {
         width: 20,
         height: 90,
-        paddingTop: 16,
+        paddingTop: 30,
         paddingLeft: 16,
-        paddingRight: 8,
-        paddingBottom: 16
+        paddingRight: 16,
+        paddingBottom: 30,
+        color: '#ccc'
     },
     rowButton: {
         height: 90,
@@ -71,9 +75,25 @@ const styles = StyleSheet.create({
         paddingBottom: 16,
         width: SCREEN_WIDTH - 20
     },
-    text: {
-        marginLeft: 12,
-        fontSize: 16
+    rowInfoContainer: {
+        flex: 1,
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between'
+    },
+    rowInfoGroup: {
+        flex: 1,
+        flexDirection: 'row',
+        justifyContent: 'flex-start'
+    },
+    rowInfoLable: {
+        fontSize: 14,
+        fontWeight: '400'
+    },
+    rowInfoText: {
+        marginLeft: 2,
+        fontSize: 14,
+        color: '#ccc'
     },
     button: {
         paddingTop: 24,
@@ -195,6 +215,9 @@ class Row extends Component {
         const {
             id,
             title,
+            duration,
+            repeat,
+            sound
         } = this.props
 
         return (
@@ -207,7 +230,21 @@ class Row extends Component {
                 <View style={styles.rowContent}>
                     <Ionicons name="md-more" size={20} style={styles.rowOrderButton}/>
                     <TouchableOpacity onPress={() => Actions.practiceView({id})} style={styles.rowButton}>
-                        <Text style={styles.text}>{title}</Text>
+                        <Text style={styles.rowTitle}>{title}</Text>
+                        <View style={styles.rowInfoContainer}>
+                            <View style={styles.rowInfoGroup}>
+                                <Text style={styles.rowInfoLable}>Duration:</Text>
+                                <Text style={styles.rowInfoText}>{duration === 60 ? '1 h' : duration + ' min' }</Text>
+                            </View>
+                            <View style={styles.rowInfoGroup}>
+                                <Text style={styles.rowInfoLable}>Repeat:</Text>
+                                <Text style={styles.rowInfoText}>{repeat}</Text>
+                            </View>
+                            <View style={styles.rowInfoGroup}>
+                                <Text style={styles.rowInfoLable}>Sound:</Text>
+                                <Text style={styles.rowInfoText}>{sound}</Text>
+                            </View>
+                        </View>
                     </TouchableOpacity>
                 </View>
             </Animated.View>
