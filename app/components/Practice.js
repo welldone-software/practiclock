@@ -180,7 +180,7 @@ class Practice extends Component {
                     >
                         <View style={styles.formLableWrapper}>
                             <Text style={styles.formLabel}>Sound</Text>
-                            <Text style={styles.previewValue}>{sound}</Text>
+                            <Text style={styles.previewValue}>{sound ? sound : 'Touch here to add sound'}</Text>
                         </View>
                     </TouchableOpacity>
                 </View>
@@ -239,7 +239,8 @@ const styles = StyleSheet.create({
         fontSize: 18
     },
     previewValue: {
-        fontSize: 18
+        fontSize: 18,
+        color: '#ccc'
     },
     titleInput: {
         height: 60
