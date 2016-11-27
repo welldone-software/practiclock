@@ -150,12 +150,15 @@ class Player extends Component {
             playInProgress: false,
         }
 
-        Actions.refresh({
-            title,
-            navigationBarStyle: styles.navbar,
-        })
 
-        setTimeout(this.play)
+        setTimeout(() => {
+            Actions.refresh({
+                title,
+                navigationBarStyle: styles.navbar,
+            })
+            
+            this.play()
+        })
     }
 
     componentDidUpdate(prevProps, prevState) {
