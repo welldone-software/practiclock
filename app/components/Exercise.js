@@ -220,8 +220,8 @@ class Exercise extends Component {
     renderRightButton = () => {
         if (this.props.id) {
             return (
-                <TouchableOpacity style={styles.navBarRightButton} onPress={this.onPressPlayButton}>
-                    <Ionicons name="md-play" size={30}/>
+                <TouchableOpacity onPress={this.onPressPlayButton}>
+                    <Ionicons name="md-play" size={22} style={styles.playButton}/>
                 </TouchableOpacity>
             )
         } else {
@@ -443,6 +443,10 @@ const styles = StyleSheet.create({
     },
     itemButton: {
         color: '#fc3d39'
+    },
+    playButton: {
+        marginTop: 2,
+        paddingLeft: 4
     },
     picker: {
         width: SCREEN_WIDTH
