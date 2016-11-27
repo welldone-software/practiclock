@@ -74,6 +74,12 @@ class Practice extends Component {
         Actions.pop()
     }
 
+    onDelete = () => {
+        const {remove, id} = this.props
+        remove(id)
+        Actions.pop()
+    }
+
     renderLeftButton = () => {
         if (this.props.id) return null
 
@@ -85,13 +91,21 @@ class Practice extends Component {
     }
 
     renderRightButton = () => {
-        if (this.props.id) return null
+        if (this.props.id) {
+            return (
+                <TouchableOpacity style={styles.navBarRightButton} onPress={this.onDelete}>
+                    <Ionicons name="md-trash" size={26} style={styles.buttonBack}/>
+                </TouchableOpacity>
+            )
 
-        return (
-            <TouchableOpacity style={styles.navBarRightButton} onPress={this.onSubmit}>
-                <Text style={styles.navBarText}>Create</Text>
-            </TouchableOpacity>
-        )
+        } else {
+            return (
+                <TouchableOpacity style={styles.navBarRightButton} onPress={this.onSubmit}>
+                    <Text style={styles.navBarText}>Create</Text>
+                </TouchableOpacity>
+            )
+        }
+
     }
 
     renderBackButton = () => {

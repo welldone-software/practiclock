@@ -265,4 +265,3 @@ export default connect(
     },
     dispatch => bindActionCreators(exercisesActions, dispatch)
 )(ExerciseList)
-

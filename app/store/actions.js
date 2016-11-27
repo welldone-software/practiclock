@@ -20,7 +20,8 @@ export const practices = {
                 }
             })
         }
-    }
+    },
+    order: (data) => ({type: '@PRACTICES_ORDER', payload: {data}})
 }
 
 export const exercises = {

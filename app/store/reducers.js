@@ -43,6 +43,11 @@ export function practices(state = { practices: [] }, action = {}) {
                 ...state,
                 practices: state.practices.filter(item => item.id !== payload.id)
             }
+        case '@PRACTICES_ORDER':
+            return {
+                ...state,
+                practices: payload.data
+            }
         default:
             return state
     }
