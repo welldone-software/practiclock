@@ -49,6 +49,10 @@ class Track {
 }
 
 const styles = StyleSheet.create({
+    navbar: {
+        backgroundColor: '#fff',
+        borderBottomWidth: 0
+    },
     navBarLeftButton: {
         marginTop: -2,
         paddingLeft: 10
@@ -78,18 +82,25 @@ const styles = StyleSheet.create({
         fontSize: 16
     },
     buttons: {
-        flex: 0,
         flexDirection: 'row',
-        borderTopWidth: 1,
         alignItems: 'center',
         justifyContent: 'center',
-        paddingTop: 20,
-        paddingBottom: 20
+        position: 'absolute',
+        bottom: 20,
+        right: 20
     },
     button: {
         paddingLeft: 20,
         paddingRight: 20
-    },  
+    },
+    closeButton: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center',
+        position: 'absolute',
+        bottom: 12,
+        left: 20
+    },
     scene: {
         flex: 1,
         paddingTop: 20
@@ -108,14 +119,6 @@ const Row = ({title, duration, repeat, sound, active, track}) => {
 }
 
 class Player extends Component {
-    static renderLeftButton() {
-        return (
-            <TouchableOpacity style={styles.navBarLeftButton} onPress={Actions.pop}>
-                <Text style={styles.navBarText}>Close</Text>
-            </TouchableOpacity>
-        )
-    }
-
     constructor(props) {
         super(props)
         const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
@@ -147,6 +150,11 @@ class Player extends Component {
             playInProgress: false,
         }
 
+        Actions.refresh({
+            title,
+            navigationBarStyle: styles.navbar,
+        })
+
         setTimeout(this.play)
     }
 
@@ -176,7 +184,7 @@ class Player extends Component {
     play = () => {
         const {items, index = 0} = this.state
         if (items.length <= index) {
-            this.setState({playInProgress: false})
+            this.setState({playInProgress: false, index: 0})
             return
         }
 
@@ -240,6 +248,9 @@ class Player extends Component {
                     renderRow={(data) => <Row {...data}/>}
                     enderSeparator={(_, id) => <View key={id} style={styles.separator}/>}
                 />
+                <TouchableOpacity onPress={Actions.pop} style={styles.closeButton}>
+                    <Ionicons name="md-close" size={40}/>
+                </TouchableOpacity>
                 <View style={styles.buttons}>
                     <TouchableOpacity 
                         onPress={isPreviousTrackButtonDisabled ? () => {} : this.previous}

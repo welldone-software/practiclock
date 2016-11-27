@@ -165,6 +165,12 @@ class Row extends Component {
         style: {
             shadowRadius: new Animated.Value(2),
             transform: [{scale: new Animated.Value(1)}],
+            shadowColor: 'rgba(0,0,0,0.2)',
+            shadowOpacity: 1,
+            shadowOffset: {
+                height: 1,
+                width: 0
+            }
         }
     }
 
@@ -299,7 +305,9 @@ class PracticeList extends Component {
         if (order) {
             const tmp = {...this.props.practices}
             const practices = Object.assign([], order.map(key => tmp[key]))
-            this.setState({order: null}, () => this.props.order(practices))
+            this.setState({order: null}, () => {
+                setTimeout(() => this.props.order(practices), 300)
+            })
         }
     }
 
