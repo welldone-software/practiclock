@@ -93,8 +93,8 @@ class Practice extends Component {
     renderRightButton = () => {
         if (this.props.id) {
             return (
-                <TouchableOpacity style={styles.navBarRightButton} onPress={this.onDelete}>
-                    <Ionicons name="md-trash" size={26} style={styles.buttonBack}/>
+                <TouchableOpacity onPress={this.onDelete}>
+                    <Ionicons name="md-trash" size={22} style={styles.removeButton}/>
                 </TouchableOpacity>
             )
 
@@ -226,6 +226,11 @@ const styles = StyleSheet.create({
         color: '#b51f23'
     },
     buttonBack: {
+        color: '#b51f23'
+    },
+    removeButton: {
+        marginTop: 2,
+        paddingLeft: 4,
         color: '#b51f23'
     },
     formSection: {
