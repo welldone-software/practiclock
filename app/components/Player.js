@@ -8,11 +8,12 @@ import {
     View
 } from 'react-native'
 import {connect} from 'react-redux'
+import {Actions} from 'react-native-router-flux'
 import Sound from 'react-native-sound'
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import {Types} from './Exercise'
 
-class AudioFile {
+class Track {
     constructor(file = 'silence.mp3', callback, time) {
         this.time = time
         this.callback = callback
@@ -23,7 +24,7 @@ class AudioFile {
 
     pause() {
         this.file.pause()
-        this.duration -= new Date() - this.start
+        this.time -= new Date() - this.start
     }
 
     resume() {
@@ -41,49 +42,22 @@ class AudioFile {
 
         play()
     }
-}
-
-class Player {
-    constructor(items = [], index = 0, callback = () => {}) {
-        this.items = items
-        this.index = index
-        this.callback = callback
-        this.play()
-        this.pause()
-    }
-
-    play = () => {
-        if (this.items.length <= this.index) {
-            this.callback()
-            return
-        }
-
-        const {duration, repeat = 1, sound} = this.items[this.index]
-        const time = duration*repeat*60*1000
-        this.index += 1
-        this.current = new AudioFile(sound, this.play, time)
-    }
-
-    pause() {
-        this.current.pause()
-    }
-
-    resume() {
-        this.current.resume()
-    }
-
-    next() {
-        this.index += 1
-        this.play()
-    }
-
-    previous() {
-        this.index -= 1
-        this.play()
+    
+    stop() {
+        this.file.stop()
     }
 }
 
 const styles = StyleSheet.create({
+    navBarLeftButton: {
+        marginTop: -2,
+        paddingLeft: 10
+    },
+    navBarText: {
+        fontSize: 18,
+        marginVertical: 5,
+        color: '#b51f23'
+    },
     list: {
         marginTop: 64
     },
@@ -100,22 +74,48 @@ const styles = StyleSheet.create({
         height: StyleSheet.hairlineWidth,
         backgroundColor: '#eee',
     },
-    text: {
-        marginLeft: 12,
-        fontSize: 16,
+    title: {
+        fontSize: 16
+    },
+    buttons: {
+        flex: 0,
+        flexDirection: 'row',
+        borderTopWidth: 1,
+        alignItems: 'center',
+        justifyContent: 'center',
+        paddingTop: 20,
+        paddingBottom: 20
+    },
+    button: {
+        paddingLeft: 20,
+        paddingRight: 20
+    },  
+    scene: {
+        flex: 1,
+        paddingTop: 20
     }
 })
 
-const Row = ({title, duration, repeat = 1, sound}) => {
+const Row = ({title, duration, repeat, sound, active, track}) => {
     return (
         <View style={styles.row}>
-            <Text style={styles.text}>{title}</Text>
-            <Text style={styles.duration}>{duration * repeat} min</Text>
+            <Text style={styles.title}>{title}</Text>
+            {active &&
+                <Ionicons name="md-musical-notes" size={18}/>
+            }
         </View>
     )
 }
 
-class PlayerComponent extends Component {
+class Player extends Component {
+    static renderLeftButton() {
+        return (
+            <TouchableOpacity style={styles.navBarLeftButton} onPress={Actions.pop}>
+                <Text style={styles.navBarText}>Close</Text>
+            </TouchableOpacity>
+        )
+    }
+
     constructor(props) {
         super(props)
         const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
@@ -139,37 +139,132 @@ class PlayerComponent extends Component {
                     }
             }
         })
+
         this.state = {
-            player: new Player(items, 0, () => this.setState({playInProgress: false})),
             dataSource: ds.cloneWithRows(items),
             title,
             items,
-            playInProgress: false
+            playInProgress: false,
         }
+
+        setTimeout(this.play)
+    }
+
+    componentDidUpdate(prevProps, prevState) {
+        const {items, index, dataSource} = this.state
+
+        if (prevState.index === index) return
+
+        const result = items.map((item, i) => {
+            return {
+                ...item,
+                active: i === index,
+                track: i === index ? this.state.track : null
+            }
+        })
+
+        this.setState({
+            items: result,
+            dataSource: dataSource.cloneWithRows(result)
+        })
+    }
+
+    componentWillUnmount() {
+        this.stop()
+    }
+
+    play = () => {
+        const {items, index = 0} = this.state
+        if (items.length <= index) {
+            this.setState({playInProgress: false})
+            return
+        }
+
+        const {duration, repeat = 1, sound} = items[index]
+        const time = duration*repeat*60*1000
+        const track = new Track(sound, this.next, time)
+        setTimeout(() => this.setState({track, index}, this.resume), 500)
+    }
+
+    pause = () => {
+        this.state.track.pause()
+        this.setState({playInProgress: false})
+    }
+
+    stop = () => {
+        this.state.track.stop()
+    }
+
+    resume = () => {
+        this.state.track.resume()
+        this.setState({playInProgress: true})
+    }
+
+    next = () => {
+        this.stop()
+        this.setState({index: this.state.index+1}, this.play)
+    }
+
+    previous = () => {
+        this.stop()
+        this.setState({index: this.state.index-1}, this.play)
     }
 
     onPressTogglePlay = () => {
         const playInProgress = !this.state.playInProgress
+
         if (playInProgress) {
-            this.state.player.resume()
+            this.resume()
         } else {
-            this.state.player.pause()
+            this.pause()
         }
+
         this.setState({playInProgress})
     }
 
     render() {
+        const {
+            items,
+            index,
+            dataSource,
+            playInProgress
+        } = this.state
+        const isPreviousTrackButtonDisabled = index === 0 || !playInProgress
+        const isNextTrackButtonDisabled = (items.length-1) <= index || !playInProgress
+
         return (
-            <View>
+            <View style={styles.scene}>
                 <ListView
                     style={styles.list}
-                    dataSource={this.state.dataSource}
-                    renderRow={(data) => <Row {...data} />}
-                    enderSeparator={(sectionId, rowId) => <View key={rowId} style={styles.separator}/>}
+                    dataSource={dataSource}
+                    renderRow={(data) => <Row {...data}/>}
+                    enderSeparator={(_, id) => <View key={id} style={styles.separator}/>}
                 />
-                <TouchableOpacity onPress={this.onPressTogglePlay}>
-                    <Ionicons name={this.state.playInProgress ? 'md-pause' : 'md-play'} size={30}/>
-                </TouchableOpacity>
+                <View style={styles.buttons}>
+                    <TouchableOpacity 
+                        onPress={isPreviousTrackButtonDisabled ? () => {} : this.previous}
+                        style={styles.button}
+                    >
+                        <Ionicons 
+                            name="md-skip-backward"
+                            size={30}
+                            style={isPreviousTrackButtonDisabled && { color: 'gray'}}
+                        />
+                    </TouchableOpacity>
+                    <TouchableOpacity onPress={this.onPressTogglePlay} style={styles.button}>
+                        <Ionicons name={playInProgress ? 'md-pause' : 'md-play'} size={30}/>
+                    </TouchableOpacity>
+                    <TouchableOpacity 
+                        onPress={isNextTrackButtonDisabled ? () => {} : this.next}
+                        style={styles.button}
+                    >
+                        <Ionicons
+                            name="md-skip-forward"
+                            size={30}
+                            style={isNextTrackButtonDisabled && { color: 'gray'}}
+                        />
+                    </TouchableOpacity>
+                </View>
             </View>
         )
     }
@@ -180,4 +275,4 @@ export default connect(
         const {exercises, practices} = state
         return {exercises, practices}
     }
-)(PlayerComponent)
+)(Player)

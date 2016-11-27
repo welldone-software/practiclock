@@ -41,6 +41,7 @@ const styles = StyleSheet.create({
         padding: 25,
         flexDirection: 'row',
         alignItems: 'center',
+        justifyContent: 'space-between',
         backgroundColor: '#FFF',
     },
     text: {
@@ -154,6 +155,9 @@ const Row = (props) => {
                     <Text style={styles.text}>
                         {props.title}
                     </Text>
+                    <TouchableOpacity onPress={() => Actions.playerOpen({id: props.id})}>
+                        <Ionicons name="md-play" size={28} style={styles.icon} />
+                    </TouchableOpacity>
                 </View>
             </TouchableHighlight>
         </SwipeOut>

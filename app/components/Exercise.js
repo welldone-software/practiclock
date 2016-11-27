@@ -220,7 +220,7 @@ class Exercise extends Component {
         if (this.props.id) {
             return (
                 <TouchableOpacity style={styles.navBarRightButton} onPress={this.onPressPlayButton}>
-                    <Text style={styles.navBarText}>Play</Text>
+                    <Ionicons name="md-play" size={30}/>
                 </TouchableOpacity>
             )
         } else {
