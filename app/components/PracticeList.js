@@ -51,11 +51,25 @@ const styles = StyleSheet.create({
         borderBottomColor: '#eee'
     },
     rowContent: {
-        padding: 16,
-        height: 90,
         width: SCREEN_WIDTH,
         flexDirection: 'row',
+        justifyContent: 'center',
         alignItems: 'center'
+    },
+    rowOrderButton: {
+        width: 20,
+        height: 90,
+        paddingTop: 16,
+        paddingLeft: 16,
+        paddingRight: 8,
+        paddingBottom: 16
+    },
+    rowButton: {
+        height: 90,
+        paddingTop: 16,
+        paddingRight: 16,
+        paddingBottom: 16,
+        width: SCREEN_WIDTH - 20
     },
     text: {
         marginLeft: 12,
@@ -191,8 +205,8 @@ class Row extends Component {
                 ]}
             >
                 <View style={styles.rowContent}>
-                    <Ionicons name="md-more" size={20}/>
-                    <TouchableOpacity onPress={() => Actions.practiceView({id})}>
+                    <Ionicons name="md-more" size={20} style={styles.rowOrderButton}/>
+                    <TouchableOpacity onPress={() => Actions.practiceView({id})} style={styles.rowButton}>
                         <Text style={styles.text}>{title}</Text>
                     </TouchableOpacity>
                 </View>
@@ -251,8 +265,6 @@ class PracticeList extends Component {
         }
     }
 
-    renderRow = (data) => (<Row {...data}/>)
-
     render() {
         const {
             isMounted,
@@ -268,7 +280,7 @@ class PracticeList extends Component {
                     <SortableList
                             contentContainerStyle={styles.contentContainer}
                             data={data}
-                            renderRow={({data, active, index}) => this.renderRow(data, index, active)}
+                            renderRow={({data}) => (<Row {...data}/>)}
                             onChangeOrder={(order) => this.setState({order})}
                             onReleaseRow={() => this.onOrderChange()}
                             enableEmptySections
