@@ -51,7 +51,8 @@ const styles = StyleSheet.create({
         borderBottomColor: '#eee'
     },
     rowTitle: {
-        fontSize: 16
+        fontSize: 16,
+        fontWeight: '600'
     },
     rowContent: {
         width: SCREEN_WIDTH,

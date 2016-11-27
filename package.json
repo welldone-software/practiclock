@@ -12,6 +12,7 @@
     "moment": "^2.17.0",
     "react": "15.3.2",
     "react-native": "^0.37.0",
+    "react-native-action-button": "^2.0.15",
     "react-native-router-flux": "^3.37.0",
     "react-native-sortable-list": "0.0.2",
     "react-native-sound": "^0.8.3",

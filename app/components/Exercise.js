@@ -22,6 +22,7 @@ import {connect} from 'react-redux'
 import FontAwesome from 'react-native-vector-icons/FontAwesome'
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import SortableList from 'react-native-sortable-list'
+import ActionButton from 'react-native-action-button';
 import CustomPicker from '../core/CustomPicker'
 import {exercises as exercisesActions} from '../store/actions'
 
@@ -360,20 +361,15 @@ class Exercise extends Component {
                     </View>
                 }
 
-                <View style={styles.buttons}>
-                    <TouchableOpacity
-                        style={styles.button} 
-                        onPress={() => this.setState({showPracticePicker: true})}
-                    >
-                        <Text style={styles.buttonText}>ADD PRACTICE</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity
-                        style={styles.button}
-                        onPress={() => this.setState({showIntervalPicker: true})}
-                    >
-                        <Text style={styles.buttonText}>ADD PAUSE</Text>
-                    </TouchableOpacity>
-                </View>
+                <ActionButton buttonColor="rgba(231,76,60,1)">
+                    <ActionButton.Item buttonColor='#9b59b6' title="Practice" onPress={() => this.setState({showPracticePicker: true})}>
+                        <Ionicons name="ios-body" style={styles.actionButtonIcon} />
+                    </ActionButton.Item>
+                    <ActionButton.Item buttonColor='#3498db' title="Pause" onPress={() => this.setState({showIntervalPicker: true})}>
+                        <Ionicons name="md-pause" style={styles.actionButtonIcon} />
+                    </ActionButton.Item>
+                </ActionButton>
+                
 
                 <CustomPicker
                     visible={this.state.showPracticePicker}
@@ -445,18 +441,6 @@ const styles = StyleSheet.create({
         marginTop: 60,
         padding: 5
     },
-    buttons: {
-        maxHeight: 160,
-        marginBottom: 50
-    },
-    button: {
-        padding: 10,
-        marginTop: 10,
-    },
-    buttonText: {
-        color: '#212121',
-        textAlign: 'center'
-    },
     itemButton: {
         color: '#fc3d39'
     },
@@ -477,12 +461,15 @@ const styles = StyleSheet.create({
         marginVertical: 1,
         height: 80,
         width: SCREEN_WIDTH - 10,
-        shadowColor: 'rgba(0,0,0,0.2)',
-        shadowOpacity: 1,
-        shadowOffset: {
-            height: 1,
-            width: 0
-        }
+        borderTopWidth: 1,
+        borderBottomWidth: 1,
+        borderTopColor: '#eee',
+        borderBottomColor: '#eee'
+    },
+    actionButtonIcon: {
+        fontSize: 20,
+        height: 22,
+        color: 'white'
     }
 })
 
