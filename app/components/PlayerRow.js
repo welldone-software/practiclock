@@ -22,10 +22,11 @@ export default class PlayerRow extends Component {
     }
 
     _calculatePlayed () {
-        this.played = Math.min((Date.now() - this.props.track.start) / this.props.track.time, 1)
-        if ( this.played === 1 ) {
+        var played = Math.min((Date.now() - this.props.track.start) / this.props.track.time, 1)
+        if (played === this.played || played === 1 ) { // pause or end
             this._stopInterval()
         }
+        this.played = played;
         this.forceUpdate()
     }
 
