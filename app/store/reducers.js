@@ -83,6 +83,11 @@ export function exercises(state = { exercises: [] }, action = {}) {
                 ...state,
                 exercises: state.exercises.filter(item => item.id !== payload.id)
             }
+        case '@EXERCISES_ORDER':
+            return {
+                ...state,
+                exercises: payload.data
+            }
         default:
             return state
     }

@@ -86,7 +86,6 @@ const IntervalPicker = ({current = 0, onChange}) => {
 class Row extends Component {
     state = {
         style: {
-            shadowRadius: new Animated.Value(2),
             transform: [{scale: new Animated.Value(1)}],
         }
     }
@@ -110,11 +109,6 @@ class Row extends Component {
                 easing: Easing.out(Easing.quad),
                 toValue: 1.1
             }),
-            Animated.timing(style.shadowRadius, {
-                duration: 100,
-                easing: Easing.out(Easing.quad),
-                toValue: 10
-            })
         ]).start()
     }
 
@@ -126,11 +120,6 @@ class Row extends Component {
                 duration: 100,
                 easing: Easing.out(Easing.quad),
                 toValue: 1
-            }),
-            Animated.timing(style.shadowRadius, {
-                duration: 100,
-                easing: Easing.out(Easing.quad),
-                toValue: 2
             })
         ]).start()
     }
@@ -191,13 +180,19 @@ class Exercise extends Component {
 
     onSubmit = () => {
         const {title, data} = this.state
-        this.props.add({title, data})
+        this.props.add({ 
+            title: title === null || title === undefined ? 'Name' : title, 
+            data
+        })
         Actions.pop()
     }
 
     onBack = () => {
         const {title, data} = this.state
-        this.props.edit(this.props.id, {title, data})
+        this.props.edit(this.props.id, { 
+            title: title === null || title === undefined ? 'Name' : title, 
+            data
+        })
         Actions.pop()
     }
 

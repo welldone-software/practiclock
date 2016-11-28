@@ -1,6 +1,9 @@
 //@flow
 import React, {Component} from 'react'
 import {
+    Animated,
+    Dimensions,
+    Easing,
     ListView,
     StyleSheet,
     Text,
@@ -11,10 +14,15 @@ import {
 import {bindActionCreators} from 'redux'
 import {connect} from 'react-redux'
 import {Actions} from 'react-native-router-flux'
-import FontAwesome from 'react-native-vector-icons/FontAwesome'
 import Ionicons from 'react-native-vector-icons/Ionicons'
-import SwipeOut from 'react-native-swipeout'
+import SortableList from 'react-native-sortable-list'
+import moment from 'moment'
 import {exercises as exercisesActions} from '../store/actions'
+import {Types} from './Exercise'
+
+require('moment-duration-format')
+
+const SCREEN_WIDTH = Dimensions.get('window').width
 
 const styles = StyleSheet.create({
     navbar: {
@@ -37,12 +45,58 @@ const styles = StyleSheet.create({
         marginTop: 64
     },
     row: {
-        flex: 1,
-        padding: 25,
         flexDirection: 'row',
         alignItems: 'center',
-        justifyContent: 'space-between',
-        backgroundColor: '#FFF',
+        backgroundColor: 'white',
+        width: SCREEN_WIDTH,
+        borderBottomWidth: 1,
+        borderBottomColor: '#eee'
+    },
+    rowTitle: {
+        fontSize: 16,
+        fontWeight: '600'
+    },
+    rowContent: {
+        width: SCREEN_WIDTH,
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignItems: 'center'
+    },
+    rowOrderButton: {
+        width: 20,
+        height: 90,
+        paddingTop: 30,
+        paddingLeft: 16,
+        paddingRight: 16,
+        paddingBottom: 30,
+        color: '#ccc'
+    },
+    rowButton: {
+        height: 90,
+        paddingTop: 16,
+        paddingRight: 16,
+        paddingBottom: 16,
+        width: SCREEN_WIDTH - 20
+    },
+    rowInfoContainer: {
+        flex: 1,
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between'
+    },
+    rowInfoGroup: {
+        flex: 1,
+        flexDirection: 'row',
+        justifyContent: 'flex-start'
+    },
+    rowInfoLable: {
+        fontSize: 14,
+        fontWeight: '400'
+    },
+    rowInfoText: {
+        marginLeft: 2,
+        fontSize: 14,
+        color: '#ccc'
     },
     text: {
         marginLeft: 12,
@@ -59,6 +113,15 @@ const styles = StyleSheet.create({
         paddingLeft: 26,
         paddingRight: 26,
         color: '#FFF'
+    },
+    container: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        paddingTop: 60
+    },
+    contentContainer: {
+        width: SCREEN_WIDTH
     }
 })
 
@@ -131,71 +194,149 @@ const Empty = (props) => {
     )
 }
 
-const Row = (props) => {
-    const swipeButtons = [
-        {
-            component: <FontAwesome name="trash" size={25} style={styles.button} />,
-            color: '#FC3D39',
-            backgroundColor: 'red',
-            onPress: () => props.onDeleteButtonPress(props.id)
+class Row extends Component {
+    state = {
+        style: {
+            shadowRadius: new Animated.Value(2),
+            transform: [{scale: new Animated.Value(1)}],
+            shadowColor: 'rgba(0,0,0,0.2)',
+            shadowOpacity: 1,
+            shadowOffset: {
+                height: 1,
+                width: 0
+            }
         }
-    ]
+    }
 
-    return (
-        <SwipeOut
-            right={swipeButtons}
-            autoClose
-            backgroundColor="#FFF"
-            onOpen={props.onSwipe.bind(props, props.id)}
-            close={props.close}
-            scroll={props.onScroll}
-        >
-            <TouchableHighlight onPress={() => Actions.exerciseView({id: props.id})}>
-                <View style={styles.row}>
-                    <Text style={styles.text}>
-                        {props.title}
-                    </Text>
-                    <TouchableOpacity onPress={() => Actions.playerOpen({id: props.id})}>
-                        <Ionicons name="md-play" size={28} style={styles.icon} />
+    componentWillReceiveProps(nextProps) {
+        if (this.props.active === nextProps.active) return
+
+        if (nextProps.active) {
+            this.startActivationAnimation()
+        } else {
+            this.startDeactivationAnimation()
+        }
+    }
+
+    startActivationAnimation = () => {
+        const {style} = this.state
+
+        Animated.parallel([
+            Animated.timing(style.transform[0].scale, {
+                duration: 100,
+                easing: Easing.out(Easing.quad),
+                toValue: 1.1
+            }),
+            Animated.timing(style.shadowRadius, {
+                duration: 100,
+                easing: Easing.out(Easing.quad),
+                toValue: 10
+            })
+        ]).start()
+    }
+
+    startDeactivationAnimation = () => {
+        const {style} = this.state
+
+        Animated.parallel([
+            Animated.timing(style.transform[0].scale, {
+                duration: 100,
+                easing: Easing.out(Easing.quad),
+                toValue: 1
+            }),
+            Animated.timing(style.shadowRadius, {
+                duration: 100,
+                easing: Easing.out(Easing.quad),
+                toValue: 2
+            })
+        ]).start()
+    }
+
+    render() {
+        const {
+            id,
+            title,
+            data,
+            practices
+        } = this.props
+
+        const amountOfPractices = Object.assign([], data).filter(item => item.type === Types.PRACTICE).length
+        const duration = moment.duration(
+            Object.assign([], data).map(item => {
+                switch(item.type) {
+                    case Types.PRACTICE:
+                        const practice = practices.find(practice => practice.id === item.id)
+                        return practice.duration*practice.repeat
+                    case Types.INTERVAL:
+                        return item.value
+                }
+            }).reduce((a, b) => a+b, 0),
+        'minutes')
+
+        return (
+            <Animated.View 
+                style={[
+                    styles.row,
+                    this.state.style,
+                ]}
+            >
+                <View style={styles.rowContent}>
+                    <Ionicons name="md-more" size={20} style={styles.rowOrderButton}/>
+                    <TouchableOpacity onPress={() => Actions.exerciseView({id})} style={styles.rowButton}>
+                        <Text style={styles.rowTitle}>{title}</Text>
+                        <View style={styles.rowInfoContainer}>
+                            <View style={styles.rowInfoGroup}>
+                                <Text style={styles.rowInfoLable}>Practicies:</Text>
+                                <Text style={styles.rowInfoText}>{amountOfPractices}</Text>
+                            </View>
+                            <View style={styles.rowInfoGroup}>
+                                <Text style={styles.rowInfoLable}>Duration:</Text>
+                                <Text style={styles.rowInfoText}>{duration.format('hh:mm', {forceLength: true, trim: false})}</Text>
+                            </View>
+                        </View>
                     </TouchableOpacity>
                 </View>
-            </TouchableHighlight>
-        </SwipeOut>
-    )
+            </Animated.View>
+        )
+    }
 }
 
 class ExerciseList extends Component {
     constructor(props) {
         super(props)
-        const ds = new ListView.DataSource({
-            rowHasChanged: (r1, r2) => r1 !== r2 || this.state.scrollEnabled
-        })
         this.state = {
-            dataSource: ds.cloneWithRows(this.props.exercises.exercises),
-            scrollEnabled: true
+            isMounted: false,
+            exercises: props.exercises.exercises,
+            practices: props.practices.practices
         }
     }
 
     componentWillReceiveProps(nextProps) {
-        this.setState({dataSource: this.state.dataSource.cloneWithRows(nextProps.exercises.exercises)})
         const {exercises, practices} = nextProps
+        this.setState({exercises: exercises.exercises, practices: practices.practices})
         if (JSON.stringify(nextProps) !== JSON.stringify(this.props)) {
-            Actions.refresh({
-                renderRightButton: this.renderRightButton,
-                navigationBarStyle: styles.navbar,
-                titleStyle: styles.title,
-                hideNavBar: !Boolean(exercises.exercises.length) || !Boolean(practices.practices.length)
+            this.setState({isMounted: false}, () => {
+                Actions.refresh({
+                    renderRightButton: this.renderRightButton,
+                    navigationBarStyle: styles.navbar,
+                    titleStyle: styles.title,
+                    hideNavBar: !Boolean(exercises.exercises.length) || !Boolean(practices.practices.length)
+                })
+                this.setState({isMounted: true})
             })
         }
     }
 
     componentDidMount() {
         const {exercises, practices} = this.props
-        Actions.refresh({
-            renderRightButton: this.renderRightButton,
-            navigationBarStyle: styles.navbar,
-            titleStyle: styles.title,
-            hideNavBar: !Boolean(exercises.exercises.length) || !Boolean(practices.practices.length)
+        this.setState({isMounted: false}, () => {
+            Actions.refresh({
+                renderRightButton: this.renderRightButton,
+                navigationBarStyle: styles.navbar,
+                titleStyle: styles.title,
+                hideNavBar: !Boolean(exercises.exercises.length) || !Boolean(practices.practices.length)
+            })
+            this.setState({isMounted: true})
         })
     }
 
@@ -207,50 +348,42 @@ class ExerciseList extends Component {
         )
     }
 
-    onSwipe = (id) => {
-        this.setState({
-            swipeActiveID: id,
-            dataSource: this.state.dataSource.cloneWithRows(this.props.exercises.exercises)
+    onOrderChange = () => {
+        const order = this.state.order
+        if (!order) return
+        const tmp = {...this.props.exercises.exercises}
+        const exercises = Object.assign([], order.map(key => tmp[key]))
+        this.setState({order: null}, () => {
+            setTimeout(() => this.props.order(exercises), 300)
         })
     }
 
-    onScroll = (scrollEnabled) => {
-        this.setState({scrollEnabled})
-    }
-
-    renderRow = (data) => {
-        return (
-            <Row {...data}
-                 onSwipe={this.onSwipe}
-                 onScroll={this.onScroll}
-                 onDeleteButtonPress={id => this.props.remove(id)}
-                 close={this.state.swipeActiveID !== data.id}
-            />
-        )
-    }
-
-    renderSeparator = (sectionId, rowId) => <View key={rowId} style={styles.separator} />
-
     render() {
         const {
-            dataSource,
-            scrollEnabled
+            exercises,
+            practices,
+            isMounted
         } = this.state
 
-        if (!this.props.practices.practices.length) {
+        if (!isMounted) return null
+
+        if (!practices.length) {
             return <NoPracticeScreen />
         }
 
-        if (this.props.exercises.exercises.length) {
+        if (exercises.length) {
+            const data = Object.assign({}, exercises)
             return (
-                <ListView
-                    style={styles.list}
-                    dataSource={dataSource}
-                    scrollEnabled={scrollEnabled}
-                    renderRow={this.renderRow}
-                    renderSeparator={this.renderSeparator}
-                    enableEmptySections
-                />
+                <View style={styles.container}>
+                    <SortableList
+                            contentContainerStyle={styles.contentContainer}
+                            data={data}
+                            renderRow={({data}) => (<Row {...data} practices={practices}/>)}
+                            onChangeOrder={(order) => this.setState({order})}
+                            onReleaseRow={() => this.onOrderChange()}
+                            enableEmptySections
+                        />
+                </View>
             )
         } else {
             return <Empty />

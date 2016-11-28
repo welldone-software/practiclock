@@ -69,13 +69,23 @@ class Practice extends Component {
 
     onSubmit = () => {
         const {title, duration, repeat, sound} = this.state
-        this.props.add({ title, duration, repeat, sound })
+        this.props.add({ 
+            title: title === null || title === undefined ? 'Name' : title, 
+            duration,
+            repeat,
+            sound
+        })
         Actions.pop()
     }
 
     onBack = () => {
         const {title, duration, repeat, sound} = this.state
-        this.props.edit(this.props.id, { title, duration, repeat, sound })
+        this.props.edit(this.props.id, { 
+            title: title === null || title === undefined ? 'Name' : title, 
+            duration,
+            repeat,
+            sound
+        })
         Actions.pop()
     }
 

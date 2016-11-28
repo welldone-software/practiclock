@@ -27,5 +27,6 @@ export const practices = {
 export const exercises = {
     add: (data) => ({type: '@EXERCISES_ADD', payload: {data}}),
     edit: (id, data) => ({type: '@EXERCISES_EDIT', payload: {id, data}}),
-    remove: (id) => ({type: '@EXERCISES_REMOVE', payload: {id}})
+    remove: (id) => ({type: '@EXERCISES_REMOVE', payload: {id}}),
+    order: (data) => ({type: '@EXERCISES_ORDER', payload: {data}})
 }

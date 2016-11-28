@@ -13,9 +13,7 @@ import {
 import {bindActionCreators} from 'redux'
 import {connect} from 'react-redux'
 import {Actions} from 'react-native-router-flux'
-import FontAwesome from 'react-native-vector-icons/FontAwesome'
 import Ionicons from 'react-native-vector-icons/Ionicons'
-import SwipeOut from 'react-native-swipeout'
 import SortableList from 'react-native-sortable-list'
 import {practices as practicesActions} from '../store/actions'
 
@@ -237,7 +235,7 @@ class Row extends Component {
                 <View style={styles.rowContent}>
                     <Ionicons name="md-more" size={20} style={styles.rowOrderButton}/>
                     <TouchableOpacity onPress={() => Actions.practiceView({id})} style={styles.rowButton}>
-                        <Text style={styles.rowTitle}>{title ? title : 'Name'}</Text>
+                        <Text style={styles.rowTitle}>{title}</Text>
                         <View style={styles.rowInfoContainer}>
                             <View style={styles.rowInfoGroup}>
                                 <Text style={styles.rowInfoLable}>Duration:</Text>
@@ -302,13 +300,12 @@ class PracticeList extends Component {
 
     onOrderChange = () => {
         const order = this.state.order
-        if (order) {
-            const tmp = {...this.props.practices}
-            const practices = Object.assign([], order.map(key => tmp[key]))
-            this.setState({order: null}, () => {
-                setTimeout(() => this.props.order(practices), 300)
-            })
-        }
+        if (!order) return
+        const tmp = {...this.props.practices}
+        const practices = Object.assign([], order.map(key => tmp[key]))
+        this.setState({order: null}, () => {
+            setTimeout(() => this.props.order(practices), 300)
+        })
     }
 
     render() {
