@@ -221,7 +221,7 @@ class Row extends Component {
     render() {
         const {
             id,
-            title = 'Name',
+            title,
             duration,
             repeat,
             sound
@@ -237,7 +237,7 @@ class Row extends Component {
                 <View style={styles.rowContent}>
                     <Ionicons name="md-more" size={20} style={styles.rowOrderButton}/>
                     <TouchableOpacity onPress={() => Actions.practiceView({id})} style={styles.rowButton}>
-                        <Text style={styles.rowTitle}>{title}</Text>
+                        <Text style={styles.rowTitle}>{title ? title : 'Name'}</Text>
                         <View style={styles.rowInfoContainer}>
                             <View style={styles.rowInfoGroup}>
                                 <Text style={styles.rowInfoLable}>Duration:</Text>
