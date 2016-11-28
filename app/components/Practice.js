@@ -19,7 +19,7 @@ import CustomPicker from '../core/CustomPicker'
 import {practices as practicesActions} from '../store/actions'
 
 const SCREEN_WIDTH = Dimensions.get('window').width
-export const SOUNDS = ['1.mp3', '2.mp3', '3.mp3', '4.mp3']
+export const SOUNDS = ['sound_1.mp3', 'sound_2.mp3', 'sound_3.mp3', 'sound_4.mp3']
 
 class SoundPicker extends Component {
     state = {
