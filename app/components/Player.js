@@ -108,12 +108,12 @@ const styles = StyleSheet.create({
 })
 
 const Row = ({title, duration, repeat, sound, active, track}) => {
+    console.log(track)
     return (
         <View style={styles.row}>
             <Text style={styles.title}>{title}</Text>
-            {active &&
-                <Ionicons name="md-musical-notes" size={18}/>
-            }
+            {track && <Text style={styles.title}>[{Math.round((Date.now() - track.start) / 1000)}sec]</Text>}
+            {active && <Ionicons name="md-musical-notes" size={18}/>}
         </View>
     )
 }
@@ -202,13 +202,31 @@ class Player extends Component {
         this.setState({playInProgress: false})
     }
 
+    interval: null
+    _stopInterval(){
+        if (this.interval) {
+            clearInterval(this.interval)
+            this.interval = null;
+        }
+    }
+
     stop = () => {
+        this._stopInterval()
         this.state.track.stop()
+    }
+
+    _startInterval(){
+        this.interval = setInterval(()=>{
+            // Think it can be force update inside the element, but it is written as function right now
+            this.forceUpdate()
+        }, 1000)
     }
 
     resume = () => {
         this.state.track.resume()
+        // this._stopInterval();
         this.setState({playInProgress: true})
+        this._startInterval()
     }
 
     next = () => {
