@@ -52,6 +52,7 @@ const styles = StyleSheet.create({
     },
     rowTitle: {
         fontSize: 16,
+        flex: 1,
         fontWeight: '600'
     },
     rowContent: {
@@ -73,21 +74,25 @@ const styles = StyleSheet.create({
         height: 90,
         paddingTop: 16,
         paddingRight: 16,
-        paddingBottom: 16,
-        width: SCREEN_WIDTH - 20
-    },
-    rowInfoContainer: {
+        paddingBottom: 30,
+        width: SCREEN_WIDTH - 20,
         flex: 1,
         flexDirection: 'row',
         alignItems: 'center',
+    },
+    rowInfoContainer: {
+        flex: 1,
+        flexDirection: 'column',
+        alignItems: 'flex-start',
         justifyContent: 'space-between'
     },
     rowInfoGroup: {
         flex: 1,
         flexDirection: 'row',
-        justifyContent: 'flex-start'
+        justifyContent: 'flex-start',
+        height: 18
     },
-    rowInfoLable: {
+    rowInfoLabel: {
         fontSize: 14,
         fontWeight: '400'
     },
@@ -118,14 +123,14 @@ const Empty = (props) => {
     const styles = StyleSheet.create({
         scene: {
             flex: 1,
-            flexDirection: 'column',
+            flexDirection: 'row',
             alignItems: 'center',
             justifyContent: 'center',
             backgroundColor: '#eee'
         },
         button: {
             flex: 1,
-            flexDirection: 'column',
+            flexDirection: 'row',
             alignItems: 'center',
             justifyContent: 'center',
             width: 80,
@@ -228,28 +233,23 @@ class Row extends Component {
         } = this.props
 
         return (
-            <Animated.View 
-                style={[
-                    styles.row,
-                    this.state.style,
-                ]}
-            >
+            <Animated.View style={[ styles.row, this.state.style]}>
                 <View style={styles.rowContent}>
                     <Ionicons name="md-more" size={20} style={styles.rowOrderButton}/>
                     <TouchableOpacity onPress={() => Actions.practiceView({id})} style={styles.rowButton}>
                         <Text style={styles.rowTitle}>{title}</Text>
                         <View style={styles.rowInfoContainer}>
                             <View style={styles.rowInfoGroup}>
-                                <Text style={styles.rowInfoLable}>Duration:</Text>
+                                <Text style={styles.rowInfoLabel}>Duration:</Text>
                                 <Text style={styles.rowInfoText}>{duration === 60 ? '1 h' : duration + ' min' }</Text>
                             </View>
                             <View style={styles.rowInfoGroup}>
-                                <Text style={styles.rowInfoLable}>Repeat:</Text>
+                                <Text style={styles.rowInfoLabel}>Repeat:</Text>
                                 <Text style={styles.rowInfoText}>{repeat}</Text>
                             </View>
                             <View style={styles.rowInfoGroup}>
-                                <Text style={styles.rowInfoLable}>Sound:</Text>
-                                <Text style={styles.rowInfoText}>{sound}</Text>
+                                <Text style={styles.rowInfoLabel}>Sound:</Text>
+                                <Text style={styles.rowInfoText}>{sound || 'N/A'}</Text>
                             </View>
                         </View>
                     </TouchableOpacity>
