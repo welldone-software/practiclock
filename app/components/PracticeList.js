@@ -221,7 +221,7 @@ class Row extends Component {
     render() {
         const {
             id,
-            title,
+            title = 'Name',
             duration,
             repeat,
             sound
