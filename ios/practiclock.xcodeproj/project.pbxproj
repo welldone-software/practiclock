@@ -36,10 +36,10 @@
 		BF1580991DEA113C001D72AD /* libART.a in Frameworks */ = {isa = PBXBuildFile; fileRef = BF1580981DEA112E001D72AD /* libART.a */; };
 		BF15809B1DEA56DA001D72AD /* silence.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = BF15809A1DEA56DA001D72AD /* silence.mp3 */; };
 		BF2EF4171DE9A61F005667D2 /* libRNSound.a in Frameworks */ = {isa = PBXBuildFile; fileRef = BF357D3E1DE9A3F800129403 /* libRNSound.a */; };
-		BF2EF43F1DE9A853005667D2 /* 1.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = BF2EF43B1DE9A853005667D2 /* 1.mp3 */; };
-		BF2EF4401DE9A853005667D2 /* 2.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = BF2EF43C1DE9A853005667D2 /* 2.mp3 */; };
-		BF2EF4411DE9A853005667D2 /* 3.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = BF2EF43D1DE9A853005667D2 /* 3.mp3 */; };
-		BF2EF4421DE9A853005667D2 /* 4.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = BF2EF43E1DE9A853005667D2 /* 4.mp3 */; };
+		BF31D04B1DECC23900FF3930 /* sound_1.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = BF31D0471DECC23900FF3930 /* sound_1.mp3 */; };
+		BF31D04C1DECC23900FF3930 /* sound_2.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = BF31D0481DECC23900FF3930 /* sound_2.mp3 */; };
+		BF31D04D1DECC23900FF3930 /* sound_3.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = BF31D0491DECC23900FF3930 /* sound_3.mp3 */; };
+		BF31D04E1DECC23900FF3930 /* sound_4.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = BF31D04A1DECC23900FF3930 /* sound_4.mp3 */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -232,10 +232,10 @@
 		BF15807A1DEA10DE001D72AD /* ART.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = ART.xcodeproj; path = "../node_modules/react-native/Libraries/ART/ART.xcodeproj"; sourceTree = "<group>"; };
 		BF1580931DEA112E001D72AD /* ART.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = ART.xcodeproj; path = "../node_modules/react-native/Libraries/ART/ART.xcodeproj"; sourceTree = "<group>"; };
 		BF15809A1DEA56DA001D72AD /* silence.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = silence.mp3; sourceTree = "<group>"; };
-		BF2EF43B1DE9A853005667D2 /* 1.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = 1.mp3; sourceTree = "<group>"; };
-		BF2EF43C1DE9A853005667D2 /* 2.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = 2.mp3; sourceTree = "<group>"; };
-		BF2EF43D1DE9A853005667D2 /* 3.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = 3.mp3; sourceTree = "<group>"; };
-		BF2EF43E1DE9A853005667D2 /* 4.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = 4.mp3; sourceTree = "<group>"; };
+		BF31D0471DECC23900FF3930 /* sound_1.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = sound_1.mp3; sourceTree = "<group>"; };
+		BF31D0481DECC23900FF3930 /* sound_2.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = sound_2.mp3; sourceTree = "<group>"; };
+		BF31D0491DECC23900FF3930 /* sound_3.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = sound_3.mp3; sourceTree = "<group>"; };
+		BF31D04A1DECC23900FF3930 /* sound_4.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = sound_4.mp3; sourceTree = "<group>"; };
 		BF357D281DE9A3F700129403 /* RNSound.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RNSound.xcodeproj; path = "../node_modules/react-native-sound/RNSound.xcodeproj"; sourceTree = "<group>"; };
 		BF6F86A68BAA4ECB9C6172C1 /* FontAwesome.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = FontAwesome.ttf; path = "../node_modules/react-native-vector-icons/Fonts/FontAwesome.ttf"; sourceTree = "<group>"; };
 		F28B9D18B5D44A54A55D65C5 /* Ionicons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Ionicons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Ionicons.ttf"; sourceTree = "<group>"; };
@@ -487,11 +487,11 @@
 		BF2EF4321DE9A7AB005667D2 /* sounds */ = {
 			isa = PBXGroup;
 			children = (
+				BF31D0471DECC23900FF3930 /* sound_1.mp3 */,
+				BF31D0481DECC23900FF3930 /* sound_2.mp3 */,
+				BF31D0491DECC23900FF3930 /* sound_3.mp3 */,
+				BF31D04A1DECC23900FF3930 /* sound_4.mp3 */,
 				BF15809A1DEA56DA001D72AD /* silence.mp3 */,
-				BF2EF43B1DE9A853005667D2 /* 1.mp3 */,
-				BF2EF43C1DE9A853005667D2 /* 2.mp3 */,
-				BF2EF43D1DE9A853005667D2 /* 3.mp3 */,
-				BF2EF43E1DE9A853005667D2 /* 4.mp3 */,
 			);
 			name = sounds;
 			sourceTree = "<group>";
@@ -801,22 +801,22 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				BF2EF43F1DE9A853005667D2 /* 1.mp3 in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
 				13B07FBD1A68108700A75B9A /* LaunchScreen.xib in Resources */,
-				BF2EF4421DE9A853005667D2 /* 4.mp3 in Resources */,
-				BF2EF4401DE9A853005667D2 /* 2.mp3 in Resources */,
 				07E377577ED44551BE9602FF /* Entypo.ttf in Resources */,
 				385304B47DCD42F2BE8C373A /* EvilIcons.ttf in Resources */,
 				3F88F0DFC01A49A48BC3A3F4 /* FontAwesome.ttf in Resources */,
+				BF31D04E1DECC23900FF3930 /* sound_4.mp3 in Resources */,
+				BF31D04C1DECC23900FF3930 /* sound_2.mp3 in Resources */,
 				2D94448CAB5F4103B928AF0D /* Foundation.ttf in Resources */,
-				BF2EF4411DE9A853005667D2 /* 3.mp3 in Resources */,
+				BF31D04B1DECC23900FF3930 /* sound_1.mp3 in Resources */,
 				55697BB65C5C43A08B15EFD6 /* Ionicons.ttf in Resources */,
 				221073BCA38E45339AD8420E /* MaterialIcons.ttf in Resources */,
 				BF15809B1DEA56DA001D72AD /* silence.mp3 in Resources */,
 				2FF6F3345BCC49EFA6A468F3 /* Octicons.ttf in Resources */,
 				3A73F10790B647C9AFD7B408 /* SimpleLineIcons.ttf in Resources */,
 				1013E679992E47EB89E2E966 /* Zocial.ttf in Resources */,
+				BF31D04D1DECC23900FF3930 /* sound_3.mp3 in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
