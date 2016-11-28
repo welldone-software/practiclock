@@ -22,7 +22,7 @@ import {connect} from 'react-redux'
 import FontAwesome from 'react-native-vector-icons/FontAwesome'
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import SortableList from 'react-native-sortable-list'
-import ActionButton from 'react-native-action-button';
+import ActionButton from 'react-native-action-button'
 import CustomPicker from '../core/CustomPicker'
 import {exercises as exercisesActions} from '../store/actions'
 
@@ -254,7 +254,7 @@ class Exercise extends Component {
         }
 
         this.setState({
-            showIntervalPicker: false, 
+            showIntervalPicker: false,
             data,
             shouldRerender: true
         }, () => this.setState({shouldRerender: false}))
@@ -284,10 +284,26 @@ class Exercise extends Component {
         )
     }
 
-    onOrderChange = (order) => {
+    onOrderChange = () => {
+        const order = this.state.order
+
+        if (!order) return
+
         const tmp = {...this.state.data}
         const data = Object.assign({}, order.map(key => tmp[key]))
-        this.setState({data})
+        const hasSequenceOfIntervals = Object.assign([], data).some((item, index, arr) => {
+            const next = Object.assign({}, arr[index+1])
+            if (item.type === Types.PRACTICE) return
+            return item.type === next.type
+        })
+
+        if (hasSequenceOfIntervals) {
+            alert('You can\'t put 2 pauses consistently')
+        } else {
+            this.setState({data})
+        }
+
+        this.setState({isMounted: false}, () => this.setState({isMounted: true}))
     }
 
     renderBackButton = () => {
@@ -329,6 +345,10 @@ class Exercise extends Component {
             shouldRerender
         } = this.state
 
+        const items = Object.assign([], data)
+        const lastItem = items[items.length-1]
+        const isIntervalLastItem = lastItem ? lastItem.type === Types.INTERVAL : false
+
         if (!isMounted || shouldRerender) return null 
 
         return (
@@ -350,7 +370,8 @@ class Exercise extends Component {
                                 contentContainerStyle={styles.content}
                                 data={data}
                                 renderRow={({data, active, index}) => this.renderRow(data, index, active)}
-                                onChangeOrder={(order) => this.onOrderChange(order)}
+                                onChangeOrder={(order) => this.setState({order})}
+                                onReleaseRow={() => this.onOrderChange()}
                             />
                         </View>
                     </View>
@@ -360,12 +381,15 @@ class Exercise extends Component {
                     <ActionButton.Item buttonColor='#9b59b6' title="Practice" onPress={() => this.setState({showPracticePicker: true})}>
                         <Ionicons name="ios-body" style={styles.actionButtonIcon} />
                     </ActionButton.Item>
-                    <ActionButton.Item buttonColor='#3498db' title="Pause" onPress={() => this.setState({showIntervalPicker: true})}>
+                    <ActionButton.Item 
+                        buttonColor='#3498db'
+                        title="Pause"
+                        onPress={() => this.setState({showIntervalPicker: true})}
+                        disabled={isIntervalLastItem}>
                         <Ionicons name="md-pause" style={styles.actionButtonIcon} />
                     </ActionButton.Item>
                 </ActionButton>
                 
-
                 <CustomPicker
                     visible={this.state.showPracticePicker}
                     onCancel={() => this.setState({showPracticePicker: false})}
