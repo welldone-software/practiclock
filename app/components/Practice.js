@@ -25,6 +25,11 @@ class SoundPicker extends Component {
     state = {
         sound: null
     }
+
+    componentDidMount() {
+        if (this.state.sound) return
+        this.onChangeValue(SOUNDS[0])
+    }
     
     componentWillUnmount() {
         this.stop()
