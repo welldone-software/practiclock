@@ -12,6 +12,7 @@ import {Actions} from 'react-native-router-flux'
 import Sound from 'react-native-sound'
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import {Types} from './Exercise'
+import PlayerRow from './PlayerRow'
 
 class Track {
     constructor(file = 'silence.mp3', callback, time) {
@@ -65,21 +66,10 @@ const styles = StyleSheet.create({
     list: {
         marginTop: 64
     },
-    row: {
-        flex: 1,
-        padding: 25,
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        backgroundColor: '#fff'
-    },
     separator: {
         flex: 1,
         height: StyleSheet.hairlineWidth,
         backgroundColor: '#eee',
-    },
-    title: {
-        fontSize: 16
     },
     buttons: {
         flexDirection: 'row',
@@ -107,16 +97,6 @@ const styles = StyleSheet.create({
     }
 })
 
-const Row = ({title, duration, repeat, sound, active, track}) => {
-    console.log(track)
-    return (
-        <View style={styles.row}>
-            <Text style={styles.title}>{title}</Text>
-            {track && <Text style={styles.title}>[{Math.round((Date.now() - track.start) / 1000)}sec]</Text>}
-            {active && <Ionicons name="md-musical-notes" size={18}/>}
-        </View>
-    )
-}
 
 class Player extends Component {
     constructor(props) {
@@ -202,31 +182,14 @@ class Player extends Component {
         this.setState({playInProgress: false})
     }
 
-    interval: null
-    _stopInterval(){
-        if (this.interval) {
-            clearInterval(this.interval)
-            this.interval = null;
-        }
-    }
 
     stop = () => {
-        this._stopInterval()
         this.state.track.stop()
-    }
-
-    _startInterval(){
-        this.interval = setInterval(()=>{
-            // Think it can be force update inside the element, but it is written as function right now
-            this.forceUpdate()
-        }, 1000)
     }
 
     resume = () => {
         this.state.track.resume()
-        // this._stopInterval();
         this.setState({playInProgress: true})
-        this._startInterval()
     }
 
     next = () => {
@@ -266,7 +229,7 @@ class Player extends Component {
                 <ListView
                     style={styles.list}
                     dataSource={dataSource}
-                    renderRow={(data) => <Row {...data}/>}
+                    renderRow={(data) => <PlayerRow {...data}/>}
                     enderSeparator={(_, id) => <View key={id} style={styles.separator}/>}
                 />
                 <TouchableOpacity onPress={Actions.pop} style={styles.closeButton}>
