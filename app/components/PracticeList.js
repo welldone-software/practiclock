@@ -221,8 +221,7 @@ class Row extends Component {
             id,
             title,
             duration,
-            repeat,
-            sound
+            repeat
         } = this.props
 
         return (
@@ -244,10 +243,6 @@ class Row extends Component {
                             <View style={styles.rowInfoGroup}>
                                 <Text style={styles.rowInfoLable}>Repeat:</Text>
                                 <Text style={styles.rowInfoText}>{repeat}</Text>
-                            </View>
-                            <View style={styles.rowInfoGroup}>
-                                <Text style={styles.rowInfoLable}>Sound:</Text>
-                                <Text style={styles.rowInfoText}>{sound}</Text>
                             </View>
                         </View>
                     </TouchableOpacity>
