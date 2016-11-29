@@ -62,6 +62,7 @@ export default class CustomPicker extends Component {
         const {current} = this.state
         return (
             <Modal
+                onRequestClose={function(){}}
                 animationType={'slide'}
                 transparent={true}
                 visible={visible}>
