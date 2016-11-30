@@ -198,13 +198,7 @@ class Row extends Component {
     state = {
         style: {
             shadowRadius: new Animated.Value(2),
-            transform: [{scale: new Animated.Value(1)}],
-            shadowColor: 'rgba(0,0,0,0.2)',
-            shadowOpacity: 1,
-            shadowOffset: {
-                height: 1,
-                width: 0
-            }
+            transform: [{scale: new Animated.Value(1)}]
         }
     }
 
@@ -257,8 +251,18 @@ class Row extends Component {
             id,
             title,
             data,
-            practices
+            practices,
+            active
         } = this.props
+
+        const style = Object.assign({}, this.state.style, active ? {
+            shadowColor: 'rgba(0,0,0,0.2)',
+            shadowOpacity: 1,
+            shadowOffset: {
+                height: 1,
+                width: 0
+            }
+        } : {})
 
         const amountOfPractices = Object.assign([], data).filter(item => item.type === Types.PRACTICE).length
         const duration = moment.duration(
@@ -277,7 +281,7 @@ class Row extends Component {
             <Animated.View 
                 style={[
                     styles.row,
-                    this.state.style,
+                    style
                 ]}
             >
                 <View style={styles.rowContent}>
@@ -306,21 +310,24 @@ class ExerciseList extends Component {
         super(props)
         this.state = {
             isMounted: false,
-            exercises: props.exercises.exercises,
-            practices: props.practices.practices
+            exercises: props.exercises,
+            practices: props.practices
         }
     }
 
     componentWillReceiveProps(nextProps) {
         const {exercises, practices} = nextProps
-        this.setState({exercises: exercises.exercises, practices: practices.practices})
+        this.setState({practices})
+        const nextExercises = [...nextProps.exercises].sort((a,b) => a.id-b.id)
+        const currentExercises = [...this.props.exercises].sort((a,b) => a.id-b.id)
+        if ( JSON.stringify(nextExercises) === JSON.stringify(currentExercises) ) return
         if (JSON.stringify(nextProps) !== JSON.stringify(this.props)) {
             this.setState({isMounted: false}, () => {
                 Actions.refresh({
                     renderRightButton: this.renderRightButton,
                     navigationBarStyle: styles.navbar,
                     titleStyle: styles.title,
-                    hideNavBar: !Boolean(exercises.exercises.length) || !Boolean(practices.practices.length)
+                    hideNavBar: !Boolean(exercises.length) || !Boolean(practices.length)
                 })
                 this.setState({isMounted: true})
             })
@@ -334,7 +341,7 @@ class ExerciseList extends Component {
                 renderRightButton: this.renderRightButton,
                 navigationBarStyle: styles.navbar,
                 titleStyle: styles.title,
-                hideNavBar: !Boolean(exercises.exercises.length) || !Boolean(practices.practices.length)
+                hideNavBar: !Boolean(exercises.length) || !Boolean(practices.length)
             })
             this.setState({isMounted: true})
         })
@@ -351,11 +358,9 @@ class ExerciseList extends Component {
     onOrderChange = () => {
         const order = this.state.order
         if (!order) return
-        const tmp = {...this.props.exercises.exercises}
+        const tmp = {...this.props.exercises}
         const exercises = Object.assign([], order.map(key => tmp[key]))
-        this.setState({order: null}, () => {
-            setTimeout(() => this.props.order(exercises), 300)
-        })
+        this.setState({exercises, order: null}, () => this.props.order(exercises))
     }
 
     render() {
@@ -378,7 +383,7 @@ class ExerciseList extends Component {
                     <SortableList
                             contentContainerStyle={styles.contentContainer}
                             data={data}
-                            renderRow={({data}) => (<Row {...data} practices={practices}/>)}
+                            renderRow={({data, active}) => (<Row {...data} practices={practices} active={active}/>)}
                             onChangeOrder={(order) => this.setState({order})}
                             onReleaseRow={() => this.onOrderChange()}
                             enableEmptySections
@@ -394,7 +399,7 @@ class ExerciseList extends Component {
 export default connect(
     state => {
         const {exercises, practices} = state
-        return {exercises, practices}
+        return {exercises: exercises.exercises, practices: practices.practices}
     },
     dispatch => bindActionCreators(exercisesActions, dispatch)
 )(ExerciseList)

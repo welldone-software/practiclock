@@ -163,13 +163,7 @@ class Row extends Component {
     state = {
         style: {
             shadowRadius: new Animated.Value(2),
-            transform: [{scale: new Animated.Value(1)}],
-            shadowColor: 'rgba(0,0,0,0.2)',
-            shadowOpacity: 1,
-            shadowOffset: {
-                height: 1,
-                width: 0
-            }
+            transform: [{scale: new Animated.Value(1)}]
         }
     }
 
@@ -177,6 +171,7 @@ class Row extends Component {
         if ( this.props.active === nextProps.active ) return
 
         if ( nextProps.active ) {
+            console.log(111)
             this.startActivationAnimation()
         } else {
             this.startDeactivationAnimation()
@@ -222,11 +217,21 @@ class Row extends Component {
             id,
             title,
             duration,
-            repeat
+            repeat,
+            active
         } = this.props
 
+        const style = Object.assign({}, this.state.style, active ? {
+            shadowColor: 'rgba(0,0,0,0.2)',
+            shadowOpacity: 1,
+            shadowOffset: {
+                height: 1,
+                width: 0
+            }
+        } : {})
+
         return (
-            <Animated.View style={[styles.row, this.state.style]}>
+            <Animated.View style={[styles.row, style]}>
                 <View style={styles.rowContent}>
                     <Ionicons name="md-more" size={20} style={styles.rowOrderButton}/>
                     <TouchableOpacity onPress={() => Actions.practiceView({id})} style={styles.rowButton}>
@@ -269,10 +274,10 @@ class PracticeList extends Component {
 
     componentWillReceiveProps (nextProps) {
         SimpleTrackPlayer.CollectionCallback(nextProps.practices, this)
-        this.setState({practices: nextProps.practices})
-
-        if ( JSON.stringify(nextProps) === JSON.stringify(this.props) ) return
-        this.setState({isMounted: false}, () => {
+        const nextPractices = [...nextProps.practices].sort((a,b) => a.id-b.id)
+        const currentPractices = [...this.props.practices].sort((a,b) => a.id-b.id)
+        if ( JSON.stringify(nextPractices) === JSON.stringify(currentPractices) ) return
+        this.setState({isMounted: false, practices: nextProps.practices}, () => {
             Actions.refresh({
                 renderRightButton: this.renderRightButton,
                 navigationBarStyle: styles.navbar,
@@ -293,12 +298,10 @@ class PracticeList extends Component {
 
     onOrderChange = () => {
         const order = this.state.order
-        if ( !order ) return
+        if (!order) return
         const tmp = {...this.props.practices}
         const practices = Object.assign([], order.map(key => tmp[key]))
-        this.setState({order: null}, () => {
-            setTimeout(() => this.props.order(practices), 300)
-        })
+        this.setState({practices, order: null}, () => this.props.order(practices))
     }
 
     render () {
@@ -316,7 +319,7 @@ class PracticeList extends Component {
                     <SortableList
                         contentContainerStyle={styles.contentContainer}
                         data={data}
-                        renderRow={({data}) => (<Row {...data}/>)}
+                        renderRow={({data, active}) => (<Row {...data} active={active}/>)}
                         onChangeOrder={(order) => this.setState({order})}
                         onReleaseRow={() => this.onOrderChange()}
                         enableEmptySections
