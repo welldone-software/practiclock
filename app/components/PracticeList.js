@@ -1,5 +1,5 @@
 //@flow
-import React, {Component} from 'react'
+import React, { Component } from 'react'
 import {
     Animated,
     Dimensions,
@@ -10,12 +10,13 @@ import {
     TouchableOpacity,
     View
 } from 'react-native'
-import {bindActionCreators} from 'redux'
-import {connect} from 'react-redux'
-import {Actions} from 'react-native-router-flux'
+import { bindActionCreators } from 'redux'
+import { connect } from 'react-redux'
+import { Actions } from 'react-native-router-flux'
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import SortableList from 'react-native-sortable-list'
-import {practices as practicesActions} from '../store/actions'
+import { practices as practicesActions } from '../store/actions'
+import SimpleTrackPlayer from './SimpleTrackPlayer'
 
 const SCREEN_WIDTH = Dimensions.get('window').width
 
@@ -25,7 +26,7 @@ const styles = StyleSheet.create({
         shadowColor: 'rgba(0,0,0,0.2)',
         shadowOpacity: 1,
         shadowOffset: {
-            height: 4, 
+            height: 4,
             width: 2
         },
         borderBottomWidth: 0
@@ -133,10 +134,10 @@ const Empty = (props) => {
             shadowColor: 'rgba(0,0,0,0.2)',
             shadowOpacity: 1,
             shadowOffset: {
-                height: 2, 
+                height: 2,
                 width: 0
             },
-            shadowRadius: 5 
+            shadowRadius: 5
         },
         icon: {
             color: '#6d6d6d'
@@ -151,7 +152,7 @@ const Empty = (props) => {
     return (
         <View style={styles.scene}>
             <TouchableOpacity onPress={Actions.practiceCreate} style={styles.button}>
-                <Ionicons name="md-add" size={34} style={styles.icon} />
+                <Ionicons name="md-add" size={34} style={styles.icon}/>
             </TouchableOpacity>
             <Text style={styles.text}>CREATE YOUR FIRST PRACTICE</Text>
         </View>
@@ -172,10 +173,10 @@ class Row extends Component {
         }
     }
 
-    componentWillReceiveProps(nextProps) {
-        if (this.props.active === nextProps.active) return
+    componentWillReceiveProps (nextProps) {
+        if ( this.props.active === nextProps.active ) return
 
-        if (nextProps.active) {
+        if ( nextProps.active ) {
             this.startActivationAnimation()
         } else {
             this.startDeactivationAnimation()
@@ -216,7 +217,7 @@ class Row extends Component {
         ]).start()
     }
 
-    render() {
+    render () {
         const {
             id,
             title,
@@ -225,16 +226,12 @@ class Row extends Component {
         } = this.props
 
         return (
-            <Animated.View 
-                style={[
-                    styles.row,
-                    this.state.style,
-                ]}
-            >
+            <Animated.View style={[styles.row, this.state.style]}>
                 <View style={styles.rowContent}>
                     <Ionicons name="md-more" size={20} style={styles.rowOrderButton}/>
                     <TouchableOpacity onPress={() => Actions.practiceView({id})} style={styles.rowButton}>
                         <Text style={styles.rowTitle}>{title}</Text>
+                        <SimpleTrackPlayer file={this.props} onPlay={this.props.onPlay} isPlaying={this.props.isPlaying}/>
                         <View style={styles.rowInfoContainer}>
                             <View style={styles.rowInfoGroup}>
                                 <Text style={styles.rowInfoLable}>Duration:</Text>
@@ -253,7 +250,7 @@ class Row extends Component {
 }
 
 class PracticeList extends Component {
-    constructor(props) {
+    constructor (props) {
         super(props)
         this.state = {
             isMounted: false,
@@ -261,7 +258,7 @@ class PracticeList extends Component {
         }
     }
 
-    componentDidMount() {
+    componentDidMount () {
         Actions.refresh({
             renderRightButton: this.renderRightButton,
             navigationBarStyle: styles.navbar,
@@ -270,10 +267,11 @@ class PracticeList extends Component {
         })
     }
 
-    componentWillReceiveProps(nextProps) {
+    componentWillReceiveProps (nextProps) {
+        SimpleTrackPlayer.CollectionCallback(nextProps.practices, this)
         this.setState({practices: nextProps.practices})
 
-        if (JSON.stringify(nextProps) === JSON.stringify(this.props)) return
+        if ( JSON.stringify(nextProps) === JSON.stringify(this.props) ) return
         this.setState({isMounted: false}, () => {
             Actions.refresh({
                 renderRightButton: this.renderRightButton,
@@ -295,7 +293,7 @@ class PracticeList extends Component {
 
     onOrderChange = () => {
         const order = this.state.order
-        if (!order) return
+        if ( !order ) return
         const tmp = {...this.props.practices}
         const practices = Object.assign([], order.map(key => tmp[key]))
         this.setState({order: null}, () => {
@@ -303,26 +301,26 @@ class PracticeList extends Component {
         })
     }
 
-    render() {
+    render () {
         const {
             isMounted,
             practices
         } = this.state
 
-        if (!isMounted) return null 
+        if ( !isMounted ) return null
 
-        if (practices.length) {
+        if ( practices.length ) {
             const data = Object.assign({}, practices)
             return (
                 <View style={styles.container}>
                     <SortableList
-                            contentContainerStyle={styles.contentContainer}
-                            data={data}
-                            renderRow={({data}) => (<Row {...data}/>)}
-                            onChangeOrder={(order) => this.setState({order})}
-                            onReleaseRow={() => this.onOrderChange()}
-                            enableEmptySections
-                        />
+                        contentContainerStyle={styles.contentContainer}
+                        data={data}
+                        renderRow={({data}) => (<Row {...data}/>)}
+                        onChangeOrder={(order) => this.setState({order})}
+                        onReleaseRow={() => this.onOrderChange()}
+                        enableEmptySections
+                    />
                 </View>
             )
         } else {
