@@ -88,6 +88,13 @@ class Row extends Component {
     state = {
         style: {
             transform: [{scale: new Animated.Value(1)}],
+        },
+        intervalStyle: {
+            height: 40,
+            paddingLeft: 16,
+            paddingRight: 16,
+            paddingTop: 10,
+            paddingBottom: 10
         }
     }
 
@@ -137,6 +144,7 @@ class Row extends Component {
                 style={[
                     styles.row,
                     this.state.style,
+                    data.type === Types.PRACTICE ? null : this.state.intervalStyle
                 ]}
             >
                 <View style={styles.item}>
@@ -151,11 +159,8 @@ class Row extends Component {
                         {data.type === Types.PRACTICE && <Text>{data.title}</Text>}
                     </View>
                     <View>
-                        <SimpleTrackPlayer file={data} onPlay={data.onPlay} isPlaying={data.isPlaying}/>
-                    </View>
-                    <View>
                         <TouchableOpacity onPress={() => onDelete(index)}>
-                            <FontAwesome name="trash" size={25} style={styles.itemButton} />
+                            <FontAwesome name="trash" size={data.type === Types.PRACTICE ? 25 : 20} style={styles.itemButton} />
                         </TouchableOpacity>
                     </View>
                 </View>
@@ -452,7 +457,7 @@ const styles = StyleSheet.create({
     },
     wrapper: {
         flex: 1,
-        flexDirection: 'column',
+        flexDirection: 'row',
         justifyContent: 'space-between'
     },
     scene: {
