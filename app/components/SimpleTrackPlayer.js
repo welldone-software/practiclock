@@ -1,14 +1,13 @@
 //@flow
 import React, { Component } from 'react'
-import { View } from 'react-native'
+import { View, TouchableOpacity } from 'react-native'
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import PseudoSyncSound from './PseudoSyncSound'
 
 export default class SimpleTrackPlayer extends Component {
     static CollectionCallback = (array, context) => {
         array.forEach(item => item.onPlay = item => {
-            array.forEach(() => item.isPlaying = false)
-            console.log(array)
+            array.forEach((item) => item.isPlaying = false)
             item.isPlaying = true;
             context.forceUpdate()
         })
@@ -54,9 +53,13 @@ export default class SimpleTrackPlayer extends Component {
 
     render () {
         return (
-            <View style={{position: 'absolute', right: 20}}>
-                {!this.state.isPlaying && <Ionicons name="md-play" size={20} onPress={this.play.bind(this)}/>}
-                {this.state.isPlaying && <Ionicons name="md-pause" size={20} onPress={this.pause.bind(this)}/>}
+            <View style={this.props.style}>
+                {!this.state.isPlaying && <TouchableOpacity onPress={this.play.bind(this)}>
+                    <Ionicons name="md-play" size={20}/>
+                </TouchableOpacity>}
+                {this.state.isPlaying && <TouchableOpacity onPress={this.pause.bind(this)}>
+                    <Ionicons name="md-pause" size={20} onPress={this.pause.bind(this)}/>
+                </TouchableOpacity>}
             </View>
         )
     }

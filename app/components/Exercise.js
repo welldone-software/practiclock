@@ -24,7 +24,8 @@ import Ionicons from 'react-native-vector-icons/Ionicons'
 import SortableList from 'react-native-sortable-list'
 import ActionButton from 'react-native-action-button'
 import CustomPicker from '../core/CustomPicker'
-import {exercises as exercisesActions} from '../store/actions'
+import { exercises as exercisesActions } from '../store/actions'
+import SimpleTrackPlayer from './SimpleTrackPlayer'
 
 const SCREEN_WIDTH = Dimensions.get('window').width
 
@@ -74,8 +75,8 @@ const IntervalPicker = ({current = 0, onChange}) => {
                 <Text style={styles.preview}>{current === 60 ? '1h' : current + 'min'}</Text>
             </View>
             <View>
-                <Slider 
-                    style={styles.slider} 
+                <Slider
+                    style={styles.slider}
                     onValueChange={(value) => onChange(Math.round(value * 60))}
                 />
             </View>
@@ -132,7 +133,7 @@ class Row extends Component {
         } = this.props
 
         return (
-            <Animated.View 
+            <Animated.View
                 style={[
                     styles.row,
                     this.state.style,
@@ -146,15 +147,14 @@ class Row extends Component {
                                 <Text>{data.value === 60 ? '1h' : data.value + 'min'}</Text>
                             </View>
                         }
-                        
-                        {data.type === Types.PRACTICE &&
-                            <Text>{data.title}</Text>
-                        }
+
+                        {data.type === Types.PRACTICE && <Text>{data.title}</Text>}
                     </View>
                     <View>
-                        <TouchableOpacity
-                            onPress={() => onDelete(index)}
-                        >
+                        <SimpleTrackPlayer file={data} onPlay={data.onPlay} isPlaying={data.isPlaying}/>
+                    </View>
+                    <View>
+                        <TouchableOpacity onPress={() => onDelete(index)}>
                             <FontAwesome name="trash" size={25} style={styles.itemButton} />
                         </TouchableOpacity>
                     </View>
@@ -171,7 +171,7 @@ class Exercise extends Component {
         const tmp = {...this.state.data}
         delete tmp[index]
 
-        const data = Object.assign({}, 
+        const data = Object.assign({},
             Object.keys(tmp).map(key => tmp[key])
         )
 
@@ -180,8 +180,8 @@ class Exercise extends Component {
 
     onSubmit = () => {
         const {title, data} = this.state
-        this.props.add({ 
-            title: title === null || title === undefined ? 'Name' : title, 
+        this.props.add({
+            title: title === null || title === undefined ? 'Name' : title,
             data
         })
         Actions.pop()
@@ -189,8 +189,8 @@ class Exercise extends Component {
 
     onBack = () => {
         const {title, data} = this.state
-        this.props.edit(this.props.id, { 
-            title: title === null || title === undefined ? 'Name' : title, 
+        this.props.edit(this.props.id, {
+            title: title === null || title === undefined ? 'Name' : title,
             data
         })
         Actions.pop()
@@ -229,7 +229,7 @@ class Exercise extends Component {
     }
 
     onPracticeSelected = (id) => {
-        const data = {...this.state.data} 
+        const data = {...this.state.data}
         const index = Object.keys(data).length;
 
         data[index] = {
@@ -238,14 +238,14 @@ class Exercise extends Component {
         }
 
         this.setState({
-            showPracticePicker: false, 
+            showPracticePicker: false,
             data,
             shouldRerender: true
         }, () => this.setState({ shouldRerender: false }))
     }
 
     onIntervalSelected = (value) => {
-        const data = {...this.state.data} 
+        const data = {...this.state.data}
         const index = Object.keys(data).length;
 
         data[index] = {
@@ -268,6 +268,7 @@ class Exercise extends Component {
                 item = data
                 break
             case Types.PRACTICE:
+                SimpleTrackPlayer.CollectionCallback(this.props.practices.practices, this)
                 item = this.props.practices.practices.find(item => item.id === data.id)
                 break
         }
@@ -275,10 +276,10 @@ class Exercise extends Component {
         item = Object.assign({}, item, {type: data.type})
 
         return (
-            <Row 
+            <Row
                 data={item}
                 active={active}
-                index={index} 
+                index={index}
                 onDelete={this.onDelete}
             />
         )
@@ -345,11 +346,11 @@ class Exercise extends Component {
             shouldRerender
         } = this.state
 
-        const items = Object.assign([], data)
+        const items = Array.from(data)
         const lastItem = items[items.length-1]
         const isIntervalLastItem = lastItem ? lastItem.type === Types.INTERVAL : false
 
-        if (!isMounted || shouldRerender) return null 
+        if (!isMounted || shouldRerender) return null
 
         return (
             <View style={styles.scene}>
@@ -381,7 +382,7 @@ class Exercise extends Component {
                     <ActionButton.Item buttonColor='#9b59b6' title="Practice" onPress={() => this.setState({showPracticePicker: true})}>
                         <Ionicons name="ios-body" style={styles.actionButtonIcon} />
                     </ActionButton.Item>
-                    <ActionButton.Item 
+                    <ActionButton.Item
                         buttonColor='#3498db'
                         title="Pause"
                         onPress={() => this.setState({showIntervalPicker: true})}
@@ -389,7 +390,7 @@ class Exercise extends Component {
                         <Ionicons name="md-pause" style={styles.actionButtonIcon} />
                     </ActionButton.Item>
                 </ActionButton>
-                
+
                 <CustomPicker
                     visible={this.state.showPracticePicker}
                     onCancel={() => this.setState({showPracticePicker: false})}
@@ -398,7 +399,7 @@ class Exercise extends Component {
                 >
                     <PracticePicker items={this.props.practices.practices} />
                 </CustomPicker>
-                
+
                 <CustomPicker
                     visible={this.state.showIntervalPicker}
                     onCancel={() => this.setState({showIntervalPicker: false})}
@@ -417,7 +418,7 @@ const styles = StyleSheet.create({
         shadowColor: 'rgba(0,0,0,0.2)',
         shadowOpacity: 1,
         shadowOffset: {
-            height: 4, 
+            height: 4,
             width: 2
         },
         borderBottomWidth: 0

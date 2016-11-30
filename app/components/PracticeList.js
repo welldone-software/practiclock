@@ -231,7 +231,7 @@ class Row extends Component {
                     <Ionicons name="md-more" size={20} style={styles.rowOrderButton}/>
                     <TouchableOpacity onPress={() => Actions.practiceView({id})} style={styles.rowButton}>
                         <Text style={styles.rowTitle}>{title}</Text>
-                        <SimpleTrackPlayer file={this.props} onPlay={this.props.onPlay} isPlaying={this.props.isPlaying}/>
+                        <SimpleTrackPlayer file={this.props} onPlay={this.props.onPlay} isPlaying={this.props.isPlaying}  style={{position: 'absolute', right: 20}}/>
                         <View style={styles.rowInfoContainer}>
                             <View style={styles.rowInfoGroup}>
                                 <Text style={styles.rowInfoLable}>Duration:</Text>
