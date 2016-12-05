@@ -16,6 +16,7 @@ import {connect} from 'react-redux'
 import {Actions} from 'react-native-router-flux'
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import SortableList from 'react-native-sortable-list'
+import Swipeout from 'react-native-swipeout'
 import moment from 'moment'
 import {exercises as exercisesActions} from '../store/actions'
 import {Types} from './Exercise'
@@ -56,11 +57,14 @@ const styles = StyleSheet.create({
         fontSize: 16,
         fontWeight: '600'
     },
-    rowContent: {
+    rowContainer: {
         width: SCREEN_WIDTH,
         flexDirection: 'row',
         justifyContent: 'center',
         alignItems: 'center'
+    },
+    rowContent: {
+        backgroundColor: '#fff'
     },
     rowOrderButton: {
         width: 20,
@@ -106,6 +110,13 @@ const styles = StyleSheet.create({
         flex: 1,
         height: StyleSheet.hairlineWidth,
         backgroundColor: '#eee',
+    },
+    removeButton: {
+        paddingTop: 28,
+        paddingBottom: 28,
+        paddingLeft: 26,
+        paddingRight: 26,
+        color: '#FFF'
     },
     button: {
         paddingTop: 24,
@@ -252,7 +263,10 @@ class Row extends Component {
             title,
             data,
             practices,
-            active
+            active,
+            onSwipe,
+            swipe,
+            onDeleteButtonPress
         } = this.props
 
         const style = Object.assign({}, this.state.style, active ? {
@@ -277,6 +291,15 @@ class Row extends Component {
             }).reduce((a, b) => a+b, 0),
         'minutes')
 
+        const swipeoutBtns = [
+            {
+                component: <Ionicons name="md-trash" size={30} style={styles.removeButton} />,
+                color: '#FC3D39',
+                backgroundColor: 'red',
+                onPress: () => onDeleteButtonPress(id)
+            }
+        ]
+
         return (
             <Animated.View 
                 style={[
@@ -284,21 +307,29 @@ class Row extends Component {
                     style
                 ]}
             >
-                <View style={styles.rowContent}>
+                <View style={styles.rowContainer}>
                     <Ionicons name="md-more" size={20} style={styles.rowOrderButton}/>
-                    <TouchableOpacity onPress={() => Actions.exerciseView({id})} style={styles.rowButton}>
-                        <Text style={styles.rowTitle}>{title}</Text>
-                        <View style={styles.rowInfoContainer}>
-                            <View style={styles.rowInfoGroup}>
-                                <Text style={styles.rowInfoLable}>Practicies:</Text>
-                                <Text style={styles.rowInfoText}>{amountOfPractices}</Text>
+                    <Swipeout
+                        right={swipeoutBtns}
+                        style={styles.rowContent}
+                        autoClose
+                        onOpen={() => onSwipe(id)}
+                        close={!swipe}
+                    >
+                        <TouchableOpacity onPress={() => Actions.exerciseView({id})} style={styles.rowButton}>
+                            <Text style={styles.rowTitle}>{title}</Text>
+                            <View style={styles.rowInfoContainer}>
+                                <View style={styles.rowInfoGroup}>
+                                    <Text style={styles.rowInfoLable}>Practicies:</Text>
+                                    <Text style={styles.rowInfoText}>{amountOfPractices}</Text>
+                                </View>
+                                <View style={styles.rowInfoGroup}>
+                                    <Text style={styles.rowInfoLable}>Duration:</Text>
+                                    <Text style={styles.rowInfoText}>{duration.format('hh:mm', {forceLength: true, trim: false})}</Text>
+                                </View>
                             </View>
-                            <View style={styles.rowInfoGroup}>
-                                <Text style={styles.rowInfoLable}>Duration:</Text>
-                                <Text style={styles.rowInfoText}>{duration.format('hh:mm', {forceLength: true, trim: false})}</Text>
-                            </View>
-                        </View>
-                    </TouchableOpacity>
+                        </TouchableOpacity>
+                    </Swipeout>
                 </View>
             </Animated.View>
         )
@@ -320,9 +351,9 @@ class ExerciseList extends Component {
         this.setState({practices})
         const nextExercises = [...nextProps.exercises].sort((a,b) => a.id-b.id)
         const currentExercises = [...this.props.exercises].sort((a,b) => a.id-b.id)
-        if ( JSON.stringify(nextExercises) === JSON.stringify(currentExercises) ) return
+        if (JSON.stringify(nextExercises) === JSON.stringify(currentExercises)) return
         if (JSON.stringify(nextProps) !== JSON.stringify(this.props)) {
-            this.setState({isMounted: false}, () => {
+            this.setState({isMounted: false, exercises}, () => {
                 Actions.refresh({
                     renderRightButton: this.renderRightButton,
                     navigationBarStyle: styles.navbar,
@@ -363,6 +394,23 @@ class ExerciseList extends Component {
         this.setState({exercises, order: null}, () => this.props.order(exercises))
     }
 
+    onSwipe = (id) => {
+        this.setState({
+            exercises: this.state.exercises.map(exercise => ({...exercise, swipe: exercise.id === id}))
+        })
+    }
+
+    renderRow = ({data, active, swipe}) => {
+        return (<Row 
+                    {...data}
+                    practices={this.state.practices}
+                    active={active}
+                    onSwipe={this.onSwipe}
+                    onDeleteButtonPress={id => this.props.remove(id)}
+                    swipe={swipe}
+                />)
+    }
+
     render() {
         const {
             exercises,
@@ -383,7 +431,7 @@ class ExerciseList extends Component {
                     <SortableList
                             contentContainerStyle={styles.contentContainer}
                             data={data}
-                            renderRow={({data, active}) => (<Row {...data} practices={practices} active={active}/>)}
+                            renderRow={this.renderRow}
                             onChangeOrder={(order) => this.setState({order})}
                             onReleaseRow={() => this.onOrderChange()}
                             enableEmptySections
