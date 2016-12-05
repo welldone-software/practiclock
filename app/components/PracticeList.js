@@ -15,6 +15,7 @@ import { connect } from 'react-redux'
 import { Actions } from 'react-native-router-flux'
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import SortableList from 'react-native-sortable-list'
+import Swipeout from 'react-native-swipeout'
 import { practices as practicesActions } from '../store/actions'
 import SimpleTrackPlayer from './SimpleTrackPlayer'
 
@@ -53,11 +54,14 @@ const styles = StyleSheet.create({
         fontSize: 16,
         fontWeight: '600'
     },
-    rowContent: {
+    rowContainer: {
         width: SCREEN_WIDTH,
         flexDirection: 'row',
         justifyContent: 'center',
         alignItems: 'center'
+    },
+    rowContent: {
+        backgroundColor: '#fff'
     },
     rowOrderButton: {
         width: 20,
@@ -94,6 +98,13 @@ const styles = StyleSheet.create({
         marginLeft: 2,
         fontSize: 14,
         color: '#ccc'
+    },
+    removeButton: {
+        paddingTop: 28,
+        paddingBottom: 28,
+        paddingLeft: 26,
+        paddingRight: 26,
+        color: '#FFF'
     },
     button: {
         paddingTop: 24,
@@ -218,7 +229,10 @@ class Row extends Component {
             title,
             duration,
             repeat,
-            active
+            active,
+            onSwipe,
+            swipe,
+            onDeleteButtonPress
         } = this.props
 
         const style = Object.assign({}, this.state.style, active ? {
@@ -230,24 +244,41 @@ class Row extends Component {
             }
         } : {})
 
+        const swipeoutBtns = [
+            {
+                component: <Ionicons name="md-trash" size={30} style={styles.removeButton} />,
+                color: '#FC3D39',
+                backgroundColor: 'red',
+                onPress: () => onDeleteButtonPress(id)
+            }
+        ]
+
         return (
             <Animated.View style={[styles.row, style]}>
-                <View style={styles.rowContent}>
+                <View style={styles.rowContainer}>
                     <Ionicons name="md-more" size={20} style={styles.rowOrderButton}/>
-                    <TouchableOpacity onPress={() => Actions.practiceView({id})} style={styles.rowButton}>
-                        <Text style={styles.rowTitle}>{title}</Text>
-                        <SimpleTrackPlayer file={this.props} onPlay={this.props.onPlay} isPlaying={this.props.isPlaying}  style={{position: 'absolute', right: 20}}/>
-                        <View style={styles.rowInfoContainer}>
-                            <View style={styles.rowInfoGroup}>
-                                <Text style={styles.rowInfoLable}>Duration:</Text>
-                                <Text style={styles.rowInfoText}>{duration === 60 ? '1 h' : duration + ' min' }</Text>
+                    <Swipeout
+                        right={swipeoutBtns}
+                        style={styles.rowContent}
+                        autoClose
+                        onOpen={() => onSwipe(id)}
+                        close={!swipe}
+                    >
+                        <TouchableOpacity onPress={() => Actions.practiceView({id})} style={styles.rowButton}>
+                            <Text style={styles.rowTitle}>{title}</Text>
+                            <SimpleTrackPlayer file={this.props} onPlay={this.props.onPlay} isPlaying={this.props.isPlaying}  style={{position: 'absolute', right: 20}}/>
+                            <View style={styles.rowInfoContainer}>
+                                <View style={styles.rowInfoGroup}>
+                                    <Text style={styles.rowInfoLable}>Duration:</Text>
+                                    <Text style={styles.rowInfoText}>{duration === 60 ? '1 h' : duration + ' min' }</Text>
+                                </View>
+                                <View style={styles.rowInfoGroup}>
+                                    <Text style={styles.rowInfoLable}>Repeat:</Text>
+                                    <Text style={styles.rowInfoText}>{repeat}</Text>
+                                </View>
                             </View>
-                            <View style={styles.rowInfoGroup}>
-                                <Text style={styles.rowInfoLable}>Repeat:</Text>
-                                <Text style={styles.rowInfoText}>{repeat}</Text>
-                            </View>
-                        </View>
-                    </TouchableOpacity>
+                        </TouchableOpacity>
+                    </Swipeout>
                 </View>
             </Animated.View>
         )
@@ -304,6 +335,22 @@ class PracticeList extends Component {
         this.setState({practices, order: null}, () => this.props.order(practices))
     }
 
+    onSwipe = (id) => {
+        this.setState({
+            practices: this.state.practices.map(practice => ({...practice, swipe: practice.id === id}))
+        })
+    }
+
+    renderRow = ({data, active, swipe}) => {
+        return (<Row 
+                    {...data}
+                    active={active}
+                    onSwipe={this.onSwipe}
+                    onDeleteButtonPress={id => this.props.remove(id)}
+                    swipe={swipe}
+                />)
+    }
+
     render () {
         const {
             isMounted,
@@ -319,7 +366,7 @@ class PracticeList extends Component {
                     <SortableList
                         contentContainerStyle={styles.contentContainer}
                         data={data}
-                        renderRow={({data, active}) => (<Row {...data} active={active}/>)}
+                        renderRow={this.renderRow}
                         onChangeOrder={(order) => this.setState({order})}
                         onReleaseRow={() => this.onOrderChange()}
                         enableEmptySections
