@@ -351,7 +351,7 @@ class Exercise extends Component {
             shouldRerender
         } = this.state
 
-        const items = Array.from(data)
+        const items = Object.values(data)
         const lastItem = items[items.length-1]
         const isIntervalLastItem = lastItem ? lastItem.type === Types.INTERVAL : false
 
