@@ -1,14 +1,36 @@
 //@flow
 import React, { Component } from 'react'
-import { View, TouchableOpacity } from 'react-native'
-import Ionicons from 'react-native-vector-icons/Ionicons'
+import { 
+    View,
+    TouchableOpacity,
+    StyleSheet
+} from 'react-native'
+import Icon from 'react-native-vector-icons/Ionicons'
 import PseudoSyncSound from './PseudoSyncSound'
 
+const styles = StyleSheet.create({
+    button: {
+        width: 30,
+        height: 30,
+        borderRadius: 15,
+        borderWidth: 1,
+        borderColor: '#24CB58',
+        paddingLeft: 10,
+        paddingRight: 8,
+        paddingTop: 4,
+        paddingBottom: 4
+    },
+    icon: {
+        color: '#24CB58'
+    }
+})
+
 export default class SimpleTrackPlayer extends Component {
+    // TODO: REMOVE THIS PART OF CODE
     static CollectionCallback = (array, context) => {
         array.forEach(item => item.onPlay = item => {
             array.forEach((item) => item.isPlaying = false)
-            item.isPlaying = true;
+            item.isPlaying = true
             context.forceUpdate()
         })
     }
@@ -16,16 +38,16 @@ export default class SimpleTrackPlayer extends Component {
     constructor (props) {
         super(props)
         this.state = {isPlaying: props.file.isPlaying}
-        this.file = new PseudoSyncSound(this.props.file.sound, this.setAsNotPlaying);
+        this.file = new PseudoSyncSound(this.props.file.sound, this.setAsNotPlaying)
     }
 
     componentWillReceiveProps (nextProps) {
         if ( this.state.isPlaying !== nextProps.file.isPlaying ) {
             if ( nextProps.isPlaying ) {
-                this.start();
+                this.start()
             } else {
-                this.setAsNotPlaying();
-                this.file.stop();
+                this.setAsNotPlaying()
+                this.file.stop()
             }
         }
     }
@@ -33,33 +55,35 @@ export default class SimpleTrackPlayer extends Component {
     setAsNotPlaying = () => this.setState({isPlaying: false})
 
     play = () => {
-        if ( !this.state.isPlaying ) {
-            this.setState({isPlaying: true})
-            this.file.play();
-            this.props.onPlay(this.props.file);
-        }
+        if (this.state.isPlaying) return
+        this.setState({isPlaying: true})
+        this.file.play()
+        this.props.onPlay(this.props.file)
     }
 
     pause = () => {
-        if ( this.state.isPlaying ) {
-            this.setAsNotPlaying();
-            this.file.pause();
-        }
+        if (!this.state.isPlaying) return
+        this.setAsNotPlaying()
+        this.file.pause()
     }
 
     componentWillUnmount () {
-        this.file.stop();
+        this.file.stop()
     }
 
     render () {
         return (
             <View style={this.props.style}>
-                {!this.state.isPlaying && <TouchableOpacity onPress={this.play.bind(this)}>
-                    <Ionicons name="md-play" size={20}/>
-                </TouchableOpacity>}
-                {this.state.isPlaying && <TouchableOpacity onPress={this.pause.bind(this)}>
-                    <Ionicons name="md-pause" size={20} onPress={this.pause.bind(this)}/>
-                </TouchableOpacity>}
+                {!this.state.isPlaying && 
+                    <TouchableOpacity onPress={this.play.bind(this)} style={styles.button}>
+                        <Icon name="ios-play-outline" size={20} style={styles.icon}/>
+                    </TouchableOpacity>
+                }
+                {this.state.isPlaying && 
+                    <TouchableOpacity onPress={this.pause.bind(this)} style={styles.button}>
+                        <Icon name="ios-pause-outline" size={20} style={styles.icon}/>
+                    </TouchableOpacity>
+                }
             </View>
         )
     }

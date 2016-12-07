@@ -7,7 +7,7 @@ import {
     TouchableHighlight,
     Navigator
 } from 'react-native'
-import Ionicons from 'react-native-vector-icons/Ionicons'
+import Icon from 'react-native-vector-icons/Ionicons'
 import {
     Actions,
     ActionConst,
@@ -17,7 +17,7 @@ import {
 } from 'react-native-router-flux'
 import { connect, Provider } from 'react-redux'
 import Practice from './Practice'
-import PracticeList from './PracticeList'
+import PracticeList from './practices/List'
 import Exercise from './Exercise'
 import ExerciseList from './ExerciseList'
 import Player from './Player'
@@ -26,33 +26,31 @@ import configureStore from '../store'
 const RouterWithRedux = connect()(Router)
 const store = configureStore()
 
-const Plus = () => <Ionicons name="md-add" size={20} />
-
 const SequenceItem = ({id}) => (
-  <View style={{margin: 128}}>
-    <Text>SequenceItem {id}</Text>
-    <Text onPress={Actions.pop}>back</Text>
-  </View>
+    <View style={{margin: 128}}>
+        <Text>SequenceItem {id}</Text>
+        <Text onPress={Actions.pop}>back</Text>
+    </View>
 )
 
 const title2icon = {
     Practices: 'ios-alarm-outline',
-    Exercises: 'ios-albums-outline'
+    Exercises: 'ios-list-box-outline'
 }
 
 const TabIcon = ({ selected, title }) => (
     <View style={{alignItems: 'center'}}>
-        <Ionicons 
+        <Icon 
             style={{
-                color: '#fff'
-            }} 
-            size={20} 
+                color: '#75949A'
+            }}
+            size={28} 
             name={title2icon[title] || 'logo-apple'}
         />
         <Text 
             style={{
                 fontSize: 12,
-                color: '#fff',
+                color: '#75949A',
                 fontWeight: selected ? '900' : 'normal'
             }}
         >
@@ -70,7 +68,11 @@ export default () => {
                         <Scene
                             key="tabbar"
                             tabs
-                            tabBarStyle={{backgroundColor: '#79909b'}}
+                            tabBarStyle={{
+                                backgroundColor: '#fff',
+                                borderTopWidth: 1,
+                                borderTopColor: '#f5f5f5'
+                            }}
                           >
                             <Scene 
                                 key="practices"
