@@ -44,13 +44,14 @@ export default class SimpleTrackPlayer extends Component {
     componentWillReceiveProps (nextProps) {
         if ( this.state.isPlaying !== nextProps.file.isPlaying ) {
             if ( nextProps.isPlaying ) {
-                this.start()
+                this.file.play()
             } else {
                 this.setAsNotPlaying()
                 this.file.stop()
             }
         }
     }
+
 
     setAsNotPlaying = () => this.setState({isPlaying: false})
 
