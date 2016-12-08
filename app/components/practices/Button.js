@@ -32,13 +32,21 @@ const styles = StyleSheet.create({
     }
 })
 
-const DeleteButton = ({onPress}) => {
-    return (
-        <TouchableOpacity onPress={onPress} style={styles.buttonDelete}>
-            <Icon name="ios-trash-outline" size={20} style={styles.buttonDeleteIcon}/>
-        </TouchableOpacity>
-    )
-}
+class DeleteButton extends Component {
+    render () {
+        const {onPress, style} = this.props
+        return (
+            <View style={style}>
+                <TouchableOpacity onPress={onPress} style={styles.buttonDelete}>
+                    <Icon name="ios-trash-outline" size={20} style={styles.buttonDeleteIcon}/>
+                </TouchableOpacity>
+            </View>
+        )
+    }
+} 
+
+const DeleteButtonAnimated = Animated.createAnimatedComponent(DeleteButton)
+const SimpleTrackPlayerAnimated = Animated.createAnimatedComponent(SimpleTrackPlayer)
 
 export default class Button extends Component {
     static propTypes = {
@@ -143,30 +151,34 @@ export default class Button extends Component {
 
         return (
             <View>
-                <Animated.View style={
-                    [
-                        styles.button,
-                        {
-                            transform: [{rotate: interpolatedButtonRotateAnimation}],
-                            opacity: this._viewModeButtonOpacity,
-                            zIndex: this._viewModeButtonOpacity
-                        }
-                    ]
-                }>
-                    <SimpleTrackPlayer file={file} onPlay={onPlay} isPlaying={isPlaying}/>
-                </Animated.View>
-                <Animated.View style={
-                    [
-                        styles.button, 
-                        {
-                            transform: [{rotate: interpolatedButtonRotateAnimation}],
-                            opacity: this._editModeButtonOpacity,
-                            zIndex: this._editModeButtonOpacity
-                        }
-                    ]
-                }>
-                    <DeleteButton onPress={onDelete}/>
-                </Animated.View>
+                <SimpleTrackPlayerAnimated 
+                    style={
+                        [
+                            styles.button,
+                            {
+                                transform: [{rotate: interpolatedButtonRotateAnimation}],
+                                opacity: this._viewModeButtonOpacity,
+                                zIndex: this._viewModeButtonOpacity
+                            }
+                        ]
+                    }
+                    file={file}
+                    onPlay={onPlay}
+                    isPlaying={isPlaying}
+                />
+                <DeleteButtonAnimated 
+                    style={
+                        [
+                            styles.button, 
+                            {
+                                transform: [{rotate: interpolatedButtonRotateAnimation}],
+                                opacity: this._editModeButtonOpacity,
+                                zIndex: this._editModeButtonOpacity
+                            }
+                        ]
+                    }
+                    onPress={onDelete}
+                />
             </View>
         )
     }

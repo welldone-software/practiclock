@@ -1,10 +1,10 @@
 //@flow
 import React, {Component} from 'react'
 import {
+    Animated,
+    Easing,
     Text,
     View,
-    TouchableOpacity,
-    TouchableHighlight,
     Navigator
 } from 'react-native'
 import Icon from 'react-native-vector-icons/Ionicons'
@@ -15,7 +15,7 @@ import {
     Router,
     Scene
 } from 'react-native-router-flux'
-import { connect, Provider } from 'react-redux'
+import {connect, Provider} from 'react-redux'
 import Practice from './Practice'
 import PracticeList from './practices/List'
 import Exercise from './Exercise'
@@ -26,38 +26,75 @@ import configureStore from '../store'
 const RouterWithRedux = connect()(Router)
 const store = configureStore()
 
-const SequenceItem = ({id}) => (
-    <View style={{margin: 128}}>
-        <Text>SequenceItem {id}</Text>
-        <Text onPress={Actions.pop}>back</Text>
-    </View>
-)
+const IconAnimated = Animated.createAnimatedComponent(Icon)
 
-const title2icon = {
-    Practices: 'ios-alarm-outline',
-    Exercises: 'ios-list-box-outline'
+class TabIcon extends Component {
+    static title2icon = {
+        Practices: 'ios-alarm-outline',
+        Exercises: 'ios-list-box-outline'
+    }
+
+    constructor(props) {
+        super(props)
+        this._scale = new Animated.Value(1)
+    }
+
+    componentWillReceiveProps(nextProps) {
+        if (nextProps.selected) {
+            this.startSelectedAnimation()
+        } else {
+            this.startUnselectedAnimation()
+        }
+    }
+
+    startSelectedAnimation() {
+        this._scale.setValue(1)
+
+        Animated.timing(this._scale, {
+            duration: 300,
+            easing: Easing.linear,
+            toValue: 1.1
+        }).start()
+    }
+
+    startUnselectedAnimation() {
+        Animated.timing(this._scale, {
+            duration: 300,
+            easing: Easing.linear,
+            toValue: 1
+        }).start()
+    }
+
+    render() {
+        const {selected, title} = this.props
+
+        return (
+            <View style={{alignItems: 'center'}}>
+                <IconAnimated 
+                    style={{
+                        color: '#75949A',
+                        transform: [
+                            {
+                                scale: this._scale,
+                            }
+                        ]
+                    }}
+                    size={28} 
+                    name={TabIcon.title2icon[title]}
+                />
+                <Text 
+                    style={{
+                        fontSize: 12,
+                        color: '#75949A',
+                        fontWeight: selected ? '900' : 'normal'
+                    }}
+                >
+                    {title}
+                </Text>
+            </View>
+        )
+    }
 }
-
-const TabIcon = ({ selected, title }) => (
-    <View style={{alignItems: 'center'}}>
-        <Icon 
-            style={{
-                color: '#75949A'
-            }}
-            size={28} 
-            name={title2icon[title] || 'logo-apple'}
-        />
-        <Text 
-            style={{
-                fontSize: 12,
-                color: '#75949A',
-                fontWeight: selected ? '900' : 'normal'
-            }}
-        >
-            {title}
-        </Text>
-    </View>
-)
 
 export default () => {
     return (
