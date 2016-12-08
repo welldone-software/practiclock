@@ -30,7 +30,7 @@ const styles = StyleSheet.create({
         backgroundColor: 'white',
         width: SCREEN_WIDTH,
         borderBottomWidth: 1,
-        borderBottomColor: '#eee'
+        borderBottomColor: '#EFF0F0'
     },
     activeRow: {
         shadowColor: 'rgba(0,0,0,0.2)',
@@ -205,6 +205,7 @@ export default class ListView extends Component {
     static propTypes = {
         editMode: PropTypes.bool,
         mounted: PropTypes.bool,
+        scrollEnabled: PropTypes.bool,
         items: PropTypes.array,
         emptyView: PropTypes.element,
         onOrderChange: PropTypes.func.isRequired
@@ -213,6 +214,7 @@ export default class ListView extends Component {
     static defaultProps = {
         editMode: false,
         mounted: false,
+        scrollEnabled: true,
         items: [],
         emptyView: null,
     }
@@ -254,7 +256,8 @@ export default class ListView extends Component {
             items,
             emptyView,
             editMode,
-            mounted
+            mounted,
+            scrollEnabled
         } = this.props
 
         if (!mounted) return null
@@ -272,6 +275,7 @@ export default class ListView extends Component {
                     onChangeOrder={order => this.setState({order})}
                     onReleaseRow={this.onOrderChange}
                     enableEmptySections
+                    scrollEnabled={scrollEnabled}
                 />
             </View>
         )

@@ -71,6 +71,8 @@ export default ({data, editMode, onDelete}) => {
     } = data
 
     const Wrapper = editMode ? View : TouchableOpacity
+    const min = (duration/1000/60) << 0 || 0
+    const sec = (duration/1000) % 60 || '00'
 
     return (
         <Wrapper 
@@ -85,7 +87,7 @@ export default ({data, editMode, onDelete}) => {
             <View style={styles.info}>
                 <View style={styles.group}>
                     <Text style={styles.label}>DURATION:</Text>
-                    <Text style={styles.text}>{duration} MIN</Text>
+                    <Text style={styles.text}>{min}:{sec}</Text>
                 </View>
                 <View style={styles.group}>
                     <Text style={styles.label}>REPEAT:</Text>

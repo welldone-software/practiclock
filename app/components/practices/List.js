@@ -59,7 +59,7 @@ class List extends Component {
     }
 
     componentDidMount() {
-        this.refresh()
+        this.refresh(!Boolean(this.props.practices.length))
     }
 
     componentWillReceiveProps(nextProps) {
@@ -68,30 +68,24 @@ class List extends Component {
         const currentPractices = [...this.props.practices].sort((a,b) => a.id-b.id)
         if (JSON.stringify(nextPractices) === JSON.stringify(currentPractices)) return
         this.setState({mounted: false, practices: nextProps.practices}, () => {
-            Actions.refresh({
-                renderRightButton: this.renderRightButton,
-                renderLeftButton: this.renderLeftButton,
-                navigationBarStyle: styles.navbar,
-                titleStyle: styles.title,
-                hideNavBar: !Boolean(nextProps.practices.length)
-            })
+            this.refresh(!Boolean(nextProps.practices.length))
             this.setState({mounted: true})
         })
     }
 
-    refresh = () => {
+    refresh = (hideNavBar = false) => {
         Actions.refresh({
             renderRightButton: this.renderRightButton,
             renderLeftButton: this.renderLeftButton,
             navigationBarStyle: styles.navbar,
             titleStyle: styles.title,
-            hideNavBar: !Boolean(this.props.practices.length)
+            hideNavBar
         })
     }
 
     onLeftButtonTouch = () => {
         this.setState({editMode: !this.state.editMode})
-        this.refresh()
+        this.refresh(!Boolean(this.props.practices.length))
     }
 
     renderRightButton = () => {

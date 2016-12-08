@@ -1,6 +1,8 @@
 package com.practiclock;
 
 import com.facebook.react.ReactActivity;
+import com.zmxv.RNSound.RNSoundPackage;
+import com.cmcewen.blurview.BlurViewPackage;
 
 public class MainActivity extends ReactActivity {
     /**

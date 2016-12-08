@@ -16,7 +16,7 @@ import {
     Scene
 } from 'react-native-router-flux'
 import {connect, Provider} from 'react-redux'
-import Practice from './Practice'
+import Practice from './practices/Item'
 import PracticeList from './practices/List'
 import Exercise from './Exercise'
 import ExerciseList from './ExerciseList'
