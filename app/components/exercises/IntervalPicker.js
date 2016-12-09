@@ -11,35 +11,38 @@ import {
 const width = Dimensions.get('window').width
 
 const styles = StyleSheet.create({
-    container: {
-        flexDirection: 'row',
-        justifyContent: 'center',
-        width: width
-    },
     wrapper: {
         flexDirection: 'row',
         justifyContent: 'space-between'
     },
     slider: {
         marginTop: 16,
-        width: width
+        width: width-40
     },
     preview: {
-        fontSize: 18
+        fontSize: 18,
+        color: '#6C8993'
     }
 })
 
-export default ({current = 0, onChange}) => (
-    <View>
-        <View style={styles.wrapper}>
-            <Text style={styles.preview}>Pause</Text>
-            <Text style={styles.preview}>{current}</Text>
-        </View>
+export default ({current = 0, onChange}) => {
+    const min = Math.round((current/1000/60) << 0 || 0)
+    const sec = Math.round((current/1000)%60) || '00'
+    return (
         <View>
-            <Slider
-                style={styles.slider}
-                onValueChange={value => onChange(value)}
-            />
+            <View style={styles.wrapper}>
+                <Text style={styles.preview}>Pause</Text>
+                <Text style={styles.preview}>{min}:{sec}</Text>
+            </View>
+            <View>
+                <Slider
+                    minimumValue={0}
+                    maximumValue={180}
+                    step={1}
+                    style={styles.slider}
+                    onValueChange={value => onChange(value*5*1000)}
+                />
+            </View>
         </View>
-    </View>
-)
+    )
+}

@@ -30,7 +30,7 @@ const IconAnimated = Animated.createAnimatedComponent(Icon)
 
 class TabIcon extends Component {
     static title2icon = {
-        Practices: 'ios-alarm-outline',
+        Practices: 'ios-basketball-outline',
         Exercises: 'ios-list-box-outline'
     }
 

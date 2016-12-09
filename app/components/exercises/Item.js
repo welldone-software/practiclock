@@ -5,9 +5,6 @@ import {
     Dimensions,
     Easing,
     Image,
-    ListView,
-    Modal,
-    ScrollView,
     StyleSheet,
     Text,
     TextInput,
@@ -17,8 +14,7 @@ import {
 import {Actions} from 'react-native-router-flux'
 import {bindActionCreators} from 'redux'
 import {connect} from 'react-redux'
-import FontAwesome from 'react-native-vector-icons/FontAwesome'
-import Ionicons from 'react-native-vector-icons/Ionicons'
+import Icon from 'react-native-vector-icons/Ionicons'
 import SortableList from 'react-native-sortable-list'
 import ActionButton from 'react-native-action-button'
 import CustomPicker from '../../core/CustomPicker'
@@ -32,18 +28,7 @@ const width = Dimensions.get('window').width
 const styles = StyleSheet.create({
     navbar: {
         backgroundColor: '#fff',
-        shadowColor: 'rgba(0,0,0,0.1)',
-        shadowOpacity: 1,
-        shadowOffset: {
-            height: 1,
-            width: 1
-        },
         borderBottomWidth: 0
-    },
-    navBarButtonText: {
-        fontSize: 18,
-        marginVertical: 5,
-        color: '#6C8993'
     },
     navBarLeftButton: {
         marginTop: -6
@@ -62,18 +47,20 @@ const styles = StyleSheet.create({
         fontWeight: '500',
         color: '#6C8993'
     },
-    removeButton: {
-        marginTop: 2,
-        paddingLeft: 4,
+    scene: {
+        flex: 1,
+        marginTop: 70,
+        backgroundColor: '#F3F6F6'
     },
-    section: {
+    title: {
         paddingRight: 10,
-        paddingTop: 20,
-        paddingBottom: 20,
+        paddingTop: 10,
+        paddingBottom: 10,
+        flexDirection: 'row',
+        justifyContent: 'flex-start',
         borderBottomWidth: 1,
         borderBottomColor: '#eff0f0',
-        flexDirection: 'row',
-        justifyContent: 'space-between'
+        backgroundColor: '#fff'
     },
     icon: {
         width: 50,
@@ -81,179 +68,67 @@ const styles = StyleSheet.create({
         paddingLeft: 15,
         paddingRight: 10,
     },
-    iconText: {
-        textDecorationLine: 'underline',
-        fontSize: 22,
-        fontWeight: '200',
-        textAlign: 'center'
-    },
-    label: {
-        flexDirection: 'row',
-        justifyContent: 'space-between'
-    },
-    text: {
-        fontSize: 18,
-        lineHeight: 26,
-        color: '#6C8993'
-    },
-    preview: {
-        fontSize: 18,
-        lineHeight: 26,
-        color: '#CBD3D8'
-    },
     input: {
         width: width/2,
         color: '#4F5E69'
     },
-    repeat: {
+    row: {
         flexDirection: 'row',
-        justifyContent: 'space-between',
-        width: width-10
+        backgroundColor: 'white',
+        paddingTop: 24,
+        paddingBottom: 24,
+        paddingLeft: 16,
+        paddingRight: 16,
+        marginVertical: 6,
+        height: 70,
+        width: width-20,
+        borderTopRightRadius: 8,
+        borderBottomRightRadius: 8
     },
-    buttons: {
-        position: 'absolute',
-        width,
-        bottom: 20,
-        flexDirection: 'row',
-        justifyContent: 'space-around'
-    },
-    deleteButton: {
-        width: width/2.5,
-        paddingTop: 10,
-        paddingBottom: 10,
-        borderWidth: 1,
-        borderRadius: 5,
-        borderColor: '#FC4E54',
-        flexDirection: 'row',
-        justifyContent: 'center',
-    },
-    deleteText: {
-        fontSize: 14,
-        color: '#FC4E54'
-    },
-    playButton: {
-        width: width/2.5,
-        paddingTop: 10,
-        paddingBottom: 10,
-        borderWidth: 1,
-        borderRadius: 5,
-        borderColor: '#24CB58',
-        flexDirection: 'row',
-        justifyContent: 'center',
-    },
-    playText: {
-        fontSize: 14,
-        color: '#24CB58'
-    },
-    slider: {
-        paddingLeft: 20,
-        paddingRight: 10,
-        paddingTop: 20
-    },
-    track: {
-        height: 2,
-        borderRadius: 1,
-        backgroundColor: '#CBD3D8',
-    },
-    thumb: {
-        width: 20,
-        height: 20,
-        borderRadius: 10,
-        borderWidth: 1,
-        backgroundColor: '#fff',
-        borderColor: '#6C8993'
-    },
-    scene: {
+    container: {
         flex: 1,
-        marginTop: 70
+        alignItems: 'flex-start'
+    },
+    content: {
+        width: width,
+    },
+    wrapper: {
+        flex: 1,
+        flexDirection: 'row',
+        justifyContent: 'space-between'
+    },
+    item: {
+        flex: 1,
+        flexDirection: 'row',
+        justifyContent: 'flex-start',
+        alignItems: 'center',
+        backgroundColor: '#FFF'
+    },
+    iconType: {
+        paddingRight: 16,
+        paddingLeft: 16,
+        color: '#6C8993'
+    },
+    info: {
+        flexDirection: 'row',
+        justifyContent: 'space-between'
+    },
+    text: {
+        lineHeight: 22,
+        marginRight: 5,
+        color: '#6C8993'
+    },
+    orderButton: {
+        color: '#ccc'
+    },
+    itemButton: {
+        color: '#FC4E54'
     }
 })
-
-
-// const styles = StyleSheet.create({
-//     navbar: {
-//         backgroundColor: '#f9bb2d',
-//         shadowColor: 'rgba(0,0,0,0.2)',
-//         shadowOpacity: 1,
-//         shadowOffset: {
-//             height: 4,
-//             width: 2
-//         },
-//         borderBottomWidth: 0
-//     },
-//     navBarText: {
-//         fontSize: 18,
-//         marginVertical: 5
-//     },
-//     navBarLeftButton: {
-//         marginTop: -2,
-//         paddingLeft: 10
-//     },
-//     navBarRightButton: {
-//         marginTop: -5,
-//         paddingRight: 10
-//     },
-//     title: {
-//         flex: 1,
-//         maxHeight: 60
-//     },
-//     input: {
-//         height: 60
-//     },
-//     container: {
-//         flex: 1,
-//         alignItems: 'center',
-//         backgroundColor: '#fff'
-//     },
-//     content: {
-//         width: width - 10,
-//     },
-//     wrapper: {
-//         flex: 1,
-//         flexDirection: 'row',
-//         justifyContent: 'space-between'
-//     },
-//     scene: {
-//         flex: 1,
-//         flexDirection: 'column',
-//         marginTop: 60,
-//         padding: 5
-//     },
-//     itemButton: {
-//         color: '#fc3d39'
-//     },
-//     playButton: {
-//         marginTop: 2,
-//         paddingLeft: 4
-//     },
-//     picker: {
-//         width: width
-//     },
-//     item: {
-//         flex: 1,
-//         flexDirection: 'row',
-//         justifyContent: 'space-between',
-//         alignItems: 'center',
-//         backgroundColor: '#FFF'
-//     },
-//     row: {
-//         flexDirection: 'row',
-//         backgroundColor: 'white',
-//         padding: 16,
-//         marginVertical: 1,
-//         height: 80,
-//         width: width - 10,
-//         borderTopWidth: 1,
-//         borderBottomWidth: 1,
-//         borderTopColor: '#eee',
-//         borderBottomColor: '#eee'
-//     },
 //     actionButtonIcon: {
 //         fontSize: 20,
 //         height: 22,
 //         color: 'white'
-//     }
-// })
 
 
 export const Types = {
@@ -315,6 +190,9 @@ class Row extends Component {
             index,
             onDelete,
         } = this.props
+        const duration = data.value
+        const min = Math.round((duration/1000/60) << 0 || 0)
+        const sec = Math.round((duration/1000)%60) || '00'
 
         return (
             <Animated.View
@@ -324,22 +202,31 @@ class Row extends Component {
                     data.type === Types.PRACTICE ? null : this.state.intervalStyle
                 ]}
             >
+                <Icon name="md-more" size={22} style={styles.orderButton}/>
                 <View style={styles.item}>
-                    <View>
-                        {data.type === Types.INTERVAL &&
-                            <View style={styles.wrapper}>
-                                <Text>Pause</Text>
-                                <Text>{data.value === 60 ? '1h' : data.value + 'min'}</Text>
+                    {data.type === Types.INTERVAL &&
+                        <View style={styles.wrapper}>
+                            <View style={styles.info}>
+                                <Icon name="ios-clock-outline" size={22} style={styles.iconType}/>
+                                <Text style={styles.text}>Pause</Text>
+                                <Text style={styles.text}>{min}:{sec}</Text>
                             </View>
-                        }
-
-                        {data.type === Types.PRACTICE && <Text>{data.title}</Text>}
-                    </View>
-                    <View>
-                        <TouchableOpacity onPress={() => onDelete(index)}>
-                            <FontAwesome name="trash" size={data.type === Types.PRACTICE ? 25 : 20} style={styles.itemButton} />
-                        </TouchableOpacity>
-                    </View>
+                            <TouchableOpacity onPress={() => onDelete(index)}>
+                                <Icon name="ios-trash-outline" size={20} style={styles.itemButton}/>
+                            </TouchableOpacity>
+                        </View>
+                    }
+                    {data.type === Types.PRACTICE && 
+                        <View style={styles.wrapper}>
+                            <View style={styles.info}>
+                                <Icon name="ios-basketball-outline" size={22} style={styles.iconType}/>
+                                <Text style={styles.text}>{data.title}</Text>
+                            </View>
+                            <TouchableOpacity onPress={() => onDelete(index)}>
+                                <Icon name="ios-trash-outline" size={25} style={styles.itemButton}/>
+                            </TouchableOpacity>
+                        </View>
+                    }
                 </View>
             </Animated.View>
         )
@@ -352,18 +239,14 @@ class Exercise extends Component {
     onDelete = (index) => {
         const tmp = {...this.state.data}
         delete tmp[index]
-
-        const data = Object.assign({},
-            Object.keys(tmp).map(key => tmp[key])
-        )
-
+        const data = Object.assign({}, Object.keys(tmp).map(key => tmp[key]))
         this.setState({data, shouldRerender: true}, () => this.setState({shouldRerender: false}))
     }
 
     onSubmit = () => {
         const {title, data} = this.state
         this.props.add({
-            title: title === null || title === undefined ? 'Name' : title,
+            title: ['', null, undefined].includes(title) ? 'Exercise' : title,
             data
         })
         Actions.pop()
@@ -372,7 +255,7 @@ class Exercise extends Component {
     onBack = () => {
         const {title, data} = this.state
         this.props.edit(this.props.id, {
-            title: title === null || title === undefined ? 'Name' : title,
+            title: ['', null, undefined].includes(title) ? 'Exercise' : title,
             data
         })
         Actions.pop()
@@ -389,25 +272,18 @@ class Exercise extends Component {
 
         return (
             <TouchableOpacity style={styles.navBarLeftButton} onPress={Actions.pop}>
-                <Text style={styles.navBarText}>Cancel</Text>
+                <Icon name="ios-close-outline" size={40} style={[styles.navBarIcon, {color: '#FC4E54'}]}/>
             </TouchableOpacity>
         )
     }
 
     renderRightButton = () => {
-        if (this.props.id) {
-            return (
-                <TouchableOpacity onPress={this.onPressPlayButton}>
-                    <Ionicons name="md-play" size={22} style={styles.playButton}/>
-                </TouchableOpacity>
-            )
-        } else {
-            return (
-                <TouchableOpacity style={styles.navBarRightButton} onPress={this.onSubmit}>
-                    <Text style={styles.navBarText}>Create</Text>
-                </TouchableOpacity>
-            )
-        }
+        if (this.props.id) return null
+        return (
+            <TouchableOpacity style={styles.navBarRightButton} onPress={this.onSubmit}>
+                <Icon name="ios-checkmark-outline" size={40} style={[styles.navBarIcon, {color: '#24CB58'}]}/>
+            </TouchableOpacity>
+        )
     }
 
     onPracticeSelected = (id) => {
@@ -485,17 +361,13 @@ class Exercise extends Component {
         } else {
             this.setState({data})
         }
-
-        this.setState({isMounted: false}, () => this.setState({isMounted: true}))
     }
 
-    renderBackButton = () => {
-        return (
-            <TouchableOpacity onPress={this.onBack}>
-                <Ionicons name="ios-arrow-back-outline" size={30} />
-            </TouchableOpacity>
-        )
-    }
+    renderBackButton = () => (
+        <TouchableOpacity onPress={this.onBack}>
+            <Icon name="ios-arrow-back-outline" size={26} style={styles.navBackButton}/>
+        </TouchableOpacity>
+    )
 
     constructor(props) {
         super(props)
@@ -506,7 +378,7 @@ class Exercise extends Component {
             title: exercise.title,
             data: exercise.data,
             scrollEnabled: true,
-            isMounted: false
+            mounted: false
         }
     }
 
@@ -515,16 +387,17 @@ class Exercise extends Component {
             renderLeftButton: this.renderLeftButton,
             renderRightButton: this.renderRightButton,
             onBack: this.onBack,
-            navigationBarStyle: styles.navbar
+            navigationBarStyle: styles.navbar,
+            titleStyle: styles.navBarTitle
         }, this.props.id ? {renderBackButton: this.renderBackButton} : {}))
-        this.setState({isMounted: true})
+        this.setState({mounted: true})
     }
 
     render() {
         const {
             title,
             data,
-            isMounted,
+            mounted,
             shouldRerender
         } = this.state
 
@@ -532,21 +405,23 @@ class Exercise extends Component {
         const lastItem = items[items.length-1]
         const isIntervalLastItem = lastItem ? lastItem.type === Types.INTERVAL : false
 
-        if (!isMounted || shouldRerender) return null
+        if (!mounted || shouldRerender) return null
 
         return (
             <View style={styles.scene}>
                 <View style={styles.title}>
+                    <Text style={[styles.icon, styles.iconText]}>A</Text>
                     <TextInput
-                        editable
                         style={styles.input}
-                        placeholder="Type here to set name of exercise"
+                        editable
+                        placeholder="Type here to set name of practice"
+                        placeholderTextColor="#CBD3D8"
                         onChangeText={this.onTitleChange}
                         value={title}
                     />
                 </View>
 
-                {Object.keys(data).length !== 0 &&
+                {items.length !== 0 &&
                     <View style={styles.wrapper}>
                         <View style={styles.container}>
                             <SortableList
@@ -554,7 +429,7 @@ class Exercise extends Component {
                                 data={data}
                                 renderRow={({data, active, index}) => this.renderRow(data, index, active)}
                                 onChangeOrder={(order) => this.setState({order})}
-                                onReleaseRow={() => this.onOrderChange()}
+                                onReleaseRow={this.onOrderChange}
                             />
                         </View>
                     </View>
@@ -562,14 +437,15 @@ class Exercise extends Component {
 
                 <ActionButton buttonColor="rgba(231,76,60,1)">
                     <ActionButton.Item buttonColor='#9b59b6' title="Practice" onPress={() => this.setState({showPracticePicker: true})}>
-                        <Ionicons name="ios-body" style={styles.actionButtonIcon} />
+                        <Icon name="ios-body" style={styles.actionButtonIcon} />
                     </ActionButton.Item>
                     <ActionButton.Item
                         buttonColor='#3498db'
                         title="Pause"
                         onPress={() => this.setState({showIntervalPicker: true})}
-                        disabled={isIntervalLastItem}>
-                        <Ionicons name="md-pause" style={styles.actionButtonIcon} />
+                        disabled={isIntervalLastItem}
+                    >
+                        <Icon name="md-pause" style={styles.actionButtonIcon} />
                     </ActionButton.Item>
                 </ActionButton>
 
@@ -578,8 +454,9 @@ class Exercise extends Component {
                     onCancel={() => this.setState({showPracticePicker: false})}
                     onSelect={this.onPracticeSelected}
                     current={this.props.practices.practices[0].id}
+                    title="Practice"
                 >
-                    <PracticePicker items={this.props.practices.practices} />
+                    <PracticePicker items={this.props.practices.practices}/>
                 </CustomPicker>
 
                 <CustomPicker
@@ -587,7 +464,7 @@ class Exercise extends Component {
                     onCancel={() => this.setState({showIntervalPicker: false})}
                     onSelect={this.onIntervalSelected}
                 >
-                    <IntervalPicker />
+                    <IntervalPicker/>
                 </CustomPicker>
             </View>
         )

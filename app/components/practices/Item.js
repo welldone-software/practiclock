@@ -171,7 +171,7 @@ class Practice extends Component {
     onSubmit = () => {
         const {title, duration, repeat, sound} = this.state
         this.props.add({ 
-            title: title === '' || title === null || title === undefined ? `Practice ${this.props.practices.length+1}` : title, 
+            title: ['', null, undefined].includes(title) ? `Practice ${this.props.practices.length+1}` : title, 
             duration,
             repeat,
             sound
@@ -182,7 +182,7 @@ class Practice extends Component {
     onBack = () => {
         const {title, duration, repeat, sound} = this.state
         this.props.edit(this.props.id, { 
-            title: title === '' || title === null || title === undefined ? `Practice ${this.props.practices.length+1}` : title, 
+            title: ['', null, undefined].includes(title) ? `Practice ${this.props.practices.length+1}` : title, 
             duration,
             repeat,
             sound
@@ -202,7 +202,6 @@ class Practice extends Component {
 
     renderLeftButton = () => {
         if (this.props.id) return null
-
         return (
             <TouchableOpacity style={styles.navBarLeftButton} onPress={Actions.pop}>
                 <Icon name="ios-close-outline" size={40} style={[styles.navBarIcon, {color: '#FC4E54'}]}/>
@@ -217,16 +216,13 @@ class Practice extends Component {
                 <Icon name="ios-checkmark-outline" size={40} style={[styles.navBarIcon, {color: '#24CB58'}]}/>
             </TouchableOpacity>
         )
-
     }
 
-    renderBackButton = () => {
-        return (
-            <TouchableOpacity onPress={this.onBack}>
-                <Icon name="ios-arrow-back-outline" size={26} style={styles.navBackButton}/>
-            </TouchableOpacity>
-        )
-    }
+    renderBackButton = () => (
+        <TouchableOpacity onPress={this.onBack}>
+            <Icon name="ios-arrow-back-outline" size={26} style={styles.navBackButton}/>
+        </TouchableOpacity>
+    )
 
     constructor(props) {
         super(props)

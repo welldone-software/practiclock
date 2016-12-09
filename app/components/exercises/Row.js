@@ -71,23 +71,19 @@ export default ({data, editMode, onDelete, practices}) => {
         isPlaying
     } = data
 
-    console.log(data)
+    const amountOfPractices = Object.assign([], data.data).filter(item => item.type === Types.PRACTICE).length
 
-    const amountOfPractices = Object.assign([], data).filter(item => item.type === Types.PRACTICE).length
-
-    const duration = moment.duration(
-        Object.assign([], data).map(item => {
-            switch(item.type) {
-                case Types.PRACTICE:
-                    const practice = practices.find(practice => practice.id === item.id)
-                    return practice.duration*practice.repeat
-                case Types.INTERVAL:
-                    return item.value
-            }
-        }).reduce((a, b) => a+b, 0),
-        'minutes'
-    )
-
+    const duration = Object.assign([], data.data).map(item => {
+        switch(item.type) {
+            case Types.PRACTICE:
+                const practice = practices.find(practice => practice.id === item.id)
+                return practice.duration*practice.repeat
+            case Types.INTERVAL:
+                return item.value
+        }
+    }).reduce((a, b) => a+b, 0)
+    const min = Math.round((duration/1000/60) << 0 || 0)
+    const sec = Math.round((duration/1000)%60) || '00'
     const Wrapper = editMode ? View : TouchableOpacity
 
     return (
@@ -107,7 +103,7 @@ export default ({data, editMode, onDelete, practices}) => {
                 </View>
                 <View style={styles.group}>
                     <Text style={styles.label}>DURATION:</Text>
-                    <Text style={styles.text}>{duration.format('hh:mm', {forceLength: true, trim: false})}</Text>
+                    <Text style={styles.text}>{min}:{sec}</Text>
                 </View>
             </View>
             <View style={styles.button}>
@@ -116,7 +112,6 @@ export default ({data, editMode, onDelete, practices}) => {
         </Wrapper>
     )
 }
-
 
 // <Button 
 //                     editMode={editMode}
