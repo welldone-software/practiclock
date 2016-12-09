@@ -9,12 +9,33 @@ import {
 import Sound from 'react-native-sound'
 import ListView from '../../core/ListView'
 
-const SCREEN_WIDTH = Dimensions.get('window').width
-export const SOUNDS = ['sound_1.mp3', 'sound_2.mp3', 'sound_3.mp3', 'sound_4.mp3']
+const width = Dimensions.get('window').width
+
+export const SOUNDS = [{
+    name: 'Chime Rhythm',
+    file: 'burnttoys_chime.mp3'
+},
+{
+    name: 'Spanner Chime Damped Soft 4',
+    file: 'spanner_chime_damped_soft_4.mp3'
+},
+{
+    name: 'Fisher Price',
+    file: 'fisher_price.mp3'
+},
+{
+    name: 'Finger Cymbals Crash Choke',
+    file: 'finger_cymbals_crash_choke.mp3'
+},
+{
+    name: 'Ceramic Bell',
+    file: 'ceramic_bell.mp3'
+}]
 
 const styles = StyleSheet.create({
     picker: {
-        width: SCREEN_WIDTH
+        width: width
+
     }
 })
 
@@ -26,7 +47,7 @@ export default class SoundPicker extends Component {
     constructor(props) {
         super(props)
 
-        setTimeout(() => this.onChangeValue(props.current || SOUNDS[0]))
+        setTimeout(() => this.onChangeValue((props.current || SOUNDS[0]).file))
     }
     
     componentWillUnmount() {
@@ -39,7 +60,7 @@ export default class SoundPicker extends Component {
             if (!error) sound.play()
         })
         this.setState({sound})
-        this.props.onChange(value)
+        this.props.onChange(SOUNDS.find(sound => sound.file === value))
     }
 
     stop = () => {
@@ -47,16 +68,19 @@ export default class SoundPicker extends Component {
     }
 
     render() {
-        const {current, items} = this.props
+        const {current} = this.props
+
+        console.log(current)
+
         return (
             <Picker
                 style={styles.picker}
-                selectedValue={current}
+                selectedValue={current.file}
                 onValueChange={this.onChangeValue}
                 itemStyle={{color: '#4F5E69'}}
                 mode="dropdown"
             >
-                {items.map(item => <Picker.Item label={item} value={item} key={item} />)}
+                {SOUNDS.map((sound, index) => <Picker.Item label={sound.name} value={sound.file} key={index}/>)}
             </Picker>
         )
     }

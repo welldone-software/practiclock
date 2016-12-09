@@ -15,7 +15,7 @@ const styles = StyleSheet.create({
         flexDirection: 'column',
         alignItems: 'center',
         justifyContent: 'center',
-        backgroundColor: '#eee'
+        backgroundColor: '#F7F7F7'
     },
     button: {
         flex: 1,
@@ -35,11 +35,11 @@ const styles = StyleSheet.create({
         shadowRadius: 5
     },
     icon: {
-        color: '#6d6d6d'
+        color: '#6C8993'
     },
     text: {
         marginTop: 20,
-        color: '#6d6d6d',
+        color: '#6C8993',
         fontSize: 10
     }
 })

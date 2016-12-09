@@ -52,7 +52,7 @@ class List extends Component {
     constructor (props) {
         super(props)
         this.state = {
-            mounted: false,
+            mounted: true,
             practices: props.practices,
             editMode: false
         }

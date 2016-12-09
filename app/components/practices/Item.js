@@ -360,7 +360,7 @@ class Practice extends Component {
                             <Icon name="ios-musical-notes-outline" size={26} style={styles.icon}/>
                             <Text style={styles.text}>Sound</Text>
                         </View>
-                        <Text style={styles.preview}>{sound}</Text>
+                        <Text style={styles.preview}>{sound.name}</Text>
                     </View>
                 </TouchableOpacity>
 
@@ -400,7 +400,7 @@ class Practice extends Component {
                      current={sound}
                      title="Sound"
                  >
-                     <SoundPicker items={SOUNDS}/>
+                     <SoundPicker/>
                  </CustomPicker>
             </View>
         )
