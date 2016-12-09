@@ -9,10 +9,10 @@ import {bindActionCreators} from 'redux'
 import {connect} from 'react-redux'
 import {Actions} from 'react-native-router-flux'
 import Icon from 'react-native-vector-icons/Ionicons'
-import {practices as actions} from '../../store/actions'
-import SimpleTrackPlayer from '../SimpleTrackPlayer'
 import ListView from '../../core/ListView'
+import {exercises as actions} from '../../store/actions'
 import Empty from './Empty'
+import NoPractice from './NoPractice'
 import Row from './Row'
 
 const styles = StyleSheet.create({
@@ -44,29 +44,37 @@ const styles = StyleSheet.create({
     }
 })
 
-class List extends Component {
-    constructor (props) {
+class ExerciseList extends Component {
+    constructor(props) {
         super(props)
         this.state = {
             mounted: true,
-            practices: props.practices,
-            editMode: false
+            editMode: false,
+            exercises: props.exercises,
+            practices: props.practices
         }
     }
 
     componentDidMount() {
-        this.refresh(!Boolean(this.props.practices.length))
+        const {exercises, practices} = this.props
+        this.setState({mounted: false}, () => {
+            this.refresh(!Boolean(exercises.length) || !Boolean(practices.length))
+            this.setState({mounted: true})
+        })
     }
 
     componentWillReceiveProps(nextProps) {
-        SimpleTrackPlayer.CollectionCallback(nextProps.practices, this)
-        const nextPractices = [...nextProps.practices].sort((a,b) => a.id-b.id)
-        const currentPractices = [...this.props.practices].sort((a,b) => a.id-b.id)
-        if (JSON.stringify(nextPractices) === JSON.stringify(currentPractices)) return
-        this.setState({mounted: false, practices: nextProps.practices}, () => {
-            this.refresh(!Boolean(nextProps.practices.length))
-            this.setState({mounted: true})
-        })
+        const {exercises, practices} = nextProps
+        this.setState({practices})
+        const nextExercises = [...nextProps.exercises].sort((a,b) => a.id-b.id)
+        const currentExercises = [...this.props.exercises].sort((a,b) => a.id-b.id)
+        if (JSON.stringify(nextExercises) === JSON.stringify(currentExercises)) return
+        if (JSON.stringify(nextProps) !== JSON.stringify(this.props)) {
+            this.setState({mounted: false, exercises}, () => {
+                this.refresh(!Boolean(exercises.length) || !Boolean(practices.length))
+                this.setState({mounted: true})
+            })
+        }
     }
 
     refresh = (hideNavBar = false) => {
@@ -80,15 +88,16 @@ class List extends Component {
     }
 
     onLeftButtonTouch = () => {
+        const {exercises, practices} = this.props
         this.setState({editMode: !this.state.editMode})
-        this.refresh(!Boolean(this.props.practices.length))
+        this.refresh(!Boolean(exercises.length) || !Boolean(practices.length))
     }
 
     renderRightButton = () => {
         const {editMode} = this.state
         if (editMode) return null
         return (
-            <TouchableOpacity onPress={Actions.practiceCreate}>
+            <TouchableOpacity onPress={Actions.exerciseCreate}>
                 <Icon name="ios-add-outline" size={30} style={styles.rightButton}/>
             </TouchableOpacity>
         )
@@ -108,34 +117,54 @@ class List extends Component {
         )
     }
 
-    onOrderChange = (practices) => {
-        this.setState({practices}, () => this.props.order(practices))
+    renderRow = ({data, active, swipe}) => {
+        return (<Row 
+                    {...data}
+                    practices={this.state.practices}
+                    active={active}
+                    onSwipe={this.onSwipe}
+                    onDeleteButtonPress={id => this.props.remove(id)}
+                    swipe={swipe}
+                />)
+    }
+
+    onOrderChange = (exercises) => {
+        this.setState({exercises}, () => this.props.order(exercises))
     }
 
     onDelete = (id) => this.props.remove(id)
 
-    render () {
+    render() {
         const {
             mounted,
+            exercises,
             practices,
             editMode
         } = this.state
+
+        if (!mounted) return null
+        if (!practices.length) return <NoPractice/>
+
+        const data = Object.assign({}, exercises)
 
         return (
             <ListView
                 editMode={editMode}
                 mounted={mounted}
-                items={practices}
+                items={exercises}
                 emptyView={<Empty/>}
                 onOrderChange={this.onOrderChange}
             >
-                <Row onDelete={this.onDelete}/>
+                <Row onDelete={this.onDelete} practices={practices}/>
             </ListView>
         )
     }
 }
 
 export default connect(
-    state => state.practices,
+    state => {
+        const {exercises, practices} = state
+        return {exercises: exercises.exercises, practices: practices.practices}
+    },
     dispatch => bindActionCreators(actions, dispatch)
-)(List)
+)(ExerciseList)

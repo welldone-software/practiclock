@@ -33,6 +33,8 @@ export function practices(state = { practices: [] }, action = {}) {
             const practices = [...state.practices]
             const item = practices.find(item => item.id === id)
             Object.assign(item, data)
+            delete item.isPlaying
+            delete item.onPlay
 
             return {
                 ...state,
@@ -41,7 +43,11 @@ export function practices(state = { practices: [] }, action = {}) {
         case '@PRACTICES_REMOVE':
             return {
                 ...state,
-                practices: state.practices.filter(item => item.id !== payload.id)
+                practices: state.practices.filter(item => item.id !== payload.id).map(item => {
+                    delete item.isPlaying
+                    delete item.onPlay
+                    return item
+                })
             }
         case '@PRACTICES_ORDER':
             return {

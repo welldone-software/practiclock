@@ -11,7 +11,7 @@ import {connect} from 'react-redux'
 import {Actions} from 'react-native-router-flux'
 import Sound from 'react-native-sound'
 import Ionicons from 'react-native-vector-icons/Ionicons'
-import {Types} from './Exercise'
+import {Types} from './exercises/Item'
 import PlayerRow from './PlayerRow'
 
 class Track {

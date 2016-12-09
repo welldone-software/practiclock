@@ -70,8 +70,6 @@ export default class SoundPicker extends Component {
     render() {
         const {current} = this.props
 
-        console.log(current)
-
         return (
             <Picker
                 style={styles.picker}

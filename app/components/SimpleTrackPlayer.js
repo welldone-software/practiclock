@@ -38,7 +38,7 @@ export default class SimpleTrackPlayer extends Component {
     constructor (props) {
         super(props)
         this.state = {isPlaying: props.file.isPlaying}
-        this.file = new PseudoSyncSound(this.props.file.sound, this.setAsNotPlaying)
+        this.file = new PseudoSyncSound(this.props.file.sound.file, this.setAsNotPlaying)
     }
 
     componentWillReceiveProps (nextProps) {

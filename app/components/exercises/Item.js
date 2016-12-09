@@ -1,5 +1,5 @@
 //@flow
-import React, {Component, PropTypes} from 'react'
+import React, {Component} from 'react'
 import {
     Animated,
     Dimensions,
@@ -7,9 +7,7 @@ import {
     Image,
     ListView,
     Modal,
-    Picker,
     ScrollView,
-    Slider,
     StyleSheet,
     Text,
     TextInput,
@@ -23,65 +21,244 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome'
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import SortableList from 'react-native-sortable-list'
 import ActionButton from 'react-native-action-button'
-import CustomPicker from '../core/CustomPicker'
-import { exercises as exercisesActions } from '../store/actions'
-import SimpleTrackPlayer from './SimpleTrackPlayer'
+import CustomPicker from '../../core/CustomPicker'
+import {exercises as actions} from '../../store/actions'
+import SimpleTrackPlayer from '../SimpleTrackPlayer'
+import PracticePicker from './PracticePicker'
+import IntervalPicker from './IntervalPicker'
 
-const SCREEN_WIDTH = Dimensions.get('window').width
+const width = Dimensions.get('window').width
+
+const styles = StyleSheet.create({
+    navbar: {
+        backgroundColor: '#fff',
+        shadowColor: 'rgba(0,0,0,0.1)',
+        shadowOpacity: 1,
+        shadowOffset: {
+            height: 1,
+            width: 1
+        },
+        borderBottomWidth: 0
+    },
+    navBarButtonText: {
+        fontSize: 18,
+        marginVertical: 5,
+        color: '#6C8993'
+    },
+    navBarLeftButton: {
+        marginTop: -6
+    },
+    navBarRightButton: {
+        marginTop: -7
+    },
+    navBarIcon: {
+        height: 39
+    },
+    navBackButton: {
+        marginLeft: 2,
+        color: '#6C8993'
+    },
+    navBarTitle: {
+        fontWeight: '500',
+        color: '#6C8993'
+    },
+    removeButton: {
+        marginTop: 2,
+        paddingLeft: 4,
+    },
+    section: {
+        paddingRight: 10,
+        paddingTop: 20,
+        paddingBottom: 20,
+        borderBottomWidth: 1,
+        borderBottomColor: '#eff0f0',
+        flexDirection: 'row',
+        justifyContent: 'space-between'
+    },
+    icon: {
+        width: 50,
+        color: '#6C8993',
+        paddingLeft: 15,
+        paddingRight: 10,
+    },
+    iconText: {
+        textDecorationLine: 'underline',
+        fontSize: 22,
+        fontWeight: '200',
+        textAlign: 'center'
+    },
+    label: {
+        flexDirection: 'row',
+        justifyContent: 'space-between'
+    },
+    text: {
+        fontSize: 18,
+        lineHeight: 26,
+        color: '#6C8993'
+    },
+    preview: {
+        fontSize: 18,
+        lineHeight: 26,
+        color: '#CBD3D8'
+    },
+    input: {
+        width: width/2,
+        color: '#4F5E69'
+    },
+    repeat: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        width: width-10
+    },
+    buttons: {
+        position: 'absolute',
+        width,
+        bottom: 20,
+        flexDirection: 'row',
+        justifyContent: 'space-around'
+    },
+    deleteButton: {
+        width: width/2.5,
+        paddingTop: 10,
+        paddingBottom: 10,
+        borderWidth: 1,
+        borderRadius: 5,
+        borderColor: '#FC4E54',
+        flexDirection: 'row',
+        justifyContent: 'center',
+    },
+    deleteText: {
+        fontSize: 14,
+        color: '#FC4E54'
+    },
+    playButton: {
+        width: width/2.5,
+        paddingTop: 10,
+        paddingBottom: 10,
+        borderWidth: 1,
+        borderRadius: 5,
+        borderColor: '#24CB58',
+        flexDirection: 'row',
+        justifyContent: 'center',
+    },
+    playText: {
+        fontSize: 14,
+        color: '#24CB58'
+    },
+    slider: {
+        paddingLeft: 20,
+        paddingRight: 10,
+        paddingTop: 20
+    },
+    track: {
+        height: 2,
+        borderRadius: 1,
+        backgroundColor: '#CBD3D8',
+    },
+    thumb: {
+        width: 20,
+        height: 20,
+        borderRadius: 10,
+        borderWidth: 1,
+        backgroundColor: '#fff',
+        borderColor: '#6C8993'
+    },
+    scene: {
+        flex: 1,
+        marginTop: 70
+    }
+})
+
+
+// const styles = StyleSheet.create({
+//     navbar: {
+//         backgroundColor: '#f9bb2d',
+//         shadowColor: 'rgba(0,0,0,0.2)',
+//         shadowOpacity: 1,
+//         shadowOffset: {
+//             height: 4,
+//             width: 2
+//         },
+//         borderBottomWidth: 0
+//     },
+//     navBarText: {
+//         fontSize: 18,
+//         marginVertical: 5
+//     },
+//     navBarLeftButton: {
+//         marginTop: -2,
+//         paddingLeft: 10
+//     },
+//     navBarRightButton: {
+//         marginTop: -5,
+//         paddingRight: 10
+//     },
+//     title: {
+//         flex: 1,
+//         maxHeight: 60
+//     },
+//     input: {
+//         height: 60
+//     },
+//     container: {
+//         flex: 1,
+//         alignItems: 'center',
+//         backgroundColor: '#fff'
+//     },
+//     content: {
+//         width: width - 10,
+//     },
+//     wrapper: {
+//         flex: 1,
+//         flexDirection: 'row',
+//         justifyContent: 'space-between'
+//     },
+//     scene: {
+//         flex: 1,
+//         flexDirection: 'column',
+//         marginTop: 60,
+//         padding: 5
+//     },
+//     itemButton: {
+//         color: '#fc3d39'
+//     },
+//     playButton: {
+//         marginTop: 2,
+//         paddingLeft: 4
+//     },
+//     picker: {
+//         width: width
+//     },
+//     item: {
+//         flex: 1,
+//         flexDirection: 'row',
+//         justifyContent: 'space-between',
+//         alignItems: 'center',
+//         backgroundColor: '#FFF'
+//     },
+//     row: {
+//         flexDirection: 'row',
+//         backgroundColor: 'white',
+//         padding: 16,
+//         marginVertical: 1,
+//         height: 80,
+//         width: width - 10,
+//         borderTopWidth: 1,
+//         borderBottomWidth: 1,
+//         borderTopColor: '#eee',
+//         borderBottomColor: '#eee'
+//     },
+//     actionButtonIcon: {
+//         fontSize: 20,
+//         height: 22,
+//         color: 'white'
+//     }
+// })
+
 
 export const Types = {
     PRACTICE: 'PRACTICE',
     INTERVAL: 'INTERVAL'
-}
-
-const PracticePicker = ({items, current, onChange}) => {
-    const styles = StyleSheet.create({
-        picker: {
-            width: SCREEN_WIDTH
-        }
-    })
-
-    return (
-        <Picker
-            style={styles.picker}
-            selectedValue={current}
-            onValueChange={onChange}
-            mode="dropdown"
-        >
-            {items.map(item => <Picker.Item label={item.title} value={item.id} key={item.id} />)}
-        </Picker>
-    )
-}
-
-const IntervalPicker = ({current = 0, onChange}) => {
-    const styles = StyleSheet.create({
-        wrapper: {
-            flexDirection: 'row',
-            justifyContent: 'space-between'
-        },
-        slider: {
-            marginTop: 16,
-            width: SCREEN_WIDTH
-        },
-        preview: {
-            fontSize: 18
-        }
-    })
-
-    return (
-         <View>
-            <View style={styles.wrapper}>
-                <Text style={styles.preview}>Pause</Text>
-                <Text style={styles.preview}>{current === 60 ? '1h' : current + 'min'}</Text>
-            </View>
-            <View>
-                <Slider
-                    style={styles.slider}
-                    onValueChange={(value) => onChange(Math.round(value * 60))}
-                />
-            </View>
-        </View>
-    )
 }
 
 class Row extends Component {
@@ -417,95 +594,10 @@ class Exercise extends Component {
     }
 }
 
-const styles = StyleSheet.create({
-    navbar: {
-        backgroundColor: '#f9bb2d',
-        shadowColor: 'rgba(0,0,0,0.2)',
-        shadowOpacity: 1,
-        shadowOffset: {
-            height: 4,
-            width: 2
-        },
-        borderBottomWidth: 0
-    },
-    navBarText: {
-        fontSize: 18,
-        marginVertical: 5
-    },
-    navBarLeftButton: {
-        marginTop: -2,
-        paddingLeft: 10
-    },
-    navBarRightButton: {
-        marginTop: -5,
-        paddingRight: 10
-    },
-    title: {
-        flex: 1,
-        maxHeight: 60
-    },
-    input: {
-        height: 60
-    },
-    container: {
-        flex: 1,
-        alignItems: 'center',
-        backgroundColor: '#fff'
-    },
-    content: {
-        width: SCREEN_WIDTH - 10,
-    },
-    wrapper: {
-        flex: 1,
-        flexDirection: 'row',
-        justifyContent: 'space-between'
-    },
-    scene: {
-        flex: 1,
-        flexDirection: 'column',
-        marginTop: 60,
-        padding: 5
-    },
-    itemButton: {
-        color: '#fc3d39'
-    },
-    playButton: {
-        marginTop: 2,
-        paddingLeft: 4
-    },
-    picker: {
-        width: SCREEN_WIDTH
-    },
-    item: {
-        flex: 1,
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        backgroundColor: '#FFF'
-    },
-    row: {
-        flexDirection: 'row',
-        backgroundColor: 'white',
-        padding: 16,
-        marginVertical: 1,
-        height: 80,
-        width: SCREEN_WIDTH - 10,
-        borderTopWidth: 1,
-        borderBottomWidth: 1,
-        borderTopColor: '#eee',
-        borderBottomColor: '#eee'
-    },
-    actionButtonIcon: {
-        fontSize: 20,
-        height: 22,
-        color: 'white'
-    }
-})
-
 export default connect(
     state => {
         const {exercises, practices} = state
         return {exercises, practices}
     },
-    dispatch => bindActionCreators(exercisesActions, dispatch)
+    dispatch => bindActionCreators(actions, dispatch)
 )(Exercise)

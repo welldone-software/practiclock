@@ -11,7 +11,11 @@ import {
 } from 'react-native'
 import {Actions} from 'react-native-router-flux'
 import Icon from 'react-native-vector-icons/Ionicons'
-import Button from './Button'
+import moment from 'moment'
+import Button from '../practices/Button'
+import {Types} from './Item'
+
+require('moment-duration-format')
 
 const width = Dimensions.get('window').width
 
@@ -59,24 +63,37 @@ const styles = StyleSheet.create({
     }
 })
 
-export default ({data, editMode, onDelete}) => {
+export default ({data, editMode, onDelete, practices}) => {
     const {
         id,
         title,
         onPlay,
-        duration,
-        repeat,
         isPlaying
     } = data
 
+    console.log(data)
+
+    const amountOfPractices = Object.assign([], data).filter(item => item.type === Types.PRACTICE).length
+
+    const duration = moment.duration(
+        Object.assign([], data).map(item => {
+            switch(item.type) {
+                case Types.PRACTICE:
+                    const practice = practices.find(practice => practice.id === item.id)
+                    return practice.duration*practice.repeat
+                case Types.INTERVAL:
+                    return item.value
+            }
+        }).reduce((a, b) => a+b, 0),
+        'minutes'
+    )
+
     const Wrapper = editMode ? View : TouchableOpacity
-    const min = (duration/1000/60) << 0 || 0
-    const sec = (duration/1000) % 60 || '00'
 
     return (
         <Wrapper 
             onPress={() => {
-                if (!editMode) Actions.practiceView({id}) 
+                if (!editMode) Actions.exerciseView({id}) 
             }} 
             activeOpacity={1}
             style={styles.children}
@@ -85,23 +102,26 @@ export default ({data, editMode, onDelete}) => {
          <Text style={styles.title}>{title}</Text>
             <View style={styles.info}>
                 <View style={styles.group}>
-                    <Text style={styles.label}>DURATION:</Text>
-                    <Text style={styles.text}>{min}:{sec}</Text>
+                    <Text style={styles.label}>PRACTICES:</Text>
+                    <Text style={styles.text}>{amountOfPractices}</Text>
                 </View>
                 <View style={styles.group}>
-                    <Text style={styles.label}>REPEAT:</Text>
-                    <Text style={styles.text}>{repeat}</Text>
+                    <Text style={styles.label}>DURATION:</Text>
+                    <Text style={styles.text}>{duration.format('hh:mm', {forceLength: true, trim: false})}</Text>
                 </View>
             </View>
             <View style={styles.button}>
-                <Button 
-                    editMode={editMode}
-                    file={data}
-                    onPlay={onPlay}
-                    isPlaying={isPlaying}
-                    onDelete={() => onDelete(id)}
-                />
+                
             </View>
         </Wrapper>
     )
 }
+
+
+// <Button 
+//                     editMode={editMode}
+//                     file={data}
+//                     onPlay={onPlay}
+//                     isPlaying={isPlaying}
+//                     onDelete={() => onDelete(id)}
+//                 />

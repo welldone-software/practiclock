@@ -18,8 +18,8 @@ import {
 import {connect, Provider} from 'react-redux'
 import Practice from './practices/Item'
 import PracticeList from './practices/List'
-import Exercise from './Exercise'
-import ExerciseList from './ExerciseList'
+import Exercise from './exercises/Item'
+import ExerciseList from './exercises/List'
 import Player from './Player'
 import configureStore from '../store'
 
