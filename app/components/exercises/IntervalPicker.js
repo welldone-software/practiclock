@@ -2,26 +2,39 @@
 import React, {Component} from 'react'
 import {
     Dimensions,
-    Slider,
     StyleSheet,
     Text,
     View
 } from 'react-native'
+import Slider from 'react-native-slider'
 
 const width = Dimensions.get('window').width
 
 const styles = StyleSheet.create({
     wrapper: {
         flexDirection: 'row',
-        justifyContent: 'space-between'
+        justifyContent: 'center'
     },
     slider: {
-        marginTop: 16,
+        marginTop: 10,
         width: width-40
     },
     preview: {
         fontSize: 18,
         color: '#6C8993'
+    },
+    track: {
+        height: 2,
+        borderRadius: 1,
+        backgroundColor: '#CBD3D8',
+    },
+    thumb: {
+        width: 20,
+        height: 20,
+        borderRadius: 10,
+        borderWidth: 1,
+        backgroundColor: '#fff',
+        borderColor: '#6C8993'
     }
 })
 
@@ -31,16 +44,18 @@ export default ({current = 0, onChange}) => {
     return (
         <View>
             <View style={styles.wrapper}>
-                <Text style={styles.preview}>Pause</Text>
                 <Text style={styles.preview}>{min}:{sec}</Text>
             </View>
-            <View>
+            <View  style={styles.slider}>
                 <Slider
+                    value={current/5/1000}
+                    onValueChange={value => onChange(value*5*1000)}
                     minimumValue={0}
                     maximumValue={180}
                     step={1}
-                    style={styles.slider}
-                    onValueChange={value => onChange(value*5*1000)}
+                    trackStyle={styles.track}
+                    thumbStyle={styles.thumb}
+                    minimumTrackTintColor='#6C8993'
                 />
             </View>
         </View>

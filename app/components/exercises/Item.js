@@ -68,6 +68,12 @@ const styles = StyleSheet.create({
         paddingLeft: 15,
         paddingRight: 10,
     },
+    iconText: {
+        textDecorationLine: 'underline',
+        fontSize: 22,
+        fontWeight: '200',
+        textAlign: 'center'
+    },
     input: {
         width: width/2,
         color: '#4F5E69'
@@ -123,12 +129,13 @@ const styles = StyleSheet.create({
     },
     itemButton: {
         color: '#FC4E54'
+    },
+    actionButtonIcon: {
+        fontSize: 20,
+        height: 22,
+        color: 'white'
     }
 })
-//     actionButtonIcon: {
-//         fontSize: 20,
-//         height: 22,
-//         color: 'white'
 
 
 export const Types = {
@@ -207,7 +214,7 @@ class Row extends Component {
                     {data.type === Types.INTERVAL &&
                         <View style={styles.wrapper}>
                             <View style={styles.info}>
-                                <Icon name="ios-clock-outline" size={22} style={styles.iconType}/>
+                                <Icon name="ios-clock-outline" size={22} style={[styles.iconType, {color: '#F4B03A'}]}/>
                                 <Text style={styles.text}>Pause</Text>
                                 <Text style={styles.text}>{min}:{sec}</Text>
                             </View>
@@ -219,7 +226,7 @@ class Row extends Component {
                     {data.type === Types.PRACTICE && 
                         <View style={styles.wrapper}>
                             <View style={styles.info}>
-                                <Icon name="ios-basketball-outline" size={22} style={styles.iconType}/>
+                                <Icon name="ios-basketball-outline" size={22} style={[styles.iconType, {color: '#BD7BEE'}]}/>
                                 <Text style={styles.text}>{data.title}</Text>
                             </View>
                             <TouchableOpacity onPress={() => onDelete(index)}>
@@ -299,7 +306,7 @@ class Exercise extends Component {
             showPracticePicker: false,
             data,
             shouldRerender: true
-        }, () => this.setState({ shouldRerender: false }))
+        }, ()  => this.setState({shouldRerender: false}))
     }
 
     onIntervalSelected = (value) => {
@@ -315,7 +322,7 @@ class Exercise extends Component {
             showIntervalPicker: false,
             data,
             shouldRerender: true
-        }, () => this.setState({shouldRerender: false}))
+        }, ()  => this.setState({shouldRerender: false}))
     }
 
     renderRow = (data, index, active) => {
@@ -358,6 +365,7 @@ class Exercise extends Component {
 
         if (hasSequenceOfIntervals) {
             alert('You can\'t put 2 pauses consistently')
+            this.setState({shouldRerender: true}, () => this.setState({shouldRerender: false}))
         } else {
             this.setState({data})
         }
@@ -435,17 +443,29 @@ class Exercise extends Component {
                     </View>
                 }
 
-                <ActionButton buttonColor="rgba(231,76,60,1)">
-                    <ActionButton.Item buttonColor='#9b59b6' title="Practice" onPress={() => this.setState({showPracticePicker: true})}>
-                        <Icon name="ios-body" style={styles.actionButtonIcon} />
+                <ActionButton buttonColor="#24CB58" hideShadow={true} spacing={10}>
+                    <ActionButton.Item 
+                        buttonColor="#BD7BEE"
+                        title="Practice"
+                        onPress={() => this.setState({showPracticePicker: true})}
+                        titleBgColor="transparent"
+                        titleColor="#6C8993"
+                        textContainerStyle={{borderColor: 'transparent'}}
+                        spaceBetween={2}
+                    >
+                        <Icon name="ios-basketball-outline" style={styles.actionButtonIcon} />
                     </ActionButton.Item>
                     <ActionButton.Item
-                        buttonColor='#3498db'
+                        buttonColor='#F4B03A'
                         title="Pause"
                         onPress={() => this.setState({showIntervalPicker: true})}
                         disabled={isIntervalLastItem}
+                        titleBgColor="transparent"
+                        titleColor="#6C8993"
+                        textContainerStyle={{borderColor: 'transparent'}}
+                        spaceBetween={2}
                     >
-                        <Icon name="md-pause" style={styles.actionButtonIcon} />
+                        <Icon name="ios-clock-outline" style={styles.actionButtonIcon}/>
                     </ActionButton.Item>
                 </ActionButton>
 
@@ -463,6 +483,7 @@ class Exercise extends Component {
                     visible={this.state.showIntervalPicker}
                     onCancel={() => this.setState({showIntervalPicker: false})}
                     onSelect={this.onIntervalSelected}
+                    title="Pause"
                 >
                     <IntervalPicker/>
                 </CustomPicker>

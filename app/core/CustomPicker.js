@@ -115,6 +115,7 @@ export default class CustomPicker extends Component {
 
     componentWillUnmount() {
         this.current = paths.length
+        Actions.refresh({hideNavBar: false})
     }
 
     componentWillReceiveProps(nextProps) {
