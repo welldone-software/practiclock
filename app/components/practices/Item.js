@@ -103,11 +103,15 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
         width: width-10
     },
-    deleteButton: {
+    buttons: {
         position: 'absolute',
-        width: 150,
-        left: width/2-75,
+        width,
         bottom: 20,
+        flexDirection: 'row',
+        justifyContent: 'space-around'
+    },
+    deleteButton: {
+        width: width/2.5,
         paddingTop: 10,
         paddingBottom: 10,
         borderWidth: 1,
@@ -119,6 +123,20 @@ const styles = StyleSheet.create({
     deleteText: {
         fontSize: 14,
         color: '#FC4E54'
+    },
+    playButton: {
+        width: width/2.5,
+        paddingTop: 10,
+        paddingBottom: 10,
+        borderWidth: 1,
+        borderRadius: 5,
+        borderColor: '#24CB58',
+        flexDirection: 'row',
+        justifyContent: 'center',
+    },
+    playText: {
+        fontSize: 14,
+        color: '#24CB58'
     },
     slider: {
         paddingLeft: 20,
@@ -176,6 +194,10 @@ class Practice extends Component {
         const {remove, id} = this.props
         remove(id)
         Actions.pop()
+    }
+
+    onPlay = () => {
+        // TODO: Add play action
     }
 
     renderLeftButton = () => {
@@ -343,13 +365,22 @@ class Practice extends Component {
                 </TouchableOpacity>
 
                 {this.props.id &&
-                    <TouchableOpacity
-                        onPress={this.onDelete}
-                        style={styles.deleteButton}
-                        activeOpacity={1}
-                    >
-                        <Text style={styles.deleteText}>REMOVE</Text>
-                    </TouchableOpacity>
+                    <View style={styles.buttons}>
+                        <TouchableOpacity
+                            onPress={this.onPlay}
+                            style={styles.playButton}
+                            activeOpacity={1}
+                        >
+                            <Text style={styles.playText}>PLAY</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity
+                            onPress={this.onDelete}
+                            style={styles.deleteButton}
+                            activeOpacity={1}
+                        >
+                            <Text style={styles.deleteText}>REMOVE</Text>
+                        </TouchableOpacity>
+                    </View>
                 }
 
                 <CustomPicker
