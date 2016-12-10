@@ -113,8 +113,6 @@ class List extends Component {
     }
 
     onDelete = (id) => this.props.remove(id + 1)
-
-    refresh = () => this.forceUpdate()
     onPlayFn = (id, repeat) => MediaLibrary.play(id, this.refresh, repeat).then(this.refresh)
     onPause = () => MediaLibrary.stop().then(this.refresh)
     isPlayingFn = (name) => MediaLibrary.isPlaying(name)

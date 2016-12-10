@@ -135,8 +135,6 @@ class ExerciseList extends Component {
     }
 
     onDelete = (id) => this.props.remove(id)
-
-    refresh = () => this.forceUpdate()
     onPlayFn = (id, practices) => MediaLibrary.playFiles(id, practices, this.refresh).then(this.refresh)
     onPause = () => {
         MediaLibrary.playlistId = null
