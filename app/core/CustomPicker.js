@@ -177,6 +177,9 @@ export default class CustomPicker extends Component {
                     <View style={styles.container}>
                         <Surface width={width} height="120" style={[styles.line, {zIndex: animation ? 4 : 2}]}>
                             <Shape x={0} y={0} d={this.state.transition} stroke="#E9E9E9" strokeWidth={1}/>
+                            {animation &&
+                              <Shape x={0} y={5} d={this.state.transition} stroke="#fff" strokeWidth={5}/>
+                            }
                         </Surface>
                         <View style={styles.wrapper}>
                             <View style={styles.buttons}>
