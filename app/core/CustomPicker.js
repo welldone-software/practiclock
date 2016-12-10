@@ -132,7 +132,6 @@ export default class CustomPicker extends Component {
         this._current += 1
         if (this._current >= paths.length) return
         this.setState({
-            animation: true,
             transition: Morph.Tween(paths[this._current-1].d, paths[this._current].d)
         }, () => this.animate(null, this.nextAnimation))
     }
@@ -144,7 +143,6 @@ export default class CustomPicker extends Component {
             const time = path ? path.time : 0
             const delta = (timestamp-start)/1000
             if (delta >= time) {
-                this.setState({animation: false})
                 return cb()
             }
             this.state.transition.tween(delta)
@@ -162,7 +160,7 @@ export default class CustomPicker extends Component {
             title,
             ...props
         } = this.props
-        const {current, animation} = this.state
+        const {current} = this.state
 
         if (!visible) return null
 
@@ -175,11 +173,9 @@ export default class CustomPicker extends Component {
                     visible={visible}
                 >
                     <View style={styles.container}>
-                        <Surface width={width} height="120" style={[styles.line, {zIndex: animation ? 4 : 2}]}>
+                        <Surface width={width} height="120" style={styles.line}>
                             <Shape x={0} y={0} d={this.state.transition} stroke="#E9E9E9" strokeWidth={1}/>
-                            {animation &&
-                              <Shape x={0} y={5} d={this.state.transition} stroke="#fff" strokeWidth={5}/>
-                            }
+                            <Shape x={0} y={50} d={this.state.transition} stroke="#fff" strokeWidth={50}/>
                         </Surface>
                         <View style={styles.wrapper}>
                             <View style={styles.buttons}>
