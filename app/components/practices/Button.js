@@ -9,7 +9,7 @@ import {
     View
 } from 'react-native'
 import Icon from 'react-native-vector-icons/Ionicons'
-import SimpleTrackPlayer from '../SimpleTrackPlayer'
+import SimpleTrackPlayer from './SimpleTrackPlayer'
 
 const styles = StyleSheet.create({
     button: {
@@ -43,7 +43,7 @@ class DeleteButton extends Component {
             </View>
         )
     }
-} 
+}
 
 const DeleteButtonAnimated = Animated.createAnimatedComponent(DeleteButton)
 const SimpleTrackPlayerAnimated = Animated.createAnimatedComponent(SimpleTrackPlayer)
@@ -51,7 +51,6 @@ const SimpleTrackPlayerAnimated = Animated.createAnimatedComponent(SimpleTrackPl
 export default class Button extends Component {
     static propTypes = {
         editMode: PropTypes.bool,
-        file: PropTypes.object.isRequired,
         onPlay: PropTypes.func.isRequired,
         isPlaying: PropTypes.bool,
         onDelete: PropTypes.func.isRequired
@@ -138,8 +137,8 @@ export default class Button extends Component {
 
     render() {
         const {
-            file,
             onPlay,
+            onPause,
             isPlaying,
             onDelete
         } = this.props
@@ -151,7 +150,7 @@ export default class Button extends Component {
 
         return (
             <View>
-                <SimpleTrackPlayerAnimated 
+                <SimpleTrackPlayerAnimated
                     style={
                         [
                             styles.button,
@@ -162,14 +161,14 @@ export default class Button extends Component {
                             }
                         ]
                     }
-                    file={file}
                     onPlay={onPlay}
+                    onPause={onPause}
                     isPlaying={isPlaying}
                 />
-                <DeleteButtonAnimated 
+                <DeleteButtonAnimated
                     style={
                         [
-                            styles.button, 
+                            styles.button,
                             {
                                 transform: [{rotate: interpolatedButtonRotateAnimation}],
                                 opacity: this._editModeButtonOpacity,

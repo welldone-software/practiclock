@@ -101,7 +101,7 @@ const styles = StyleSheet.create({
 class Player extends Component {
     constructor(props) {
         super(props)
-        const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
+        const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2})
         const exercises = props.exercises.exercises
         const practices = props.practices.practices
         const {title, data} = props.exercises.exercises.find(exercise => exercise.id === props.id)

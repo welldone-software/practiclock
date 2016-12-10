@@ -11,7 +11,7 @@ export default class PlayerRow extends Component {
     _stopInterval () {
         if ( this.interval ) {
             clearInterval(this.interval)
-            this.interval = null;
+            this.interval = null
         }
     }
 
@@ -26,12 +26,12 @@ export default class PlayerRow extends Component {
         if (played === this.played || played === 1 ) { // pause or end
             this._stopInterval()
         }
-        this.played = played;
+        this.played = played
         this.forceUpdate()
     }
 
     componentWillUnmount () {
-        this._stopInterval();
+        this._stopInterval()
     }
 
     render () {

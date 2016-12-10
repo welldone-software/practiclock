@@ -10,7 +10,6 @@ import {
     View
 } from 'react-native'
 import {Actions} from 'react-native-router-flux'
-import Icon from 'react-native-vector-icons/Ionicons'
 import Button from './Button'
 
 const width = Dimensions.get('window').width
@@ -59,15 +58,16 @@ const styles = StyleSheet.create({
     }
 })
 
-export default ({data, editMode, onDelete}) => {
-    const {
+export default ({data, editMode, onDelete, onPlayFn, onPause, isPlayingFn}) => {
+    let {
         id,
         title,
-        onPlay,
         duration,
-        repeat,
-        isPlaying
+        repeat
     } = data
+
+    const isPlaying = isPlayingFn(data.sound.file, repeat)
+    const onPlay = ()=> {onPlayFn(data.sound.file, repeat)}
 
     const Wrapper = editMode ? View : TouchableOpacity
     const min = (duration/1000/60) << 0 || 0
@@ -96,8 +96,8 @@ export default ({data, editMode, onDelete}) => {
             <View style={styles.button}>
                 <Button 
                     editMode={editMode}
-                    file={data}
                     onPlay={onPlay}
+                    onPause={onPause}
                     isPlaying={isPlaying}
                     onDelete={() => onDelete(id)}
                 />

@@ -19,7 +19,6 @@ import SortableList from 'react-native-sortable-list'
 import ActionButton from 'react-native-action-button'
 import CustomPicker from '../../core/CustomPicker'
 import {exercises as actions} from '../../store/actions'
-import SimpleTrackPlayer from '../SimpleTrackPlayer'
 import PracticePicker from './PracticePicker'
 import IntervalPicker from './IntervalPicker'
 
@@ -295,7 +294,7 @@ class Exercise extends Component {
 
     onPracticeSelected = (id) => {
         const data = {...this.state.data}
-        const index = Object.keys(data).length;
+        const index = Object.keys(data).length
 
         data[index] = {
             id: id,
@@ -311,7 +310,7 @@ class Exercise extends Component {
 
     onIntervalSelected = (value) => {
         const data = {...this.state.data}
-        const index = Object.keys(data).length;
+        const index = Object.keys(data).length
 
         data[index] = {
             value,
@@ -333,7 +332,6 @@ class Exercise extends Component {
                 item = data
                 break
             case Types.PRACTICE:
-                SimpleTrackPlayer.CollectionCallback(this.props.practices.practices, this)
                 item = this.props.practices.practices.find(item => item.id === data.id)
                 break
         }

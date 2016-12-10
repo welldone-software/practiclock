@@ -129,8 +129,8 @@ export default class CustomPicker extends Component {
     }
 
     nextAnimation = () => {
-        this._current += 1;
-        if (this._current >= paths.length) return;
+        this._current += 1
+        if (this._current >= paths.length) return
         this.setState({
             animation: true,
             transition: Morph.Tween(paths[this._current-1].d, paths[this._current].d)
@@ -139,7 +139,7 @@ export default class CustomPicker extends Component {
 
     animate = (start, cb) => {
         requestAnimationFrame(timestamp => {
-            if (!start) start = timestamp;
+            if (!start) start = timestamp
             const path = paths[this._current]
             const time = path ? path.time : 0
             const delta = (timestamp-start)/1000

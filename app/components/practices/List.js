@@ -3,17 +3,18 @@ import React, {Component} from 'react'
 import {
     StyleSheet,
     TouchableOpacity,
-    View
+    View,
+    Text
 } from 'react-native'
 import {bindActionCreators} from 'redux'
 import {connect} from 'react-redux'
 import {Actions} from 'react-native-router-flux'
 import Icon from 'react-native-vector-icons/Ionicons'
 import {practices as actions} from '../../store/actions'
-import SimpleTrackPlayer from '../SimpleTrackPlayer'
 import ListView from '../../core/ListView'
 import Empty from './Empty'
 import Row from './Row'
+import MediaLibrary from '../MediaLibrary'
 
 const styles = StyleSheet.create({
     navbar: {
@@ -59,7 +60,6 @@ class List extends Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        SimpleTrackPlayer.CollectionCallback(nextProps.practices, this)
         const nextPractices = [...nextProps.practices].sort((a,b) => a.id-b.id)
         const currentPractices = [...this.props.practices].sort((a,b) => a.id-b.id)
         if (JSON.stringify(nextPractices) === JSON.stringify(currentPractices)) return
@@ -112,7 +112,31 @@ class List extends Component {
         this.setState({practices}, () => this.props.order(practices))
     }
 
-    onDelete = (id) => this.props.remove(id)
+    onDelete = (id) => this.props.remove(id +1)
+
+//     isPlayingFn = ()=>{
+//         MediaLibrary.isPlaying(data.sound.file)
+//     }
+//     onPlay =  () =>  {
+//
+//     MediaLibrary.play(data.sound.file)
+// }
+//     let onPause = MediaLibrary.pause
+
+    refresh =()=>{
+            this.forceUpdate()
+    }
+    onPlayFn = (id, repeat) => {
+        MediaLibrary.play(id, this.refresh, repeat).then(this.refresh)
+    }
+
+    onPause = () =>{
+        MediaLibrary.stop().then(this.refresh)
+    }
+
+    isPlayingFn=(name)=>{
+        return MediaLibrary.isPlaying(name)
+    }
 
     render () {
         const {
@@ -129,7 +153,10 @@ class List extends Component {
                 emptyView={<Empty/>}
                 onOrderChange={this.onOrderChange}
             >
-                <Row onDelete={this.onDelete}/>
+                <Row onDelete={this.onDelete}
+                     isPlayingFn={this.isPlayingFn}
+                     onPlayFn={this.onPlayFn}
+                     onPause={this.onPause}/>
             </ListView>
         )
     }
