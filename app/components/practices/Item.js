@@ -18,6 +18,7 @@ import Slider from 'react-native-slider'
 import CustomPicker from '../../core/CustomPicker'
 import SoundPicker, {SOUNDS} from './SoundPicker'
 import DurationPicker from './DurationPicker'
+import MediaLibrary from '../MediaLibrary'
 import {practices as actions} from '../../store/actions'
 
 const width = Dimensions.get('window').width
@@ -197,6 +198,7 @@ class Practice extends Component {
     }
 
     onPlay = () => {
+        MediaLibrary.play(this.state.sound.file, null, this.state.repeat)
         // TODO: Add play action
     }
 
