@@ -25,7 +25,7 @@ const styles = StyleSheet.create({
         paddingTop: 16,
         paddingRight: 16,
         paddingBottom: 16,
-        width: width-20
+        width: width - 20
     },
     title: {
         fontSize: 16,
@@ -63,39 +63,41 @@ const styles = StyleSheet.create({
     }
 })
 
-export default ({data, editMode, onDelete, practices}) => {
+export default ({data, editMode, onPlayFn, onPause, isPlayingFn, practices}) => {
     const {
         id,
-        title,
-        onPlay,
-        isPlaying
+        title
     } = data
 
-    const amountOfPractices = Object.assign([], data.data).filter(item => item.type === Types.PRACTICE).length
-
+    const isPlaying = isPlayingFn(id)
+    let currentPractices = Object.assign([], data.data).filter(item => item.type === Types.PRACTICE).map((item) => {
+        return practices.find(practice => practice.id === item.id)
+    })
+    const amountOfPractices = currentPractices.length
+    const onPlay = () => onPlayFn(id, currentPractices)
     const duration = Object.assign([], data.data).map(item => {
-        switch(item.type) {
+        switch (item.type) {
             case Types.PRACTICE:
                 const practice = practices.find(practice => practice.id === item.id)
-                return practice.duration*practice.repeat
+                return practice.duration * practice.repeat
             case Types.INTERVAL:
                 return item.value
         }
-    }).reduce((a, b) => a+b, 0)
-    const min = Math.round((duration/1000/60) << 0 || 0)
-    const sec = Math.round((duration/1000)%60) || '00'
+    }).reduce((a, b) => a + b, 0)
+    const min = Math.round((duration / 1000 / 60) << 0 || 0)
+    const sec = Math.round((duration / 1000) % 60) || '00'
     const Wrapper = editMode ? View : TouchableOpacity
 
     return (
-        <Wrapper 
+        <Wrapper
             onPress={() => {
                 if (!editMode) Actions.exerciseView({id}) 
-            }} 
+            }}
             activeOpacity={1}
             style={styles.children}
         >
 
-         <Text style={styles.title}>{title}</Text>
+            <Text style={styles.title}>{title}</Text>
             <View style={styles.info}>
                 <View style={styles.group}>
                     <Text style={styles.label}>PRACTICES:</Text>
@@ -106,17 +108,14 @@ export default ({data, editMode, onDelete, practices}) => {
                     <Text style={styles.text}>{min}:{sec}</Text>
                 </View>
             </View>
-            <View style={styles.button}>
-                
-            </View>
+            {!!amountOfPractices && <View style={styles.button}>
+                <Button
+                    onPlay={onPlay}
+                    onPause={onPause}
+                    isPlaying={isPlaying}
+                />
+            </View>}
         </Wrapper>
     )
 }
 
-// <Button 
-//                     editMode={editMode}
-//                     file={data}
-//                     onPlay={onPlay}
-//                     isPlaying={isPlaying}
-//                     onDelete={() => onDelete(id)}
-//                 />

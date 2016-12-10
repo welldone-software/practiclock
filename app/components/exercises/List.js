@@ -14,6 +14,8 @@ import {exercises as actions} from '../../store/actions'
 import Empty from './Empty'
 import NoPractice from './NoPractice'
 import Row from './Row'
+import MediaLibrary from '../MediaLibrary'
+import Promise from 'es6-promise'
 
 const styles = StyleSheet.create({
     navbar: {
@@ -66,8 +68,8 @@ class ExerciseList extends Component {
     componentWillReceiveProps(nextProps) {
         const {exercises, practices} = nextProps
         this.setState({practices})
-        const nextExercises = [...nextProps.exercises].sort((a,b) => a.id-b.id)
-        const currentExercises = [...this.props.exercises].sort((a,b) => a.id-b.id)
+        const nextExercises = [...nextProps.exercises].sort((a, b) => a.id - b.id)
+        const currentExercises = [...this.props.exercises].sort((a, b) => a.id - b.id)
         if (JSON.stringify(nextExercises) === JSON.stringify(currentExercises)) return
         if (JSON.stringify(nextProps) !== JSON.stringify(this.props)) {
             this.setState({mounted: false, exercises}, () => {
@@ -108,24 +110,24 @@ class ExerciseList extends Component {
         return (
             <TouchableOpacity onPress={this.onLeftButtonTouch}>
                 {editMode &&
-                    <Icon name="ios-close-outline" size={30} style={[styles.leftButton, styles.closeButton]}/>
+                <Icon name="ios-close-outline" size={30} style={[styles.leftButton, styles.closeButton]}/>
                 }
                 {!editMode &&
-                    <Icon name="ios-settings-outline" size={24} style={styles.leftButton}/>
+                <Icon name="ios-settings-outline" size={24} style={styles.leftButton}/>
                 }
             </TouchableOpacity>
         )
     }
 
     renderRow = ({data, active, swipe}) => {
-        return (<Row 
-                    {...data}
-                    practices={this.state.practices}
-                    active={active}
-                    onSwipe={this.onSwipe}
-                    onDeleteButtonPress={id => this.props.remove(id)}
-                    swipe={swipe}
-                />)
+        return (<Row
+            {...data}
+            practices={this.state.practices}
+            active={active}
+            onSwipe={this.onSwipe}
+            onDeleteButtonPress={id => this.props.remove(id)}
+            swipe={swipe}
+        />)
     }
 
     onOrderChange = (exercises) => {
@@ -133,6 +135,16 @@ class ExerciseList extends Component {
     }
 
     onDelete = (id) => this.props.remove(id)
+
+    refresh = () => this.forceUpdate()
+    onPlayFn = (id, practices) => MediaLibrary.playFiles(id, practices, this.refresh).then(this.refresh)
+    onPause = () => {
+        MediaLibrary.playlistId = null
+        MediaLibrary.stop().then(this.refresh)
+    }
+    isPlayingFn = (id) => {
+        return MediaLibrary.isPlaylistPlaying(id)
+    }
 
     render() {
         const {
@@ -155,7 +167,10 @@ class ExerciseList extends Component {
                 emptyView={<Empty/>}
                 onOrderChange={this.onOrderChange}
             >
-                <Row onDelete={this.onDelete} practices={practices}/>
+                <Row onDelete={this.onDelete} practices={practices}
+                     isPlayingFn={this.isPlayingFn}
+                     onPlayFn={this.onPlayFn}
+                     onPause={this.onPause}/>
             </ListView>
         )
     }

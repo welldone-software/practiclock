@@ -46,7 +46,7 @@ const styles = StyleSheet.create({
 })
 
 class List extends Component {
-    constructor (props) {
+    constructor(props) {
         super(props)
         this.state = {
             mounted: true,
@@ -60,8 +60,8 @@ class List extends Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        const nextPractices = [...nextProps.practices].sort((a,b) => a.id-b.id)
-        const currentPractices = [...this.props.practices].sort((a,b) => a.id-b.id)
+        const nextPractices = [...nextProps.practices].sort((a, b) => a.id - b.id)
+        const currentPractices = [...this.props.practices].sort((a, b) => a.id - b.id)
         if (JSON.stringify(nextPractices) === JSON.stringify(currentPractices)) return
         this.setState({mounted: false, practices: nextProps.practices}, () => {
             this.refresh(!Boolean(nextProps.practices.length))
@@ -99,10 +99,10 @@ class List extends Component {
         return (
             <TouchableOpacity onPress={this.onLeftButtonTouch}>
                 {editMode &&
-                    <Icon name="ios-close-outline" size={30} style={[styles.leftButton, styles.closeButton]}/>
+                <Icon name="ios-close-outline" size={30} style={[styles.leftButton, styles.closeButton]}/>
                 }
                 {!editMode &&
-                    <Icon name="ios-settings-outline" size={24} style={styles.leftButton}/>
+                <Icon name="ios-settings-outline" size={24} style={styles.leftButton}/>
                 }
             </TouchableOpacity>
         )
@@ -112,33 +112,14 @@ class List extends Component {
         this.setState({practices}, () => this.props.order(practices))
     }
 
-    onDelete = (id) => this.props.remove(id +1)
+    onDelete = (id) => this.props.remove(id + 1)
 
-//     isPlayingFn = ()=>{
-//         MediaLibrary.isPlaying(data.sound.file)
-//     }
-//     onPlay =  () =>  {
-//
-//     MediaLibrary.play(data.sound.file)
-// }
-//     let onPause = MediaLibrary.pause
+    refresh = () => this.forceUpdate()
+    onPlayFn = (id, repeat) => MediaLibrary.play(id, this.refresh, repeat).then(this.refresh)
+    onPause = () => MediaLibrary.stop().then(this.refresh)
+    isPlayingFn = (name) => MediaLibrary.isPlaying(name)
 
-    refresh =()=>{
-            this.forceUpdate()
-    }
-    onPlayFn = (id, repeat) => {
-        MediaLibrary.play(id, this.refresh, repeat).then(this.refresh)
-    }
-
-    onPause = () =>{
-        MediaLibrary.stop().then(this.refresh)
-    }
-
-    isPlayingFn=(name)=>{
-        return MediaLibrary.isPlaying(name)
-    }
-
-    render () {
+    render() {
         const {
             mounted,
             practices,

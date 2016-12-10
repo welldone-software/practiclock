@@ -9,7 +9,7 @@ import {
     View
 } from 'react-native'
 import Icon from 'react-native-vector-icons/Ionicons'
-import SimpleTrackPlayer from './SimpleTrackPlayer'
+import SimpleTrackPlayer from '../SimpleTrackPlayer'
 
 const styles = StyleSheet.create({
     button: {
@@ -52,8 +52,7 @@ export default class Button extends Component {
     static propTypes = {
         editMode: PropTypes.bool,
         onPlay: PropTypes.func.isRequired,
-        isPlaying: PropTypes.bool,
-        onDelete: PropTypes.func.isRequired
+        isPlaying: PropTypes.bool
     }
 
     static defaultProps = {

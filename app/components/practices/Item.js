@@ -199,7 +199,6 @@ class Practice extends Component {
 
     onPlay = () => {
         MediaLibrary.play(this.state.sound.file, null, this.state.repeat)
-        // TODO: Add play action
     }
 
     renderLeftButton = () => {

@@ -5,7 +5,7 @@ export default class M {
     static currentPlaying
     static currentName
 
-    static isCurrentSound(name){
+    static isCurrentSound(name) {
         return M.currentName === name
     }
 
@@ -23,12 +23,12 @@ export default class M {
             if (M.currentName) {
                 promise = M.stop()
             }
-            promise = promise.then(()=>{
+            promise = promise.then(() => {
                 M.currentPlaying = new PseudoSyncSound(name, cb, repeat)
                 M.currentName = name
             })
         }
-        return promise.then(()=> M.currentPlaying.play())
+        return promise.then(() => M.currentPlaying.play())
     }
 
     static stop() {
@@ -40,5 +40,21 @@ export default class M {
 
     static pause() {
         return (M.currentPlaying ? M.currentPlaying.pause() : Promise.resolve({}))
+    }
+
+    static playFiles(id, array, cb) {
+        M.playlistId = id
+        cb()
+        return array
+            .map(item => () => new Promise(resolve => {
+                return M.isPlaylistPlaying(id) ? M.stop().then(()=>M.play(item.sound.file, resolve, item.repeat)) : Promise.resolve({})
+            }))
+            .reduce((promise, play) => promise.then(play), Promise.resolve({}))
+            .then(() => M.isPlaylistPlaying(id) ? M.playlistId = null : false)
+            .then(cb)
+    }
+
+    static isPlaylistPlaying(id) {
+        return M.playlistId === id
     }
 }

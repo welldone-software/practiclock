@@ -2,6 +2,7 @@ import Promise from 'es6-promise'
 import Sound from 'react-native-sound'
 
 export default class PseudoSyncSound {
+    static sounds = {}
     constructor (fileName, finished, LOOPS_COUNT = 1) {
         this.fileName = fileName
         this.finished = finished || function(){}
@@ -11,7 +12,16 @@ export default class PseudoSyncSound {
     _lazyInit () {
         if ( !this.soundPromise ) {
             this.soundPromise = new Promise(resolve => {
-                this.sound = new Sound(this.fileName, Sound.MAIN_BUNDLE, () => resolve(this.sound))
+                let cachedSound = PseudoSyncSound.sounds[this.fileName];
+                if (cachedSound) {
+                    this.sound = cachedSound;
+                    resolve(cachedSound)
+                } else {
+                    this.sound = new Sound(this.fileName, Sound.MAIN_BUNDLE, () => {
+                        PseudoSyncSound.sounds[this.fileName] = this.sound;
+                        resolve(this.sound)
+                    })
+                }
             })
             this.soundPromise.then(() => {
                 let trackDuration = this.sound.getDuration()
@@ -45,7 +55,8 @@ export default class PseudoSyncSound {
         this.isPlaying = false
         this.finished()
         return this.pause().then(() => {
-            this.sound.release()
+            this.sound.stop();
+            // this.sound.release()
             this.soundPromise = null
             this.playStarted = null
         })
