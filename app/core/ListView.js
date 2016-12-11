@@ -242,8 +242,8 @@ export default class ListView extends Component {
         } = this.props
 
         return (
-            <Row 
-                data={data} 
+            <Row
+                data={data}
                 active={active}
                 editMode={editMode}
                 content={children}

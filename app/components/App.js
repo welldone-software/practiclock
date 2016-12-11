@@ -2,6 +2,7 @@
 import React, {Component} from 'react'
 import {
     Animated,
+    AsyncStorage,
     Easing,
     Text,
     View,
@@ -16,6 +17,7 @@ import {
     Scene
 } from 'react-native-router-flux'
 import {connect, Provider} from 'react-redux'
+import {persistStore} from 'redux-persist'
 import Practice from './practices/Item'
 import PracticeList from './practices/List'
 import Exercise from './exercises/Item'
@@ -40,6 +42,7 @@ class TabIcon extends Component {
     }
 
     componentWillReceiveProps(nextProps) {
+        if (this.props.selected === nextProps.selected) return
         if (nextProps.selected) {
             this.startSelectedAnimation()
         } else {
@@ -70,7 +73,7 @@ class TabIcon extends Component {
 
         return (
             <View style={{alignItems: 'center'}}>
-                <IconAnimated 
+                <IconAnimated
                     style={{
                         color: '#75949A',
                         transform: [
@@ -79,10 +82,10 @@ class TabIcon extends Component {
                             }
                         ]
                     }}
-                    size={28} 
+                    size={28}
                     name={TabIcon.title2icon[title]}
                 />
-                <Text 
+                <Text
                     style={{
                         fontSize: 12,
                         color: '#75949A',
@@ -96,52 +99,71 @@ class TabIcon extends Component {
     }
 }
 
-export default () => {
-    return (
-        <Provider store={store}>
-            <RouterWithRedux>
-                <Scene key="modal" component={Modal}>
-                    <Scene key="root">
-                        <Scene
-                            key="tabbar"
-                            tabs
-                            tabBarStyle={{
-                                backgroundColor: '#fff',
-                                borderTopWidth: 1,
-                                borderTopColor: '#f5f5f5'
-                            }}
-                          >
-                            <Scene 
-                                key="practices"
-                                title="Practices"
-                                icon={TabIcon} 
-                                onPress={()=> Actions.practiceList({type: ActionConst.REFRESH, timestamp: Date.now()})}
-                            >
-                                <Scene key="practiceList" component={PracticeList} title="Practices"/>
-                                <Scene key="practiceView" component={Practice} title="Practice" hideTabBar/>
+export default class App extends Component {
+    constructor(props) {
+        super(props)
+        this.state = {
+            rehydrated: false
+        }
+    }
+
+    componentWillMount() {
+        persistStore(
+            store,
+            {storage: AsyncStorage},
+            () => this.setState({rehydrated: true})
+        )
+    }
+
+    render() {
+        if (!this.state.rehydrated) return null
+
+        return (
+            <Provider store={store}>
+                <RouterWithRedux>
+                    <Scene key="modal" component={Modal}>
+                        <Scene key="root">
+                            <Scene
+                                key="tabbar"
+                                tabs
+                                tabBarStyle={{
+                                    backgroundColor: '#fff',
+                                    borderTopWidth: 1,
+                                    borderTopColor: '#f5f5f5'
+                                }}
+                              >
+                                <Scene
+                                    key="practices"
+                                    title="Practices"
+                                    icon={TabIcon}
+                                    onPress={()=> Actions.practiceList({type: ActionConst.REFRESH, timestamp: Date.now()})}
+                                >
+                                    <Scene key="practiceList" component={PracticeList} title="Practices"/>
+                                    <Scene key="practiceView" component={Practice} title="Practice" hideTabBar/>
+                                </Scene>
+                                <Scene
+                                    key="exercises"
+                                    title="Exercises"
+                                    icon={TabIcon}
+                                    onPress={()=> Actions.exerciseList({type: ActionConst.REFRESH, timestamp: Date.now()})}
+                                >
+                                    <Scene key="exerciseList" component={ExerciseList} title="Exercises"/>
+                                    <Scene key="exerciseView" component={Exercise} title="Exercise" hideTabBar/>
+                                </Scene>
                             </Scene>
-                            <Scene 
-                                key="exercises"
-                                title="Exercises"
-                                icon={TabIcon}
-                                onPress={()=> Actions.exerciseList({type: ActionConst.REFRESH, timestamp: Date.now()})}
-                            >
-                                <Scene key="exerciseList" component={ExerciseList} title="Exercises"/>
-                                <Scene key="exerciseView" component={Exercise} title="Exercise" hideTabBar/>
+                            <Scene key="practiceCreate" direction="vertical">
+                                <Scene key="practiceNew" component={Practice} title="New Practice" hideTabBar/>
                             </Scene>
-                        </Scene>
-                        <Scene key="practiceCreate" direction="vertical">
-                            <Scene key="practiceNew" component={Practice} title="New Practice" hideTabBar/>
-                        </Scene>
-                        <Scene key="exerciseCreate" direction="vertical">
-                            <Scene key="exerciseNew" component={Exercise} title="New Exercise" hideTabBar/>
-                        </Scene>
-                        <Scene key="playerOpen" direction="vertical">
-                            <Scene key="play" component={Player} title="Player" hideTabBar/>
+                            <Scene key="exerciseCreate" direction="vertical">
+                                <Scene key="exerciseNew" component={Exercise} title="New Exercise" hideTabBar/>
+                            </Scene>
+                            <Scene key="playerOpen" direction="vertical">
+                                <Scene key="play" component={Player} title="Player" hideTabBar/>
+                            </Scene>
                         </Scene>
                     </Scene>
-                </Scene>
-            </RouterWithRedux>
-        </Provider>
-    )
+                </RouterWithRedux>
+            </Provider>
+        )
+    }
 }

@@ -174,21 +174,51 @@ export default class CustomPicker extends Component {
                 >
                     <View style={styles.container}>
                         <Surface width={width} height="120" style={styles.line}>
-                            <Shape x={0} y={0} d={this.state.transition} stroke="#E9E9E9" strokeWidth={1}/>
-                            <Shape x={0} y={50} d={this.state.transition} stroke="#fff" strokeWidth={50}/>
+                            <Shape
+                                x={0}
+                                y={0}
+                                d={this.state.transition}
+                                stroke="#E9E9E9"
+                                strokeWidth={1}
+                            />
+                            <Shape
+                                x={0}
+                                y={50}
+                                d={this.state.transition}
+                                stroke="#fff"
+                                strokeWidth={50}
+                            />
                         </Surface>
                         <View style={styles.wrapper}>
                             <View style={styles.buttons}>
                                 <TouchableOpacity onPress={onCancel}>
-                                    <Icon name="ios-close-outline" size={40} style={[styles.icon, {color: '#FC4E54'}]}/>
+                                    <Icon
+                                        name="ios-close-outline"
+                                        size={40}
+                                        style={[styles.icon, {color: '#FC4E54'}]}
+                                    />
                                 </TouchableOpacity>
                                 <Text style={styles.title}>{title}</Text>
-                                <TouchableOpacity onPress={() => onSelect(current)}>
-                                    <Icon name="ios-checkmark-outline" size={40} style={[styles.icon, {color: '#24CB58'}]}/>
+                                <TouchableOpacity
+                                    onPress={() => onSelect(current)}
+                                >
+                                    <Icon
+                                        name="ios-checkmark-outline"
+                                        size={40}
+                                        style={[styles.icon, {color: '#24CB58'}]}
+                                    />
                                 </TouchableOpacity>
                             </View>
                             <View>
-                                {React.Children.map(children, item => React.cloneElement(item, { ...props, current, onChange: this.onChange }))}
+                                {
+                                  React.Children.map(children, item => {
+                                      return React.cloneElement(item, {
+                                          ...props,
+                                          current,
+                                          onChange: this.onChange
+                                      })
+                                  })
+                                }
                             </View>
                         </View>
                     </View>

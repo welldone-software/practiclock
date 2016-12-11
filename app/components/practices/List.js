@@ -56,12 +56,18 @@ class List extends Component {
     }
 
     componentDidMount() {
-        this.refresh(!Boolean(this.props.practices.length))
+        this.setState({mounted: false}, () => {
+            this.refresh(!Boolean(this.props.practices.length))
+            this.setState({mounted: true})
+        })
     }
 
     componentWillReceiveProps(nextProps) {
-        const nextPractices = [...nextProps.practices].sort((a, b) => a.id - b.id)
-        const currentPractices = [...this.props.practices].sort((a, b) => a.id - b.id)
+        const nextPractices = [...nextProps.practices]
+                                .sort((a, b) => a.id - b.id)
+        const currentPractices = [...this.props.practices]
+                                    .sort((a, b) => a.id - b.id)
+        this.setState({editMode: false})
         if (JSON.stringify(nextPractices) === JSON.stringify(currentPractices)) return
         this.setState({mounted: false, practices: nextProps.practices}, () => {
             this.refresh(!Boolean(nextProps.practices.length))
@@ -81,7 +87,6 @@ class List extends Component {
 
     onLeftButtonTouch = () => {
         this.setState({editMode: !this.state.editMode})
-        this.refresh(!Boolean(this.props.practices.length))
     }
 
     renderRightButton = () => {
@@ -89,7 +94,11 @@ class List extends Component {
         if (editMode) return null
         return (
             <TouchableOpacity onPress={Actions.practiceCreate}>
-                <Icon name="ios-add-outline" size={30} style={styles.rightButton}/>
+                <Icon
+                    name="ios-add-outline"
+                    size={30}
+                    style={styles.rightButton}
+                />
             </TouchableOpacity>
         )
     }
@@ -99,23 +108,32 @@ class List extends Component {
         return (
             <TouchableOpacity onPress={this.onLeftButtonTouch}>
                 {editMode &&
-                <Icon name="ios-close-outline" size={30} style={[styles.leftButton, styles.closeButton]}/>
+                    <Icon
+                        name="ios-close-outline"
+                        size={30}
+                        style={[styles.leftButton, styles.closeButton]}
+                    />
                 }
                 {!editMode &&
-                <Icon name="ios-settings-outline" size={24} style={styles.leftButton}/>
+                    <Icon
+                        name="ios-settings-outline"
+                        size={24} style={styles.leftButton}
+                    />
                 }
             </TouchableOpacity>
         )
     }
 
-    onOrderChange = (practices) => {
+    onOrderChange = practices => {
         this.setState({practices}, () => this.props.order(practices))
     }
 
-    onDelete = (id) => this.props.remove(id + 1)
-    onPlayFn = (id, repeat) => MediaLibrary.play(id, this.refresh, repeat).then(this.refresh)
+    onDelete = id => this.props.remove(id + 1)
+    onPlayFn = (id, repeat) => {
+        return MediaLibrary.play(id, this.refresh, repeat).then(this.refresh)
+    }
     onPause = () => MediaLibrary.stop().then(this.refresh)
-    isPlayingFn = (name) => MediaLibrary.isPlaying(name)
+    isPlayingFn = name => MediaLibrary.isPlaying(name)
 
     render() {
         const {

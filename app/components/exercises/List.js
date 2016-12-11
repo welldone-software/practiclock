@@ -60,20 +60,26 @@ class ExerciseList extends Component {
     componentDidMount() {
         const {exercises, practices} = this.props
         this.setState({mounted: false}, () => {
-            this.refresh(!Boolean(exercises.length) || !Boolean(practices.length))
+            this.refresh(
+                !Boolean(exercises.length) || !Boolean(practices.length)
+            )
             this.setState({mounted: true})
         })
     }
 
     componentWillReceiveProps(nextProps) {
         const {exercises, practices} = nextProps
-        this.setState({practices})
-        const nextExercises = [...nextProps.exercises].sort((a, b) => a.id - b.id)
-        const currentExercises = [...this.props.exercises].sort((a, b) => a.id - b.id)
+        this.setState({practices, editMode: false})
+        const nextExercises = [...nextProps.exercises]
+                                  .sort((a, b) => a.id - b.id)
+        const currentExercises = [...this.props.exercises]
+                                    .sort((a, b) => a.id - b.id)
         if (JSON.stringify(nextExercises) === JSON.stringify(currentExercises)) return
         if (JSON.stringify(nextProps) !== JSON.stringify(this.props)) {
             this.setState({mounted: false, exercises}, () => {
-                this.refresh(!Boolean(exercises.length) || !Boolean(practices.length))
+                this.refresh(
+                    !Boolean(exercises.length) || !Boolean(practices.length)
+                )
                 this.setState({mounted: true})
             })
         }
@@ -92,7 +98,6 @@ class ExerciseList extends Component {
     onLeftButtonTouch = () => {
         const {exercises, practices} = this.props
         this.setState({editMode: !this.state.editMode})
-        this.refresh(!Boolean(exercises.length) || !Boolean(practices.length))
     }
 
     renderRightButton = () => {
@@ -100,7 +105,11 @@ class ExerciseList extends Component {
         if (editMode) return null
         return (
             <TouchableOpacity onPress={Actions.exerciseCreate}>
-                <Icon name="ios-add-outline" size={30} style={styles.rightButton}/>
+                <Icon
+                    name="ios-add-outline"
+                    size={30}
+                    style={styles.rightButton}
+                />
             </TouchableOpacity>
         )
     }
@@ -110,10 +119,18 @@ class ExerciseList extends Component {
         return (
             <TouchableOpacity onPress={this.onLeftButtonTouch}>
                 {editMode &&
-                <Icon name="ios-close-outline" size={30} style={[styles.leftButton, styles.closeButton]}/>
+                    <Icon
+                        name="ios-close-outline"
+                        size={30}
+                        style={[styles.leftButton, styles.closeButton]}
+                    />
                 }
                 {!editMode &&
-                <Icon name="ios-settings-outline" size={24} style={styles.leftButton}/>
+                    <Icon
+                        name="ios-settings-outline"
+                        size={24}
+                        style={styles.leftButton}
+                    />
                 }
             </TouchableOpacity>
         )
@@ -134,15 +151,20 @@ class ExerciseList extends Component {
         this.setState({exercises}, () => this.props.order(exercises))
     }
 
-    onDelete = (id) => this.props.remove(id)
-    onPlayFn = (id, practices) => MediaLibrary.playFiles(id, practices, this.refresh).then(this.refresh)
+    onDelete = id => this.props.remove(id)
+
+    onPlayFn = (id, practices) => {
+      return MediaLibrary
+                .playFiles(id, practices, this.refresh)
+                .then(this.refresh)
+    }
+
     onPause = () => {
         MediaLibrary.playlistId = null
         MediaLibrary.stop().then(this.refresh)
     }
-    isPlayingFn = (id) => {
-        return MediaLibrary.isPlaylistPlaying(id)
-    }
+
+    isPlayingFn = id => MediaLibrary.isPlaylistPlaying(id)
 
     render() {
         const {
