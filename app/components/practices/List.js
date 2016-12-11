@@ -63,14 +63,20 @@ class List extends Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        const nextPractices = [...nextProps.practices]
+        const {practices, navigation} = nextProps
+
+        if (navigation.sceneKey !== 'practiceList') {
+            this.setState({editMode: false})
+            return
+        }
+
+        const nextPractices = [...practices]
                                 .sort((a, b) => a.id - b.id)
         const currentPractices = [...this.props.practices]
                                     .sort((a, b) => a.id - b.id)
-        this.setState({editMode: false})
         if (JSON.stringify(nextPractices) === JSON.stringify(currentPractices)) return
-        this.setState({mounted: false, practices: nextProps.practices}, () => {
-            this.refresh(!Boolean(nextProps.practices.length))
+        this.setState({mounted: false, practices}, () => {
+            this.refresh(!Boolean(practices.length))
             this.setState({mounted: true})
         })
     }
@@ -160,6 +166,12 @@ class List extends Component {
 }
 
 export default connect(
-    state => state.practices,
+    state => {
+        const {practices, navigation} = state
+        return {
+            practices: practices.practices,
+            navigation: navigation.scene
+        }
+    },
     dispatch => bindActionCreators(actions, dispatch)
 )(List)

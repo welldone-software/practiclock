@@ -14,7 +14,8 @@ import {
     ActionConst,
     Modal,
     Router,
-    Scene
+    Scene,
+    Switch
 } from 'react-native-router-flux'
 import {connect, Provider} from 'react-redux'
 import {persistStore} from 'redux-persist'
@@ -136,29 +137,73 @@ export default class App extends Component {
                                     key="practices"
                                     title="Practices"
                                     icon={TabIcon}
-                                    onPress={()=> Actions.practiceList({type: ActionConst.REFRESH, timestamp: Date.now()})}
+                                    onPress={() => {
+                                        return Actions.practiceList({
+                                            type: ActionConst.REFRESH,
+                                            timestamp: Date.now()
+                                        })
+                                    }}
                                 >
-                                    <Scene key="practiceList" component={PracticeList} title="Practices"/>
-                                    <Scene key="practiceView" component={Practice} title="Practice" hideTabBar/>
+                                    <Scene
+                                        key="practiceList"
+                                        component={PracticeList}
+                                        title="Practices"
+                                        passProps={true}
+                                    />
+                                    <Scene
+                                        key="practiceView"
+                                        component={Practice}
+                                        title="Practice"
+                                        hideTabBar
+                                    />
                                 </Scene>
                                 <Scene
                                     key="exercises"
                                     title="Exercises"
                                     icon={TabIcon}
-                                    onPress={()=> Actions.exerciseList({type: ActionConst.REFRESH, timestamp: Date.now()})}
+                                    onPress={() => {
+                                        return Actions.exerciseList({
+                                          type: ActionConst.REFRESH,
+                                          timestamp: Date.now()
+                                        })
+                                    }}
                                 >
-                                    <Scene key="exerciseList" component={ExerciseList} title="Exercises"/>
-                                    <Scene key="exerciseView" component={Exercise} title="Exercise" hideTabBar/>
+                                    <Scene
+                                        key="exerciseList"
+                                        component={ExerciseList}
+                                        title="Exercises"
+                                    />
+                                    <Scene
+                                        key="exerciseView"
+                                        component={Exercise}
+                                        title="Exercise"
+                                        hideTabBar
+                                    />
                                 </Scene>
                             </Scene>
                             <Scene key="practiceCreate" direction="vertical">
-                                <Scene key="practiceNew" component={Practice} title="New Practice" hideTabBar/>
+                                <Scene
+                                    key="practiceNew"
+                                    component={Practice}
+                                    title="New Practice"
+                                    hideTabBar
+                                />
                             </Scene>
                             <Scene key="exerciseCreate" direction="vertical">
-                                <Scene key="exerciseNew" component={Exercise} title="New Exercise" hideTabBar/>
+                                <Scene
+                                    key="exerciseNew"
+                                    component={Exercise}
+                                    title="New Exercise"
+                                    hideTabBar
+                                />
                             </Scene>
                             <Scene key="playerOpen" direction="vertical">
-                                <Scene key="play" component={Player} title="Player" hideTabBar/>
+                                <Scene
+                                    key="play"
+                                    component={Player}
+                                    title="Player"
+                                    hideTabBar
+                                />
                             </Scene>
                         </Scene>
                     </Scene>

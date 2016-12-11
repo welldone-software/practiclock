@@ -68,8 +68,14 @@ class ExerciseList extends Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        const {exercises, practices} = nextProps
-        this.setState({practices, editMode: false})
+        const {exercises, practices, navigation} = nextProps
+
+        if (navigation.sceneKey !== 'exerciseList') {
+            this.setState({editMode: false})
+            return
+        }
+
+        this.setState({practices})
         const nextExercises = [...nextProps.exercises]
                                   .sort((a, b) => a.id - b.id)
         const currentExercises = [...this.props.exercises]
@@ -198,8 +204,12 @@ class ExerciseList extends Component {
 
 export default connect(
     state => {
-        const {exercises, practices} = state
-        return {exercises: exercises.exercises, practices: practices.practices}
+        const {exercises, practices, navigation} = state
+        return {
+            exercises: exercises.exercises,
+            practices: practices.practices,
+            navigation: navigation.scene
+        }
     },
     dispatch => bindActionCreators(actions, dispatch)
 )(ExerciseList)
