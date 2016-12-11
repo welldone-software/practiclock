@@ -222,7 +222,7 @@ class Row extends Component {
                             </TouchableOpacity>
                         </View>
                     }
-                    {data.type === Types.PRACTICE && 
+                    {data.type === Types.PRACTICE &&
                         <View style={styles.wrapper}>
                             <View style={styles.info}>
                                 <Icon name="ios-basketball-outline" size={22} style={[styles.iconType, {color: '#BD7BEE'}]}/>
@@ -442,7 +442,7 @@ class Exercise extends Component {
                 }
 
                 <ActionButton buttonColor="#24CB58" hideShadow={true} spacing={10}>
-                    <ActionButton.Item 
+                    <ActionButton.Item
                         buttonColor="#BD7BEE"
                         title="Practice"
                         onPress={() => this.setState({showPracticePicker: true})}
@@ -451,7 +451,7 @@ class Exercise extends Component {
                         textContainerStyle={{borderColor: 'transparent'}}
                         spaceBetween={2}
                     >
-                        <Icon name="ios-basketball-outline" style={styles.actionButtonIcon} />
+                        <Icon name="ios-basketball-outline" style={styles.actionButtonIcon}/>
                     </ActionButton.Item>
                     <ActionButton.Item
                         buttonColor='#F4B03A'

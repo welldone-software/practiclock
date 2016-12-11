@@ -347,14 +347,14 @@ class Practice extends Component {
                             style={styles.button}
                             activeOpacity={1}
                         >
-                            <Icon name="ios-play-outline" size={20} color="#24CB58"/>
+                            <Icon name="ios-play-outline" size={40} color="#24CB58"/>
                         </TouchableOpacity>
                         <TouchableOpacity
                             onPress={this.onDelete}
                             style={styles.button}
                             activeOpacity={1}
                         >
-                            <Icon name="ios-trash-outline" size={20} color="#FC4E54"/>
+                            <Icon name="ios-trash-outline" size={40} color="#FC4E54"/>
                         </TouchableOpacity>
                     </View>
                 }
