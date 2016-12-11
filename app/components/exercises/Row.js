@@ -63,7 +63,7 @@ const styles = StyleSheet.create({
     }
 })
 
-export default ({data, editMode, onPlayFn, onPause, isPlayingFn, practices}) => {
+export default ({data, editMode, onPlayFn, onPause, isPlayingFn, practices, onDelete}) => {
     const {
         id,
         title
@@ -108,13 +108,17 @@ export default ({data, editMode, onPlayFn, onPause, isPlayingFn, practices}) => 
                     <Text style={styles.text}>{min}:{sec}</Text>
                 </View>
             </View>
-            {!!amountOfPractices && <View style={styles.button}>
-                <Button
-                    onPlay={onPlay}
-                    onPause={onPause}
-                    isPlaying={isPlaying}
-                />
-            </View>}
+            {!!amountOfPractices &&
+                <View style={styles.button}>
+                    <Button
+                        editMode={editMode}
+                        onPlay={onPlay}
+                        onPause={onPause}
+                        isPlaying={isPlaying}
+                        onDelete={() => onDelete(id)}
+                    />
+                </View>
+            }
         </Wrapper>
     )
 }

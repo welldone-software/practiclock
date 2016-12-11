@@ -148,7 +148,7 @@ class ExerciseList extends Component {
             practices={this.state.practices}
             active={active}
             onSwipe={this.onSwipe}
-            onDeleteButtonPress={id => this.props.remove(id)}
+            onDelete={id => this.props.remove(id)}
             swipe={swipe}
         />)
     }
