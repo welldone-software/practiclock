@@ -111,33 +111,12 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-around'
     },
-    deleteButton: {
+    button: {
         width: width/2.5,
         paddingTop: 10,
         paddingBottom: 10,
-        borderWidth: 1,
-        borderRadius: 5,
-        borderColor: '#FC4E54',
         flexDirection: 'row',
         justifyContent: 'center',
-    },
-    deleteText: {
-        fontSize: 14,
-        color: '#FC4E54'
-    },
-    playButton: {
-        width: width/2.5,
-        paddingTop: 10,
-        paddingBottom: 10,
-        borderWidth: 1,
-        borderRadius: 5,
-        borderColor: '#24CB58',
-        flexDirection: 'row',
-        justifyContent: 'center',
-    },
-    playText: {
-        fontSize: 14,
-        color: '#24CB58'
     },
     slider: {
         paddingLeft: 20,
@@ -171,8 +150,8 @@ class Practice extends Component {
 
     onSubmit = () => {
         const {title, duration, repeat, sound} = this.state
-        this.props.add({ 
-            title: ['', null, undefined].includes(title) ? `Practice ${this.props.practices.length+1}` : title, 
+        this.props.add({
+            title: ['', null, undefined].includes(title) ? `Practice ${this.props.practices.length+1}` : title,
             duration,
             repeat,
             sound
@@ -182,8 +161,8 @@ class Practice extends Component {
 
     onBack = () => {
         const {title, duration, repeat, sound} = this.state
-        this.props.edit(this.props.id, { 
-            title: ['', null, undefined].includes(title) ? `Practice ${this.props.practices.length+1}` : title, 
+        this.props.edit(this.props.id, {
+            title: ['', null, undefined].includes(title) ? `Practice ${this.props.practices.length+1}` : title,
             duration,
             repeat,
             sound
@@ -365,17 +344,17 @@ class Practice extends Component {
                     <View style={styles.buttons}>
                         <TouchableOpacity
                             onPress={this.onPlay}
-                            style={styles.playButton}
+                            style={styles.button}
                             activeOpacity={1}
                         >
-                            <Text style={styles.playText}>PLAY</Text>
+                            <Icon name="ios-play-outline" size={20} color="#24CB58"/>
                         </TouchableOpacity>
                         <TouchableOpacity
                             onPress={this.onDelete}
-                            style={styles.deleteButton}
+                            style={styles.button}
                             activeOpacity={1}
                         >
-                            <Text style={styles.deleteText}>REMOVE</Text>
+                            <Icon name="ios-trash-outline" size={20} color="#FC4E54"/>
                         </TouchableOpacity>
                     </View>
                 }

@@ -91,7 +91,7 @@ export default ({data, editMode, onPlayFn, onPause, isPlayingFn, practices}) => 
     return (
         <Wrapper
             onPress={() => {
-                if (!editMode) Actions.exerciseView({id}) 
+                if (!editMode) Actions.exerciseView({id})
             }}
             activeOpacity={1}
             style={styles.children}
@@ -118,4 +118,3 @@ export default ({data, editMode, onPlayFn, onPause, isPlayingFn, practices}) => 
         </Wrapper>
     )
 }
-

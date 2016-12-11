@@ -196,7 +196,8 @@ class ExerciseList extends Component {
                 <Row onDelete={this.onDelete} practices={practices}
                      isPlayingFn={this.isPlayingFn}
                      onPlayFn={this.onPlayFn}
-                     onPause={this.onPause}/>
+                     onPause={this.onPause}
+                />
             </ListView>
         )
     }
