@@ -28,6 +28,11 @@ const styles = StyleSheet.create({
         },
         borderBottomWidth: 0
     },
+    container: {
+        flex: 1,
+        alignItems: 'flex-start',
+        marginBottom: 50
+    },
     title: {
         color: '#6C8993',
         fontWeight: '500'

@@ -29,6 +29,11 @@ const styles = StyleSheet.create({
         },
         borderBottomWidth: 0
     },
+    container: {
+        flex: 1,
+        alignItems: 'flex-start',
+        marginBottom: 50
+    },
     title: {
         color: '#6C8993',
         fontWeight: '500'
@@ -203,19 +208,21 @@ class ExerciseList extends Component {
         const data = Object.assign({}, exercises)
 
         return (
-            <ListView
-                editMode={editMode}
-                mounted={mounted}
-                items={exercises}
-                emptyView={<Empty/>}
-                onOrderChange={this.onOrderChange}
-            >
-                <Row onDelete={this.onDelete} practices={practices}
-                     isPlayingFn={this.isPlayingFn}
-                     onPlayFn={this.onPlayFn}
-                     onPause={this.onPause}
-                />
-            </ListView>
+            <View style={styles.container}>
+                <ListView
+                    editMode={editMode}
+                    mounted={mounted}
+                    items={exercises}
+                    emptyView={<Empty/>}
+                    onOrderChange={this.onOrderChange}
+                >
+                    <Row onDelete={this.onDelete} practices={practices}
+                         isPlayingFn={this.isPlayingFn}
+                         onPlayFn={this.onPlayFn}
+                         onPause={this.onPause}
+                    />
+                </ListView>
+            </View>
         )
     }
 }
