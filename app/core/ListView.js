@@ -12,7 +12,7 @@ import {
 import Icon from 'react-native-vector-icons/Ionicons'
 import SortableList from 'react-native-sortable-list'
 
-const SCREEN_WIDTH = Dimensions.get('window').width
+const width = Dimensions.get('window').width
 
 const styles = StyleSheet.create({
     wrapper: {
@@ -22,13 +22,13 @@ const styles = StyleSheet.create({
         paddingTop: 60
     },
     container: {
-        width: SCREEN_WIDTH
+        width: width
     },
     row: {
         flexDirection: 'row',
         alignItems: 'center',
         backgroundColor: 'white',
-        width: SCREEN_WIDTH,
+        width: width,
         borderBottomWidth: 1,
         borderBottomColor: '#EFF0F0'
     },
@@ -41,7 +41,7 @@ const styles = StyleSheet.create({
         }
     },
     content: {
-        width: SCREEN_WIDTH,
+        width: width,
         flexDirection: 'row',
         justifyContent: 'center',
         alignItems: 'center'

@@ -1,6 +1,7 @@
 //@flow
 import React from 'react'
 import {
+    Dimensions,
     StyleSheet,
     Text,
     TouchableOpacity,
@@ -9,8 +10,11 @@ import {
 import { Actions } from 'react-native-router-flux'
 import Icon from 'react-native-vector-icons/Ionicons'
 
+const width = Dimensions.get('window').width
+
 const styles = StyleSheet.create({
     scene: {
+        width,
         flex: 1,
         flexDirection: 'column',
         alignItems: 'center',

@@ -1,13 +1,17 @@
 //@flow
 import React from 'react'
 import {
+    Dimensions,
     StyleSheet,
     Text,
     View
 } from 'react-native'
 
+const width = Dimensions.get('window').width
+
 const styles = StyleSheet.create({
     scene: {
+        width,
         flex: 1,
         flexDirection: 'column',
         alignItems: 'center',
