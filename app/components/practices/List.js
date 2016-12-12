@@ -83,7 +83,7 @@ class List extends Component {
         if (JSON.stringify(nextPractices) === JSON.stringify(currentPractices)) return
         this.setState({mounted: false, practices}, () => {
             this.refresh(!Boolean(practices.length))
-            this.setState({mounted: true})
+            setTimeout(() => this.setState({mounted: true}))
         })
     }
 

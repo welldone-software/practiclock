@@ -91,7 +91,7 @@ class ExerciseList extends Component {
                 this.refresh(
                     !Boolean(exercises.length) || !Boolean(practices.length)
                 )
-                this.setState({mounted: true})
+                setTimeout(() => this.setState({mounted: true}))
             })
         }
     }
