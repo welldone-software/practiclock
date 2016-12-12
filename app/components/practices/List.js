@@ -68,13 +68,13 @@ class List extends Component {
 
         if (navigation.sceneKey !== 'practiceList') {
             this.setState({editMode: false})
-            return
         }
 
         const nextPractices = [...practices]
                                 .sort((a, b) => a.id - b.id)
         const currentPractices = [...this.props.practices]
                                     .sort((a, b) => a.id - b.id)
+
         if (JSON.stringify(nextPractices) === JSON.stringify(currentPractices)) return
         this.setState({mounted: false, practices}, () => {
             this.refresh(!Boolean(practices.length))

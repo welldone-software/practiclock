@@ -21,8 +21,8 @@ export function practices(state = { practices: [] }, action = {}) {
             return {
                 ...state,
                 practices: [
-                    ...state.practices, 
-                    { 
+                    ...state.practices,
+                    {
                         ...payload.data,
                         id: Date.now()
                     }
@@ -68,7 +68,7 @@ export function exercises(state = { exercises: [] }, action = {}) {
                 ...state,
                 exercises: [
                     ...state.exercises,
-                    { 
+                    {
                         ...payload.data,
                         id: Date.now()
                     }

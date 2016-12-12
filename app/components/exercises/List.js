@@ -73,7 +73,6 @@ class ExerciseList extends Component {
 
         if (navigation.sceneKey !== 'exerciseList') {
             this.setState({editMode: false})
-            return
         }
 
         this.setState({practices})
