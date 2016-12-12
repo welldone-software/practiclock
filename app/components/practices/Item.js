@@ -1,6 +1,7 @@
 //@flow
 import React, {Component} from 'react'
 import {
+    Alert,
     Animated,
     Dimensions,
     Easing,
@@ -174,9 +175,24 @@ class Practice extends Component {
     }
 
     onDelete = () => {
-        const {remove, id} = this.props
-        remove(id)
-        Actions.pop()
+        Alert.alert(
+            'Remove this practice?',
+            null,
+            [
+                {
+                    text: 'Yes',
+                    onPress: () => {
+                        const {remove, id} = this.props
+                        remove(id)
+                        Actions.pop()
+                    }
+                },
+                {
+                    text: 'No',
+                    onPress: () => {}
+                }
+            ]
+        )
     }
 
     onPlay = () => {

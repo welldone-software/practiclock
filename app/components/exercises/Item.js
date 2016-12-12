@@ -1,6 +1,7 @@
 //@flow
 import React, {Component} from 'react'
 import {
+    Alert,
     Animated,
     Dimensions,
     Easing,
@@ -260,6 +261,27 @@ class Row extends Component {
 class Exercise extends Component {
     onTitleChange = title => this.setState({title})
 
+    onDeleteExercise = () => {
+        Alert.alert(
+            'Remove this practice?',
+            null,
+            [
+                {
+                    text: 'Yes',
+                    onPress: () => {
+                        const {remove, id} = this.props
+                        remove(id)
+                        Actions.pop()
+                    }
+                },
+                {
+                    text: 'No',
+                    onPress: () => {}
+                }
+            ]
+        )
+    }
+
     onDelete = (index) => {
         const tmp = {...this.state.data}
         delete tmp[index]
@@ -507,7 +529,7 @@ class Exercise extends Component {
                             </ActionButton.Item>
                         </ActionButton>
                         <TouchableOpacity
-                            onPress={this.onDelete}
+                            onPress={this.onDeleteExercise}
                             style={styles.button}
                             activeOpacity={1}
                         >

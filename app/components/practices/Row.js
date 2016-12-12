@@ -74,10 +74,10 @@ export default ({data, editMode, onDelete, onPlayFn, onPause, isPlayingFn}) => {
     const sec = (duration/1000) % 60 || '00'
 
     return (
-        <Wrapper 
+        <Wrapper
             onPress={() => {
-                if (!editMode) Actions.practiceView({id}) 
-            }} 
+                if (!editMode) Actions.practiceView({id})
+            }}
             activeOpacity={1}
             style={styles.children}
         >
@@ -94,7 +94,7 @@ export default ({data, editMode, onDelete, onPlayFn, onPause, isPlayingFn}) => {
                 </View>
             </View>
             <View style={styles.button}>
-                <Button 
+                <Button
                     editMode={editMode}
                     onPlay={onPlay}
                     onPause={onPause}

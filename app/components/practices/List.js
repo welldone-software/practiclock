@@ -1,6 +1,7 @@
 //@flow
 import React, {Component} from 'react'
 import {
+    Alert,
     StyleSheet,
     TouchableOpacity,
     View,
@@ -134,7 +135,25 @@ class List extends Component {
         this.setState({practices}, () => this.props.order(practices))
     }
 
-    onDelete = id => this.props.remove(id + 1)
+    onDelete = id => {
+        Alert.alert(
+            'Remove this practice?',
+            null,
+            [
+                {
+                    text: 'Yes',
+                    onPress: () => {
+                        this.props.remove(id)
+                    }
+                },
+                {
+                    text: 'No',
+                    onPress: () => {}
+                }
+            ]
+        )
+    }
+
     onPlayFn = (id, repeat) => {
         return MediaLibrary.play(id, this.refresh, repeat).then(this.refresh)
     }
@@ -149,18 +168,20 @@ class List extends Component {
         } = this.state
 
         return (
-            <ListView
-                editMode={editMode}
-                mounted={mounted}
-                items={practices}
-                emptyView={<Empty/>}
-                onOrderChange={this.onOrderChange}
-            >
-                <Row onDelete={this.onDelete}
-                     isPlayingFn={this.isPlayingFn}
-                     onPlayFn={this.onPlayFn}
-                     onPause={this.onPause}/>
-            </ListView>
+            <View style={styles.container}>
+                <ListView
+                    editMode={editMode}
+                    mounted={mounted}
+                    items={practices}
+                    emptyView={<Empty/>}
+                    onOrderChange={this.onOrderChange}
+                >
+                    <Row onDelete={this.onDelete}
+                         isPlayingFn={this.isPlayingFn}
+                         onPlayFn={this.onPlayFn}
+                         onPause={this.onPause}/>
+                </ListView>
+            </View>
         )
     }
 }

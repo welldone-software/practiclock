@@ -1,6 +1,7 @@
 //@flow
 import React, {Component} from 'react'
 import {
+    Alert,
     StyleSheet,
     TouchableOpacity,
     View
@@ -157,7 +158,24 @@ class ExerciseList extends Component {
         this.setState({exercises}, () => this.props.order(exercises))
     }
 
-    onDelete = id => this.props.remove(id)
+    onDelete = id => {
+        Alert.alert(
+            'Remove this exercise?',
+            null,
+            [
+                {
+                    text: 'Yes',
+                    onPress: () => {
+                        this.props.remove(id)
+                    }
+                },
+                {
+                    text: 'No',
+                    onPress: () => {}
+                }
+            ]
+        )
+    }
 
     onPlayFn = (id, practices) => {
       return MediaLibrary
