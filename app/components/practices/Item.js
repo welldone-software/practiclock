@@ -107,9 +107,12 @@ const styles = StyleSheet.create({
     buttons: {
         position: 'absolute',
         width,
-        bottom: 20,
+        bottom: 0,
         flexDirection: 'row',
-        justifyContent: 'space-around'
+        justifyContent: 'space-around',
+        backgroundColor: '#fff',
+        borderTopWidth: 1,
+        borderTopColor: '#F5F5F5'
     },
     button: {
         width: width/2.5,
@@ -347,14 +350,14 @@ class Practice extends Component {
                             style={styles.button}
                             activeOpacity={1}
                         >
-                            <Icon name="ios-play-outline" size={40} color="#24CB58"/>
+                            <Icon name="ios-play-outline" size={28} color="#24CB58"/>
                         </TouchableOpacity>
                         <TouchableOpacity
                             onPress={this.onDelete}
                             style={styles.button}
                             activeOpacity={1}
                         >
-                            <Icon name="ios-trash-outline" size={40} color="#FC4E54"/>
+                            <Icon name="ios-trash-outline" size={28} color="#FC4E54"/>
                         </TouchableOpacity>
                     </View>
                 }

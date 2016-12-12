@@ -92,7 +92,8 @@ const styles = StyleSheet.create({
     },
     container: {
         flex: 1,
-        alignItems: 'flex-start'
+        alignItems: 'flex-start',
+        marginBottom: 50
     },
     content: {
         width: width,
@@ -130,9 +131,26 @@ const styles = StyleSheet.create({
         color: '#FC4E54'
     },
     actionButtonIcon: {
-        fontSize: 20,
-        height: 22,
+        height: 28,
         color: 'white'
+    },
+    buttons: {
+        position: 'absolute',
+        width,
+        bottom: 0,
+        flexDirection: 'row',
+        justifyContent: 'space-around',
+        backgroundColor: '#fff',
+        borderTopWidth: 1,
+        borderTopColor: '#F5F5F5'
+    },
+    button: {
+        width: width/2.5,
+        paddingTop: 10,
+        paddingBottom: 10,
+        flexDirection: 'row',
+        justifyContent: 'center',
+        backgroundColor: 'transparent'
     }
 })
 
@@ -407,6 +425,12 @@ class Exercise extends Component {
             shouldRerender
         } = this.state
 
+        let currentPractices = Object.assign([], data.data).filter(item => item.type === Types.PRACTICE).map((item) => {
+            return practices.find(practice => practice.id === item.id)
+        })
+
+        const onPlay = () => onPlayFn(id, currentPractices)
+
         const items = Object.values(data)
         const lastItem = items[items.length-1]
         const isIntervalLastItem = lastItem ? lastItem.type === Types.INTERVAL : false
@@ -441,31 +465,56 @@ class Exercise extends Component {
                     </View>
                 }
 
-                <ActionButton buttonColor="#24CB58" hideShadow={true} spacing={10}>
-                    <ActionButton.Item
-                        buttonColor="#BD7BEE"
-                        title="Practice"
-                        onPress={() => this.setState({showPracticePicker: true})}
-                        titleBgColor="transparent"
-                        titleColor="#6C8993"
-                        textContainerStyle={{borderColor: 'transparent'}}
-                        spaceBetween={2}
-                    >
-                        <Icon name="ios-basketball-outline" style={styles.actionButtonIcon}/>
-                    </ActionButton.Item>
-                    <ActionButton.Item
-                        buttonColor='#F4B03A'
-                        title="Pause"
-                        onPress={() => this.setState({showIntervalPicker: true})}
-                        disabled={isIntervalLastItem}
-                        titleBgColor="transparent"
-                        titleColor="#6C8993"
-                        textContainerStyle={{borderColor: 'transparent'}}
-                        spaceBetween={2}
-                    >
-                        <Icon name="ios-clock-outline" style={styles.actionButtonIcon}/>
-                    </ActionButton.Item>
-                </ActionButton>
+                {this.props.id &&
+                    <View style={styles.buttons}>
+                        <TouchableOpacity
+                            onPress={this.onPlay}
+                            style={styles.button}
+                            activeOpacity={1}
+                        >
+                            <Icon name="ios-play-outline" size={28} color="#24CB58"/>
+                        </TouchableOpacity>
+                        <ActionButton
+                            buttonColor="#24CB58"
+                            hideShadow={true}
+                            spacing={10}
+                            position="center"
+                            offsetY={0}
+                            icon={<Icon name="ios-add-outline" size={36} color="#FFF"/>}
+                        >
+                            <ActionButton.Item
+                                buttonColor="#BD7BEE"
+                                title="Practice"
+                                onPress={() => this.setState({showPracticePicker: true})}
+                                titleBgColor="#FFF"
+                                titleColor="#6C8993"
+                                textContainerStyle={{borderColor: 'transparent'}}
+                                spaceBetween={2}
+                            >
+                                <Icon name="ios-basketball-outline" size={28} style={styles.actionButtonIcon}/>
+                            </ActionButton.Item>
+                            <ActionButton.Item
+                                buttonColor='#F4B03A'
+                                title="Pause"
+                                onPress={() => this.setState({showIntervalPicker: true})}
+                                disabled={isIntervalLastItem}
+                                titleBgColor="#FFF"
+                                titleColor="#6C8993"
+                                textContainerStyle={{borderColor: 'transparent'}}
+                                spaceBetween={2}
+                            >
+                                <Icon name="ios-clock-outline" size={28} style={styles.actionButtonIcon}/>
+                            </ActionButton.Item>
+                        </ActionButton>
+                        <TouchableOpacity
+                            onPress={this.onDelete}
+                            style={styles.button}
+                            activeOpacity={1}
+                        >
+                            <Icon name="ios-trash-outline" size={28} color="#FC4E54"/>
+                        </TouchableOpacity>
+                    </View>
+                }
 
                 <CustomPicker
                     visible={this.state.showPracticePicker}
