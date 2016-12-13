@@ -139,16 +139,15 @@ export default class App extends Component {
                                     icon={TabIcon}
                                     onPress={() => {
                                         return Actions.practiceList({
-                                            type: ActionConst.REFRESH,
-                                            timestamp: Date.now()
+                                            type: ActionConst.REFRESH
                                         })
                                     }}
+                                    hideNavBar
                                 >
                                     <Scene
                                         key="practiceList"
                                         component={PracticeList}
                                         title="Practices"
-                                        passProps={true}
                                     />
                                     <Scene
                                         key="practiceView"
@@ -163,10 +162,10 @@ export default class App extends Component {
                                     icon={TabIcon}
                                     onPress={() => {
                                         return Actions.exerciseList({
-                                          type: ActionConst.REFRESH,
-                                          timestamp: Date.now()
+                                          type: ActionConst.REFRESH
                                         })
                                     }}
+                                    hideNavBar
                                 >
                                     <Scene
                                         key="exerciseList"

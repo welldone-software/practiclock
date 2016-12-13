@@ -64,7 +64,6 @@ class List extends Component {
     componentDidMount() {
         this.setState({mounted: false}, () => {
             this.refresh(!Boolean(this.props.practices.length))
-            this.setState({mounted: true})
         })
     }
 
@@ -83,22 +82,26 @@ class List extends Component {
         if (JSON.stringify(nextPractices) === JSON.stringify(currentPractices)) return
         this.setState({mounted: false, practices}, () => {
             this.refresh(!Boolean(practices.length))
-            setTimeout(() => this.setState({mounted: true}))
         })
     }
 
     refresh = (hideNavBar = false) => {
-        Actions.refresh({
-            renderRightButton: this.renderRightButton,
-            renderLeftButton: this.renderLeftButton,
-            navigationBarStyle: styles.navbar,
-            titleStyle: styles.title,
-            hideNavBar
+        setTimeout(() => {
+            Actions.refresh({
+                renderRightButton: this.renderRightButton,
+                renderLeftButton: this.renderLeftButton,
+                navigationBarStyle: StyleSheet.flatten([styles.navbar, {opacity: hideNavBar ? 0 : 1}]),
+                titleStyle: styles.title,
+                hideNavBar: false
+            })
+            this.setState({mounted: true})
         })
     }
 
     onLeftButtonTouch = () => {
-        this.setState({editMode: !this.state.editMode})
+        this.setState({editMode: !this.state.editMode}, () => {
+            this.refresh(!Boolean(this.props.practices.length))
+        })
     }
 
     renderRightButton = () => {
@@ -194,9 +197,10 @@ class List extends Component {
 export default connect(
     state => {
         const {practices, navigation} = state
+        const {sceneKey, parent} = navigation.scene
         return {
             practices: practices.practices,
-            navigation: navigation.scene
+            navigation: {sceneKey, parent}
         }
     },
     dispatch => bindActionCreators(actions, dispatch)

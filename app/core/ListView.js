@@ -9,6 +9,7 @@ import {
     TouchableOpacity,
     View
 } from 'react-native'
+import {Actions} from 'react-native-router-flux'
 import Icon from 'react-native-vector-icons/Ionicons'
 import SortableList from 'react-native-sortable-list'
 
