@@ -15,7 +15,6 @@ import {practices as actions} from '../../store/actions'
 import ListView from '../../core/ListView'
 import Empty from './Empty'
 import Row from './Row'
-import MediaLibrary from '../MediaLibrary'
 
 const styles = StyleSheet.create({
     navbar: {
@@ -162,12 +161,6 @@ class List extends Component {
         )
     }
 
-    onPlayFn = (id, repeat) => {
-        return MediaLibrary.play(id, this.refresh, repeat).then(this.refresh)
-    }
-    onPause = () => MediaLibrary.stop().then(this.refresh)
-    isPlayingFn = name => MediaLibrary.isPlaying(name)
-
     render() {
         const {
             mounted,
@@ -184,10 +177,7 @@ class List extends Component {
                     emptyView={<Empty/>}
                     onOrderChange={this.onOrderChange}
                 >
-                    <Row onDelete={this.onDelete}
-                         isPlayingFn={this.isPlayingFn}
-                         onPlayFn={this.onPlayFn}
-                         onPause={this.onPause}/>
+                    <Row onDelete={this.onDelete}/>
                 </ListView>
             </View>
         )

@@ -10,7 +10,7 @@ import {
     View
 } from 'react-native'
 import {Actions} from 'react-native-router-flux'
-import Button from './Button'
+import PlayEditDeleteButton from '../PlayerEditDeleteButton/PlayEditDeleteButton'
 
 const width = Dimensions.get('window').width
 
@@ -58,16 +58,13 @@ const styles = StyleSheet.create({
     }
 })
 
-export default ({data, editMode, onDelete, onPlayFn, onPause, isPlayingFn}) => {
+export default ({data, editMode, onDelete}) => {
     let {
         id,
         title,
         duration,
         repeat
     } = data
-
-    const isPlaying = isPlayingFn(data.sound.file, repeat)
-    const onPlay = ()=> {onPlayFn(data.sound.file, repeat)}
 
     const Wrapper = editMode ? View : TouchableOpacity
     const min = (duration/1000/60) << 0 || 0
@@ -94,13 +91,7 @@ export default ({data, editMode, onDelete, onPlayFn, onPause, isPlayingFn}) => {
                 </View>
             </View>
             <View style={styles.button}>
-                <Button
-                    editMode={editMode}
-                    onPlay={onPlay}
-                    onPause={onPause}
-                    isPlaying={isPlaying}
-                    onDelete={() => onDelete(id)}
-                />
+                <PlayEditDeleteButton editMode={editMode} onDelete={() => onDelete(id)} type='practices' id={id}/>
             </View>
         </Wrapper>
     )

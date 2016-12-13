@@ -1,7 +1,7 @@
 // @flow
 import {ActionConst} from 'react-native-router-flux'
 
-export function navigation(state = { scene: {} }, action = {}) {
+export function navigation(state = {scene: {}}, action = {}) {
     switch (action.type) {
         case ActionConst.FOCUS:
             return {
@@ -13,7 +13,7 @@ export function navigation(state = { scene: {} }, action = {}) {
     }
 }
 
-export function practices(state = { practices: [] }, action = {}) {
+export function practices(state = {practices: []}, action = {}) {
     const {type, payload} = action
 
     switch (type) {
@@ -33,33 +33,20 @@ export function practices(state = { practices: [] }, action = {}) {
             const practices = [...state.practices]
             const item = practices.find(item => item.id === id)
             Object.assign(item, data)
-            delete item.isPlaying
-            delete item.onPlay
-
-            return {
-                ...state,
-                practices
-            }
+            return {...state, practices}
         case '@PRACTICES_REMOVE':
             return {
                 ...state,
-                practices: state.practices.filter(item => item.id !== payload.id).map(item => {
-                    delete item.isPlaying
-                    delete item.onPlay
-                    return item
-                })
+                practices: state.practices.filter(item => item.id !== payload.id)
             }
         case '@PRACTICES_ORDER':
-            return {
-                ...state,
-                practices: payload.data
-            }
+            return {...state, practices: payload.data}
         default:
             return state
     }
 }
 
-export function exercises(state = { exercises: [] }, action = {}) {
+export function exercises(state = {exercises: []}, action = {}) {
     const {type, payload} = action
 
     switch (type) {

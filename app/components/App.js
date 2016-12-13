@@ -19,11 +19,11 @@ import {
 } from 'react-native-router-flux'
 import {connect, Provider} from 'react-redux'
 import {persistStore} from 'redux-persist'
-import Practice from './practices/Item'
-import PracticeList from './practices/List'
-import Exercise from './exercises/Item'
+import PracticeItem from './practices/PracticeItem'
+import PracticeList from './practices/PracticeList'
+import ExerciseItem from './exercises/Item'
 import ExerciseList from './exercises/List'
-import Player from './Player'
+import PlayerPage from './PlayerPage/PlayerPage'
 import configureStore from '../store'
 
 const RouterWithRedux = connect()(Router)
@@ -151,7 +151,7 @@ export default class App extends Component {
                                     />
                                     <Scene
                                         key="practiceView"
-                                        component={Practice}
+                                        component={PracticeItem}
                                         title="Practice"
                                         hideTabBar
                                     />
@@ -174,7 +174,7 @@ export default class App extends Component {
                                     />
                                     <Scene
                                         key="exerciseView"
-                                        component={Exercise}
+                                        component={ExerciseItem}
                                         title="Exercise"
                                         hideTabBar
                                     />
@@ -183,7 +183,7 @@ export default class App extends Component {
                             <Scene key="practiceCreate" direction="vertical">
                                 <Scene
                                     key="practiceNew"
-                                    component={Practice}
+                                    component={PracticeItem}
                                     title="New Practice"
                                     hideTabBar
                                 />
@@ -191,7 +191,7 @@ export default class App extends Component {
                             <Scene key="exerciseCreate" direction="vertical">
                                 <Scene
                                     key="exerciseNew"
-                                    component={Exercise}
+                                    component={ExerciseItem}
                                     title="New Exercise"
                                     hideTabBar
                                 />
@@ -199,9 +199,9 @@ export default class App extends Component {
                             <Scene key="playerOpen" direction="vertical">
                                 <Scene
                                     key="play"
-                                    component={Player}
+                                    component={PlayerPage}
                                     title="Player"
-                                    hideTabBar
+                                    passProps={true}
                                 />
                             </Scene>
                         </Scene>

@@ -9,7 +9,7 @@ import {
     View
 } from 'react-native'
 import Icon from 'react-native-vector-icons/Ionicons'
-import SimpleTrackPlayer from '../SimpleTrackPlayer'
+import PlayPauseButton from './PlayPauseButton'
 
 const styles = StyleSheet.create({
     button: {
@@ -46,19 +46,12 @@ class DeleteButton extends Component {
 }
 
 const DeleteButtonAnimated = Animated.createAnimatedComponent(DeleteButton)
-const SimpleTrackPlayerAnimated = Animated.createAnimatedComponent(SimpleTrackPlayer)
+const PlayPauseButtonAnimated = Animated.createAnimatedComponent(PlayPauseButton)
 
-export default class Button extends Component {
-    static propTypes = {
-        editMode: PropTypes.bool,
-        onPlay: PropTypes.func.isRequired,
-        isPlaying: PropTypes.bool
-    }
+export default class PlayEditDeleteButton extends Component {
+    static propTypes = { editMode: PropTypes.bool}
 
-    static defaultProps = {
-        editMode: false,
-        isPlaying: false
-    }
+    static defaultProps = { editMode: false }
 
     constructor(props) {
         super(props)
@@ -135,12 +128,7 @@ export default class Button extends Component {
     }
 
     render() {
-        const {
-            onPlay,
-            onPause,
-            isPlaying,
-            onDelete
-        } = this.props
+        const { onDelete } = this.props
 
         const interpolatedButtonRotateAnimation = this._buttonRotation.interpolate({
             inputRange: [0, 100],
@@ -149,7 +137,9 @@ export default class Button extends Component {
 
         return (
             <View>
-                <SimpleTrackPlayerAnimated
+                <PlayPauseButtonAnimated
+                    id={this.props.id}
+                    type={this.props.type}
                     style={
                         [
                             styles.button,
@@ -160,9 +150,6 @@ export default class Button extends Component {
                             }
                         ]
                     }
-                    onPlay={onPlay}
-                    onPause={onPause}
-                    isPlaying={isPlaying}
                 />
                 <DeleteButtonAnimated
                     style={

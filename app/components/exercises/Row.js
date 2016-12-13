@@ -10,9 +10,7 @@ import {
     View
 } from 'react-native'
 import {Actions} from 'react-native-router-flux'
-import Icon from 'react-native-vector-icons/Ionicons'
-import moment from 'moment'
-import Button from '../practices/Button'
+import PlayEditDeleteButton from '../PlayerEditDeleteButton/PlayEditDeleteButton'
 import {Types} from './Item'
 
 require('moment-duration-format')
@@ -63,18 +61,16 @@ const styles = StyleSheet.create({
     }
 })
 
-export default ({data, editMode, onPlayFn, onPause, isPlayingFn, practices, onDelete}) => {
+export default ({data, editMode, practices, onDelete}) => {
     const {
         id,
         title
     } = data
 
-    const isPlaying = isPlayingFn(id)
     let currentPractices = Object.assign([], data.data).filter(item => item.type === Types.PRACTICE).map((item) => {
         return practices.find(practice => practice.id === item.id)
     })
     const amountOfPractices = currentPractices.length
-    const onPlay = () => onPlayFn(id, currentPractices)
     const duration = Object.assign([], data.data).map(item => {
         switch (item.type) {
             case Types.PRACTICE:
@@ -109,12 +105,9 @@ export default ({data, editMode, onPlayFn, onPause, isPlayingFn, practices, onDe
                 </View>
             </View>
             <View style={styles.button}>
-                <Button
+                <PlayEditDeleteButton
                     editMode={editMode}
-                    onPlay={onPlay}
-                    onPause={onPause}
-                    isPlaying={isPlaying}
-                    onDelete={() => onDelete(id)}
+                    onDelete={() => onDelete(id)} type='exercises' id={id}
                 />
             </View>
         </Wrapper>

@@ -19,7 +19,6 @@ import Slider from 'react-native-slider'
 import CustomPicker from '../../core/CustomPicker'
 import SoundPicker, {SOUNDS} from './SoundPicker'
 import DurationPicker from './DurationPicker'
-import MediaLibrary from '../MediaLibrary'
 import {practices as actions} from '../../store/actions'
 
 const width = Dimensions.get('window').width
@@ -195,10 +194,6 @@ class Practice extends Component {
         )
     }
 
-    onPlay = () => {
-        MediaLibrary.play(this.state.sound.file, null, this.state.repeat)
-    }
-
     renderLeftButton = () => {
         if (this.props.id) return null
         return (
@@ -226,6 +221,7 @@ class Practice extends Component {
     constructor(props) {
         super(props)
         const practice = props.practices.find(item => item.id === props.id) || {duration: 10*1000, title: '', repeat: 1, sound: SOUNDS[0]}
+        console.log(props.practices)
         this.state = {
             ...practice,
             showSoundPicker: false,
@@ -362,7 +358,6 @@ class Practice extends Component {
                 {this.props.id &&
                     <View style={styles.buttons}>
                         <TouchableOpacity
-                            onPress={this.onPlay}
                             style={styles.button}
                             activeOpacity={1}
                         >

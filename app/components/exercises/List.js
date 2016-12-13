@@ -15,8 +15,6 @@ import {exercises as actions} from '../../store/actions'
 import Empty from './Empty'
 import NoPractice from './NoPractice'
 import Row from './Row'
-import MediaLibrary from '../MediaLibrary'
-import Promise from 'es6-promise'
 
 const styles = StyleSheet.create({
     navbar: {
@@ -183,19 +181,6 @@ class ExerciseList extends Component {
         )
     }
 
-    onPlayFn = (id, practices) => {
-      return MediaLibrary
-                .playFiles(id, practices, this.refresh)
-                .then(this.refresh)
-    }
-
-    onPause = () => {
-        MediaLibrary.playlistId = null
-        MediaLibrary.stop().then(this.refresh)
-    }
-
-    isPlayingFn = id => MediaLibrary.isPlaylistPlaying(id)
-
     render() {
         const {
             mounted,
@@ -218,11 +203,7 @@ class ExerciseList extends Component {
                     emptyView={<Empty/>}
                     onOrderChange={this.onOrderChange}
                 >
-                    <Row onDelete={this.onDelete} practices={practices}
-                         isPlayingFn={this.isPlayingFn}
-                         onPlayFn={this.onPlayFn}
-                         onPause={this.onPause}
-                    />
+                    <Row onDelete={this.onDelete} practices={practices}/>
                 </ListView>
             </View>
         )

@@ -307,12 +307,6 @@ class Exercise extends Component {
         Actions.pop()
     }
 
-    onPressPlayButton = () => {
-        const {title, data} = this.state
-        this.props.edit(this.props.id, {title, data})
-        Actions.playerOpen({id: this.props.id})
-    }
-
     renderLeftButton = () => {
         if (this.props.id) return null
 
@@ -451,8 +445,6 @@ class Exercise extends Component {
             return practices.find(practice => practice.id === item.id)
         })
 
-        const onPlay = () => onPlayFn(id, currentPractices)
-
         const items = Object.values(data)
         const lastItem = items[items.length-1]
         const isIntervalLastItem = lastItem ? lastItem.type === Types.INTERVAL : false
@@ -490,7 +482,6 @@ class Exercise extends Component {
                 {this.props.id &&
                     <View style={styles.buttons}>
                         <TouchableOpacity
-                            onPress={this.onPlay}
                             style={styles.button}
                             activeOpacity={1}
                         >
