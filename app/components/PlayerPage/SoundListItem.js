@@ -1,6 +1,6 @@
 //@flow
 import React from 'react'
-import {TouchableOpacity, Text, StyleSheet} from 'react-native'
+import {TouchableOpacity, Text, View, StyleSheet} from 'react-native'
 
 export default props => {
 
@@ -13,22 +13,23 @@ export default props => {
             marginBottom: 3,
             paddingLeft: 15,
             paddingRight: 15,
-            height: 50,
-            flexDirection: 'row',
-            justifyContent: 'space-between',
-            alignItems: 'center',
+            height: 60,
+            flexDirection: 'column',
+            justifyContent: 'space-around',
             backgroundColor
         },
         nameText: {fontSize: 18, fontWeight: 'bold', color},
-        durationText: Object.assign({fontSize: 16}, durationText)
+        durationText: Object.assign({fontSize: 16}, durationText),
+        subText: Object.assign({fontSize: 14, marginTop: -25}, durationText)
     })
 
     return (
         <TouchableOpacity onPress={ props.onPress } style={ styles.TouchableOpacity }>
-            <Text style={ styles.nameText }>{ props.name }</Text>
-            <Text style={ styles.durationText }>
-                { props.duration }s x { props.repeat }
-            </Text>
+            <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                <Text style={ styles.nameText }>{ props.title }</Text>
+                <Text style={ styles.durationText }>{ props.duration }s x { props.repeat }</Text>
+            </View>
+            <Text style={ styles.subText }>{ props.name }</Text>
         </TouchableOpacity>
     )
 }

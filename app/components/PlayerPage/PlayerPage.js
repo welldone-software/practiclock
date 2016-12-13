@@ -34,12 +34,14 @@ class PlayerPage extends Component {
             items = Object.assign([], items.data).map(sup => props.practices.practices.find(item => item.id === sup.id))
         }
 
+        console.log(items)
         this.soundPromises = Promise.all(items.map(item => ({
             duration: item.duration * item.repeat,
             realDuration: item.duration,
             repeat: item.repeat,
             file: item.sound.file,
-            name: item.sound.name
+            name: item.sound.name,
+            title: item.title
         })).map(item => new Promise(resolve => {
             let s = new Sound(item.file, Sound.MAIN_BUNDLE, () => resolve({
                 data: item, file: s
@@ -90,8 +92,7 @@ class PlayerPage extends Component {
         this.interval = setInterval(() => {
             this.time = Date.now() - this.startDate + this.sound.data.duration - this.duration
             this.forceUpdate()
-        }, 200)
-
+        }, 500)
 
         this.setState({isPlaying: true}, this.infinityPlay)
     }
@@ -159,7 +160,8 @@ class PlayerPage extends Component {
     }
 
     formatTime(time) {
-        return Math.round(Math.round(time / 100) / 10).toFixed(1)
+        // return Math.round(Math.round(time / 100) / 10).toFixed(1)
+        return Math.round(time / 1000)
     }
 
     render() {
@@ -182,19 +184,19 @@ class PlayerPage extends Component {
                     <Icon name='ios-skip-forward' size={iconSize} color='#24CB58'/>
                 </TouchableOpacity>
             </View>
-            <View style={{flex: 2}}>
-                <Text style={{textAlign: 'center', marginTop: 20, marginBottom: 10, fontSize: 20}}>
-                    {this.startDate ? this.formatTime(this.time) + '/' + this.formatTime(this.sound.data.duration) : ''}
+            <View style={{flex: 3}}>
+                <Text style={{textAlign: 'center', marginTop: 25, marginBottom: 0, fontSize: 20}}>
+                    {this.startDate ? this.formatTime(this.time) + 's / ' + this.formatTime(this.sound.data.duration) + 's' : ''}
                     {'     ' + this.sound.data.name}
                 </Text>
                 <SvgIndicator time={this.time/this.sound.data.duration}/>
             </View>
 
             <View style={{flex: 1, flexDirection: 'row', justifyContent: 'space-between', marginBottom: 10}}>
-                <View style={{flex: 1, paddingLeft: 30}}>
+                {this.sounds.length > 1 && <View style={{flex: 1, paddingLeft: 30}}>
                     <Text style={{fontSize: 20}}>{this.index + 1}/{this.sounds.length}</Text>
-                </View>
-                <View style={{flex: 1, flexDirection: 'row', justifyContent: 'flex-end', paddingRight: 20}}>
+                </View>}
+                <View style={{flex: 2, flexDirection: 'row', justifyContent: 'flex-end', paddingRight: 20}}>
                     <Text style={{fontSize: 20}}>auto </Text>
                     <Switch
                         onValueChange={this.switchIsLoop}
@@ -207,6 +209,7 @@ class PlayerPage extends Component {
                 {this.sounds.map((s, index) => <SoundListItem
                     onPress={() => this.playByIndex(index)}
                     key={index}
+                    title={s.data.title}
                     duration={this.formatTime(s.data.realDuration)}
                     repeat={s.data.repeat}
                     name={s.data.name}
