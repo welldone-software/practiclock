@@ -44,8 +44,8 @@ export default props => {
         >
             <View style={styles.content}>
                 <Text style={styles.subText}>{props.title}</Text>
-                {props.active && !isNaN(props.remain) &&
-                    <Text style={styles.subText}>{props.remain}</Text>
+                {props.active && !isNaN(props.remain) && props.remain !== 0 &&
+                    <Text style={styles.subText}>{props.remain} s</Text>
                 }
             </View>
             <SvgIndicator time={props.active ? percent : 0} active={props.active}/>
