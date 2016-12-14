@@ -246,7 +246,7 @@ class PlayerPage extends Component {
                         name={s.data.name}
                         active={index === this.index}
                         percent={this.time/this.duration}
-                        remain={this.formatTime(this.time - this.sound.data.duration)}
+                        remain={this.formatTime(this.time - this.duration)}
                     />)}
                 </ScrollView>
                 <View style={styles.buttons}>

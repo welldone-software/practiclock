@@ -35,7 +35,6 @@ export default props => {
     })
 
     const percent = isNaN(props.percent) ? 0 : props.percent
-    console.log(percent)
 
     return (
         <TouchableOpacity

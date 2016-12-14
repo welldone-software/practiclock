@@ -18,20 +18,19 @@ export default class SvgIndicator extends Component {
     }
 
     state = {
-        transition: Morph.Tween('M5,0 L5,100', 'M5,0 L5,100')
+        transition: 'M5,0 L5,100'
     }
 
     componentWillReceiveProps(nextProps) {
-        if (nextProps.active) {
-            const previous = this.props.width/0.4*(this.props.time || 0)
-            const next = nextProps.width/0.4*(nextProps.time || 0)
-            this.nextAnimation(previous, next)
-        }
+        const position = nextProps.active
+                         ? nextProps.width/0.4*(Math.round(nextProps.time*10)/10 || 0) + 5
+                         : 5
+        this.setPosition(position)
     }
 
-    nextAnimation = (previous, next) => {
+    setPosition = (position) => {
         this.setState({
-            transition: Morph.Tween(`M${previous},0 L${previous},100`, `M${next},0 L${next},100`)
+            transition: `M${position},0 L${position},100`
         })
     }
 
