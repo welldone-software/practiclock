@@ -2,23 +2,89 @@
 import Promise from 'es6-promise'
 import React, {Component} from 'react'
 import {
+    Dimensions,
+    ScrollView,
     StyleSheet,
+    Text,
     TouchableOpacity,
-    View,
-    Switch,
-    Text
+    View
 } from 'react-native'
 import {connect} from 'react-redux'
-
+import {Actions} from 'react-native-router-flux'
 import Icon from 'react-native-vector-icons/Ionicons'
 import Sound from 'react-native-sound'
-import SvgIndicator from './SvgIndicator'
 import SoundListItem from './SoundListItem'
+
+const width = Dimensions.get('window').width
+
+const styles = StyleSheet.create({
+    scene: {
+        marginTop: 64,
+        flex: 1,
+        flexDirection: 'column',
+        justifyContent: 'flex-start'
+    },
+    navbar: {
+        backgroundColor: '#fff',
+        borderBottomWidth: 1,
+        borderBottomColor: '#EFF0F0'
+    },
+    title: {
+        color: '#6C8993',
+        fontWeight: '500'
+    },
+    close: {
+        marginTop: -1,
+        marginLeft: 3,
+        color: '#6C8993'
+    },
+    buttons: {
+        position: 'absolute',
+        width,
+        bottom: 0,
+        flexDirection: 'row',
+        justifyContent: 'space-around',
+        backgroundColor: '#fff',
+        borderTopWidth: 1,
+        borderTopColor: '#F5F5F5'
+    },
+    button: {
+        width: width/2.5,
+        paddingTop: 10,
+        paddingBottom: 10,
+        flexDirection: 'row',
+        justifyContent: 'center',
+        backgroundColor: 'transparent'
+    },
+    play: {
+        position: 'absolute',
+        left: width/2-75,
+        bottom: -75,
+        width: 150,
+        height: 150,
+        paddingTop: 10,
+        borderRadius: 75,
+        borderColor: '#eee',
+        borderWidth: 1,
+        backgroundColor: '#fff'
+    }
+})
 
 class PlayerPage extends Component {
     state = {isPlaying: false}
-
     sounds = null
+
+    renderLeftButton = () => {
+        return (
+            <TouchableOpacity onPress={Actions.pop}>
+                <Icon
+                    name="ios-close-outline"
+                    size={30}
+                    style={styles.close}
+                />
+            </TouchableOpacity>
+        )
+    }
 
     constructor(props) {
         super(props)
@@ -34,7 +100,6 @@ class PlayerPage extends Component {
             items = Object.assign([], items.data).map(sup => props.practices.practices.find(item => item.id === sup.id))
         }
 
-        console.log(items)
         this.soundPromises = Promise.all(items.map(item => ({
             duration: item.duration * item.repeat,
             realDuration: item.duration,
@@ -43,7 +108,7 @@ class PlayerPage extends Component {
             name: item.sound.name,
             title: item.title
         })).map(item => new Promise(resolve => {
-            let s = new Sound(item.file, Sound.MAIN_BUNDLE, () => resolve({
+            const s = new Sound(item.file, Sound.MAIN_BUNDLE, () => resolve({
                 data: item, file: s
             }))
         })))
@@ -59,6 +124,12 @@ class PlayerPage extends Component {
                     this.onPlay()
                 }
             }, 3000))
+        })
+
+        Actions.refresh({
+            renderLeftButton: this.renderLeftButton,
+            navigationBarStyle: styles.navbar,
+            titleStyle: styles.title
         })
     }
 
@@ -134,17 +205,16 @@ class PlayerPage extends Component {
         })
     }
 
-    switchIsLoop = () => {
-        let toLoop = !this.state.isLoop;
-        this.setState({isLoop: toLoop})
-        if (toLoop && !this.state.isPlaying) {
-            this.onPlay()
-        }
-    }
+    // switchIsLoop = () => {
+    //     let toLoop = !this.state.isLoop;
+    //     this.setState({isLoop: toLoop})
+    //     if (toLoop && !this.state.isPlaying) {
+    //         this.onPlay()
+    //     }
+    // }
 
     onPause = () => {
         this.duration = this.duration - (Date.now() - this.startDate)
-        console.log(this.duration)
         clearTimeout(this.timeout)
         clearTimeout(this.interval)
         this.sound.file.stop()
@@ -159,64 +229,46 @@ class PlayerPage extends Component {
         this.sound.file.stop();
     }
 
-    formatTime(time) {
-        // return Math.round(Math.round(time / 100) / 10).toFixed(1)
-        return Math.round(time / 1000)
-    }
+    formatTime = time => Math.round(time/1000)
 
     render() {
-        if (!this.state.isLoaded) {
-            return <View><Text>Loading...</Text></View>
-        }
-        let iconSize = 40
-        return (<View style={{marginTop: 75, flex: 1, flexDirection: 'column', justifyContent: 'flex-start'}}>
-            <View style={{flex: 1, flexDirection: 'row', justifyContent: 'space-around'}}>
-                <TouchableOpacity onPress={this.onPrev}>
-                    <Icon name='ios-skip-backward' size={iconSize} color='#24CB58'/>
-                </TouchableOpacity>
-                <TouchableOpacity onPress={this.state.isPlaying ? this.onPause : this.onPlay}>
-                    <Icon name={this.state.isPlaying ? 'ios-pause' : 'ios-play'} color='#24CB58' size={iconSize * 1.3}/>
-                </TouchableOpacity>
-                {this.startDate && <TouchableOpacity onPress={this.onStop} style={{marginTop: 5}}>
-                    <Icon name='ios-square' size={iconSize} color='#24CB58'/>
-                </TouchableOpacity>}
-                <TouchableOpacity onPress={this.onNext}>
-                    <Icon name='ios-skip-forward' size={iconSize} color='#24CB58'/>
-                </TouchableOpacity>
-            </View>
-            <View style={{flex: 3}}>
-                <Text style={{textAlign: 'center', marginTop: 25, marginBottom: 0, fontSize: 20}}>
-                    {this.startDate ? this.formatTime(this.time) + 's / ' + this.formatTime(this.sound.data.duration) + 's' : ''}
-                    {'     ' + this.sound.data.name}
-                </Text>
-                <SvgIndicator time={this.time/this.sound.data.duration}/>
-            </View>
+        if (!this.state.isLoaded) return <View><Text>Loading...</Text></View>
 
-            <View style={{flex: 1, flexDirection: 'row', justifyContent: 'space-between', marginBottom: 10}}>
-                {this.sounds.length > 1 && <View style={{flex: 1, paddingLeft: 30}}>
-                    <Text style={{fontSize: 20}}>{this.index + 1}/{this.sounds.length}</Text>
-                </View>}
-                <View style={{flex: 2, flexDirection: 'row', justifyContent: 'flex-end', paddingRight: 20}}>
-                    <Text style={{fontSize: 20}}>auto </Text>
-                    <Switch
-                        onValueChange={this.switchIsLoop}
-                        style={{marginBottom: 10}}
-                        value={this.state.isLoop}/>
+        return (
+            <View style={styles.scene}>
+                <ScrollView style={{flex: 10, marginBottom: 50}}>
+                    {this.sounds.map((s, index) => <SoundListItem
+                        onPress={() => this.playByIndex(index)}
+                        key={index}
+                        title={s.data.title}
+                        duration={this.formatTime(s.data.realDuration)}
+                        repeat={s.data.repeat}
+                        name={s.data.name}
+                        active={index === this.index}
+                        percent={this.time/this.duration}
+                        remain={this.formatTime(this.time - this.sound.data.duration)}
+                    />)}
+                </ScrollView>
+                <View style={styles.buttons}>
+                    <TouchableOpacity onPress={this.onPrev} style={styles.button}>
+                        <Icon name='ios-skip-backward' size={28} color='#6C8993'/>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                        onPress={this.state.isPlaying ? this.onPause : this.onPlay}
+                        style={[styles.button, styles.play, this.state.isPlaying ? {} : {paddingLeft: 10}]} activeOpacity={1}
+                    >
+                        <Icon
+                            name={this.state.isPlaying ? 'ios-pause' : 'ios-play'}
+                            color='#6C8993'
+                            size={56}
+                        />
+                    </TouchableOpacity>
+                    <TouchableOpacity onPress={this.onNext} style={styles.button}>
+                        <Icon name='ios-skip-forward' size={28} color='#6C8993'/>
+                    </TouchableOpacity>
                 </View>
             </View>
-
-            <View style={{flex: 10}}>
-                {this.sounds.map((s, index) => <SoundListItem
-                    onPress={() => this.playByIndex(index)}
-                    key={index}
-                    title={s.data.title}
-                    duration={this.formatTime(s.data.realDuration)}
-                    repeat={s.data.repeat}
-                    name={s.data.name}
-                    toHighlight={index === this.index}
-                />)}
-            </View>
-        </View>)
+        )
     }
 }
 export default connect(

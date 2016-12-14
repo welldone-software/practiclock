@@ -1,35 +1,55 @@
 //@flow
 import React from 'react'
-import {TouchableOpacity, Text, View, StyleSheet} from 'react-native'
+import {
+    TouchableOpacity,
+    Text,
+    View,
+    StyleSheet
+} from 'react-native'
+import SvgIndicator from './SvgIndicator'
 
 export default props => {
-
     let color = props.toHighlight ? 'white' : 'black';
     let backgroundColor = props.toHighlight ? '#24CB58' : '#EAFFFC';
-    let durationText = props.toHighlight ? {color: 'white', fontWeight: 'bold'} : {}
 
     const styles = StyleSheet.create({
-        TouchableOpacity: {
-            marginBottom: 3,
+        container: {
             paddingLeft: 15,
             paddingRight: 15,
-            height: 60,
+            paddingTop: 15,
+            paddingBottom: 15,
+            height: 100,
             flexDirection: 'column',
             justifyContent: 'space-around',
-            backgroundColor
+            borderBottomWidth: 1,
+            borderBottomColor: '#EFF0F0'
         },
-        nameText: {fontSize: 18, fontWeight: 'bold', color},
-        durationText: Object.assign({fontSize: 16}, durationText),
-        subText: Object.assign({fontSize: 14, marginTop: -25}, durationText)
+        content: {
+            flexDirection: 'row',
+            justifyContent: 'space-between'
+        },
+        subText: {
+            fontSize: 18,
+            color: '#6C8993'
+        }
     })
 
+    const percent = isNaN(props.percent) ? 0 : props.percent
+    console.log(percent)
+
     return (
-        <TouchableOpacity onPress={ props.onPress } style={ styles.TouchableOpacity }>
-            <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-                <Text style={ styles.nameText }>{ props.title }</Text>
-                <Text style={ styles.durationText }>{ props.duration }s x { props.repeat }</Text>
+        <TouchableOpacity
+            onPress={props.onPress}
+            style={[styles.container, {backgroundColor: props.active ? '#F3F6F6' : '#fff'}]}
+            activeOpacity={1}
+        >
+            <View style={styles.content}>
+                <Text style={styles.subText}>{props.title}</Text>
+                {props.active && !isNaN(props.remain) &&
+                    <Text style={styles.subText}>{props.remain}</Text>
+                }
             </View>
-            <Text style={ styles.subText }>{ props.name }</Text>
+            <SvgIndicator time={props.active ? percent : 0} active={props.active}/>
         </TouchableOpacity>
     )
 }

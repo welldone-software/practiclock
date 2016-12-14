@@ -155,7 +155,6 @@ const styles = StyleSheet.create({
     }
 })
 
-
 export const Types = {
     PRACTICE: 'PRACTICE',
     INTERVAL: 'INTERVAL'
