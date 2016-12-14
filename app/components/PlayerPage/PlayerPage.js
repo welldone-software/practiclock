@@ -135,6 +135,10 @@ class PlayerPage extends Component {
 
     componentWillUnmount() {
         this.setState({isPlaying: false})
+        clearInterval(this.interval)
+        clearTimeout(this.timeout)
+        clearTimeout(this.interval)
+        this.onStop()
         this.soundPromises.then((sounds) => sounds.forEach(sound => sound.release))
     }
 
