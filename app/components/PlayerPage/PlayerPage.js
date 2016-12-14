@@ -71,7 +71,10 @@ const styles = StyleSheet.create({
 })
 
 class PlayerPage extends Component {
-    state = {isPlaying: false}
+    state = {
+        isPlaying: false,
+        isLoop: true
+    }
     sounds = null
 
     renderLeftButton = () => {
@@ -176,13 +179,8 @@ class PlayerPage extends Component {
     onPrev = () => this.next(true)
 
     next(isPrev) {
-        let idx = this.sounds.indexOf(this.sound) + (isPrev ? -1 : 1);
-        if (idx > this.sounds.length - 1) {
-            idx = 0;
-        } else if (idx < 0) {
-            idx = this.sounds.length;
-        }
-
+        let idx = this.sounds.indexOf(this.sound) + (isPrev ? -1 : 1)
+        if (idx > this.sounds.length - 1 || idx < 0) return
         this.playByIndex(idx)
     }
 
@@ -201,6 +199,7 @@ class PlayerPage extends Component {
 
     infinityPlay = () => {
         this.sound.file.play(() => {
+            console.log(this.duration, this.state.isLoop)
             if (this.state.isPlaying) {
                 this.infinityPlay()
             } else if (!this.duration && this.state.isLoop) {

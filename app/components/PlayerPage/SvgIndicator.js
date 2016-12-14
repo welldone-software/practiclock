@@ -18,13 +18,13 @@ export default class SvgIndicator extends Component {
     }
 
     state = {
-        transition: 'M5,0 L5,100'
+        transition: 'M-5,0 L-5,100'
     }
 
     componentWillReceiveProps(nextProps) {
         const position = nextProps.active
                          ? nextProps.width/0.4*(Math.round(nextProps.time*10)/10 || 0) + 5
-                         : 5
+                         : -5
         this.setPosition(position)
     }
 
