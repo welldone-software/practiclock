@@ -49,7 +49,7 @@ const styles = StyleSheet.create({
         borderTopColor: '#F5F5F5'
     },
     button: {
-        width: width/2.5,
+        width: width / 2.5,
         paddingTop: 10,
         paddingBottom: 10,
         flexDirection: 'row',
@@ -58,7 +58,7 @@ const styles = StyleSheet.create({
     },
     play: {
         position: 'absolute',
-        left: width/2-75,
+        left: width / 2 - 75,
         bottom: -75,
         width: 150,
         height: 150,
@@ -100,7 +100,18 @@ class PlayerPage extends Component {
         if (type === 'practices') {
             items = [items]
         } else {
-            items = Object.assign([], items.data).map(sup => props.practices.practices.find(item => item.id === sup.id))
+            items = Object.assign([], items.data).map(sup => {
+                return props.practices.practices.find(item => item.id === sup.id) || {
+                    duration: sup.value,
+                    isPause: true,
+                    repeat: 1,
+                    sound: {
+                        file: '', // TODO(George): please add proper silence mp3 in here
+                        name: 'silence'
+                    },
+                    title: 'pause'
+                }
+            })
         }
 
         this.soundPromises = Promise.all(items.map(item => ({
@@ -140,7 +151,6 @@ class PlayerPage extends Component {
         this.setState({isPlaying: false})
         clearInterval(this.interval)
         clearTimeout(this.timeout)
-        clearTimeout(this.interval)
         this.onStop()
         this.soundPromises.then((sounds) => sounds.forEach(sound => sound.release))
     }
@@ -155,7 +165,7 @@ class PlayerPage extends Component {
         }
         if (this.timeout) {
             clearTimeout(this.timeout)
-            clearTimeout(this.interval)
+            clearInterval(this.interval)
         }
         this.startDate = Date.now();
         this.timeout = setTimeout(() => {
@@ -232,7 +242,7 @@ class PlayerPage extends Component {
         this.sound.file.stop();
     }
 
-    formatTime = time => Math.round(time/1000)
+    formatTime = time => Math.round(time / 1000)
 
     render() {
         if (!this.state.isLoaded) return <View><Text>Loading...</Text></View>
@@ -258,7 +268,8 @@ class PlayerPage extends Component {
                     </TouchableOpacity>
                     <TouchableOpacity
                         onPress={this.state.isPlaying ? this.onPause : this.onPlay}
-                        style={[styles.button, styles.play, this.state.isPlaying ? {} : {paddingLeft: 10}]} activeOpacity={1}
+                        style={[styles.button, styles.play, this.state.isPlaying ? {} : {paddingLeft: 10}]}
+                        activeOpacity={1}
                     >
                         <Icon
                             name={this.state.isPlaying ? 'ios-pause' : 'ios-play'}
