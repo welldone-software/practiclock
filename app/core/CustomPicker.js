@@ -121,7 +121,6 @@ export default class CustomPicker extends Component {
     componentWillReceiveProps(nextProps) {
         if (this.props.visible !== nextProps.visible) {
             Actions.refresh({hideNavBar: nextProps.visible})
-
             this._current = 1
             this.animate(null, this.nextAnimation)
         }

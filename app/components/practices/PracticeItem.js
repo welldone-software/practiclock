@@ -224,14 +224,14 @@ class Practice extends Component {
             duration: 10*1000,
             title: '',
             repeat: 1,
-            sound: SOUNDS[0]
+            sound: {...SOUNDS[0]}
         }
+
         this.state = {
             ...practice,
             showSoundPicker: false,
             showDurationPicker: false
         }
-
         this._sliderHeight = new Animated.Value(0)
         this._sliderOpacity = new Animated.Value(0)
     }

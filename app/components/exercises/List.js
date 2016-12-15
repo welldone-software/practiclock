@@ -115,7 +115,7 @@ class ExerciseList extends Component {
         const {editMode} = this.state
         if (editMode) return null
         return (
-            <TouchableOpacity onPress={Actions.exerciseCreate}>
+            <TouchableOpacity onPress={() => Actions.exerciseCreate({id: null})}>
                 <Icon
                     name="ios-add-outline"
                     size={30}
