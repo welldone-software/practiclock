@@ -51,7 +51,7 @@ const styles = StyleSheet.create({
 export default (props) => {
     return (
         <View style={styles.scene}>
-            <TouchableOpacity onPress={Actions.practiceCreate} style={styles.button}>
+            <TouchableOpacity onPress={() => Actions.practiceCreate({id: null})} style={styles.button}>
                 <Icon name="md-add" size={34} style={styles.icon}/>
             </TouchableOpacity>
             <Text style={styles.text}>CREATE YOUR FIRST PRACTICE</Text>
