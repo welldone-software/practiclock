@@ -42,3 +42,5 @@ android/keystores/debug.keystore
 /.vscode/
 /typings
 /tsconfig.json
+/ios/main.jsbundle
+/ios/main.jsbundle.meta

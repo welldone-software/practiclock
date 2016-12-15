@@ -31,6 +31,5 @@ export default function configureStore() {
         autoRehydrate()
     )
     const store = createStore(reducer, enhancer)
-    // persistStore(store, {storage: AsyncStorage})
     return store
 }

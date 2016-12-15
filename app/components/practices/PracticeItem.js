@@ -220,8 +220,12 @@ class Practice extends Component {
 
     constructor(props) {
         super(props)
-        const practice = props.practices.find(item => item.id === props.id) || {duration: 10*1000, title: '', repeat: 1, sound: SOUNDS[0]}
-        console.log(props.practices)
+        const practice = props.practices.find(item => item.id === props.id) || {
+            duration: 10*1000,
+            title: '',
+            repeat: 1,
+            sound: SOUNDS[0]
+        }
         this.state = {
             ...practice,
             showSoundPicker: false,
@@ -380,7 +384,7 @@ class Practice extends Component {
                      current={duration}
                      title="Duration"
                  >
-                     <DurationPicker />
+                     <DurationPicker/>
                  </CustomPicker>
 
                 <CustomPicker
