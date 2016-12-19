@@ -9,8 +9,10 @@ import {
     Text,
     TextInput,
     TouchableOpacity,
+    TouchableWithoutFeedback,
     View
 } from 'react-native'
+import dismissKeyboard from 'dismissKeyboard'
 import {Actions} from 'react-native-router-flux'
 import {bindActionCreators} from 'redux'
 import {connect} from 'react-redux'
@@ -159,6 +161,7 @@ class Practice extends Component {
             repeat,
             sound
         })
+        dismissKeyboard()
         Actions.pop()
     }
 
@@ -170,6 +173,7 @@ class Practice extends Component {
             repeat,
             sound
         })
+        dismissKeyboard()
         Actions.pop()
     }
 
@@ -289,114 +293,116 @@ class Practice extends Component {
         const sec = (duration/1000) % 60 || '00'
 
         return (
-            <View style={styles.scene}>
-                <View style={styles.section}>
-                    <View style={styles.label}>
-                        <Text style={[styles.icon, styles.iconText]}>A</Text>
-                        <TextInput
-                            style={styles.input}
-                            editable
-                            placeholder="Type here to set name of practice"
-                            placeholderTextColor="#CBD3D8"
-                            onChangeText={this.onTitleChange}
-                            value={title}
-                        />
-                    </View>
-                </View>
-
-                <TouchableOpacity
-                    onPress={() => this.setState({showDurationPicker: true})}
-                    activeOpacity={1}
-                >
+            <TouchableWithoutFeedback style={styles.scene} onPress={()=> dismissKeyboard()}>
+                <View style={styles.scene}>
                     <View style={styles.section}>
                         <View style={styles.label}>
-                            <Icon name="ios-clock-outline" size={26} style={styles.icon}/>
-                            <Text style={styles.text}>Duration</Text>
+                            <Text style={[styles.icon, styles.iconText]}>A</Text>
+                            <TextInput
+                                style={styles.input}
+                                editable
+                                placeholder="Type here to set name of practice"
+                                placeholderTextColor="#CBD3D8"
+                                onChangeText={this.onTitleChange}
+                                value={title}
+                            />
                         </View>
-                        <Text style={styles.preview}>{min}:{sec}</Text>
                     </View>
-                </TouchableOpacity>
 
-                <View style={[styles.section, {flexDirection: 'column'}]}>
                     <TouchableOpacity
-                        onPress={() => this.toggleRepeatSlider(!this.state.showRepeatSlider)}
-                        style={styles.repeat}
+                        onPress={() => this.setState({showDurationPicker: true})}
                         activeOpacity={1}
                     >
-                        <View style={styles.label}>
-                            <Icon name="ios-sync-outline" size={26} style={styles.icon}/>
-                            <Text style={styles.text}>Repeat</Text>
+                        <View style={styles.section}>
+                            <View style={styles.label}>
+                                <Icon name="ios-clock-outline" size={26} style={styles.icon}/>
+                                <Text style={styles.text}>Duration</Text>
+                            </View>
+                            <Text style={styles.preview}>{min}:{sec}</Text>
                         </View>
-                        <Text style={styles.preview}>{repeat}</Text>
                     </TouchableOpacity>
-                    {this.state.showRepeatSlider &&
-                        <Animated.View style={[styles.slider, {opacity: this._sliderOpacity, height: this._sliderHeight}]}>
-                            <Slider
-                                value={repeat}
-                                onValueChange={this.onRepetitionChange}
-                                onSlidingComplete={() => this.toggleRepeatSlider(false)}
-                                minimumValue={1}
-                                maximumValue={30}
-                                step={1}
-                                trackStyle={styles.track}
-                                thumbStyle={styles.thumb}
-                                minimumTrackTintColor='#6C8993'
-                            />
-                        </Animated.View>
-                    }
-                </View>
 
-                <TouchableOpacity
-                    onPress={() => this.setState({showSoundPicker: true})}
-                    activeOpacity={1}
-                >
-                    <View style={styles.section}>
-                        <View style={styles.label}>
-                            <Icon name="ios-musical-notes-outline" size={26} style={styles.icon}/>
-                            <Text style={styles.text}>Sound</Text>
+                    <View style={[styles.section, {flexDirection: 'column'}]}>
+                        <TouchableOpacity
+                            onPress={() => this.toggleRepeatSlider(!this.state.showRepeatSlider)}
+                            style={styles.repeat}
+                            activeOpacity={1}
+                        >
+                            <View style={styles.label}>
+                                <Icon name="ios-sync-outline" size={26} style={styles.icon}/>
+                                <Text style={styles.text}>Repeat</Text>
+                            </View>
+                            <Text style={styles.preview}>{repeat}</Text>
+                        </TouchableOpacity>
+                        {this.state.showRepeatSlider &&
+                            <Animated.View style={[styles.slider, {opacity: this._sliderOpacity, height: this._sliderHeight}]}>
+                                <Slider
+                                    value={repeat}
+                                    onValueChange={this.onRepetitionChange}
+                                    onSlidingComplete={() => this.toggleRepeatSlider(false)}
+                                    minimumValue={1}
+                                    maximumValue={30}
+                                    step={1}
+                                    trackStyle={styles.track}
+                                    thumbStyle={styles.thumb}
+                                    minimumTrackTintColor='#6C8993'
+                                />
+                            </Animated.View>
+                        }
+                    </View>
+
+                    <TouchableOpacity
+                        onPress={() => this.setState({showSoundPicker: true})}
+                        activeOpacity={1}
+                    >
+                        <View style={styles.section}>
+                            <View style={styles.label}>
+                                <Icon name="ios-musical-notes-outline" size={26} style={styles.icon}/>
+                                <Text style={styles.text}>Sound</Text>
+                            </View>
+                            <Text style={styles.preview}>{sound.name}</Text>
                         </View>
-                        <Text style={styles.preview}>{sound.name}</Text>
-                    </View>
-                </TouchableOpacity>
+                    </TouchableOpacity>
 
-                {this.props.id &&
-                    <View style={styles.buttons}>
-                        <TouchableOpacity
-                            style={styles.button}
-                            activeOpacity={1}
-                        >
-                            <Icon name="ios-play-outline" size={28} color="#24CB58"/>
-                        </TouchableOpacity>
-                        <TouchableOpacity
-                            onPress={this.onDelete}
-                            style={styles.button}
-                            activeOpacity={1}
-                        >
-                            <Icon name="ios-trash-outline" size={28} color="#FC4E54"/>
-                        </TouchableOpacity>
-                    </View>
-                }
+                    {this.props.id &&
+                        <View style={styles.buttons}>
+                            <TouchableOpacity
+                                style={styles.button}
+                                activeOpacity={1}
+                            >
+                                <Icon name="ios-play-outline" size={28} color="#24CB58"/>
+                            </TouchableOpacity>
+                            <TouchableOpacity
+                                onPress={this.onDelete}
+                                style={styles.button}
+                                activeOpacity={1}
+                            >
+                                <Icon name="ios-trash-outline" size={28} color="#FC4E54"/>
+                            </TouchableOpacity>
+                        </View>
+                    }
 
-                <CustomPicker
-                     visible={this.state.showDurationPicker}
-                     onCancel={() => this.setState({showDurationPicker: false})}
-                     onSelect={this.onDurationChange}
-                     current={duration}
-                     title="Duration"
-                 >
-                     <DurationPicker/>
-                 </CustomPicker>
+                    <CustomPicker
+                         visible={this.state.showDurationPicker}
+                         onCancel={() => this.setState({showDurationPicker: false})}
+                         onSelect={this.onDurationChange}
+                         current={duration}
+                         title="Duration"
+                     >
+                         <DurationPicker/>
+                     </CustomPicker>
 
-                <CustomPicker
-                     visible={this.state.showSoundPicker}
-                     onCancel={() => this.setState({showSoundPicker: false})}
-                     onSelect={this.onSoundSelected}
-                     current={sound}
-                     title="Sound"
-                 >
-                     <SoundPicker/>
-                 </CustomPicker>
-            </View>
+                    <CustomPicker
+                         visible={this.state.showSoundPicker}
+                         onCancel={() => this.setState({showSoundPicker: false})}
+                         onSelect={this.onSoundSelected}
+                         current={sound}
+                         title="Sound"
+                     >
+                         <SoundPicker/>
+                     </CustomPicker>
+                </View>
+            </TouchableWithoutFeedback>
         )
     }
 }
