@@ -395,7 +395,7 @@ class Exercise extends Component {
     }
 
     onOrderChange = () => {
-        const order = this.state.order
+        const {title, order} = this.state
 
         if (!order) return
 
@@ -412,6 +412,13 @@ class Exercise extends Component {
             this.setState({shouldRerender: true}, () => this.setState({shouldRerender: false}))
         } else {
             this.setState({data})
+        }
+
+        if (Object.values(data).filter(item => item.type === Types.PRACTICE).length !== 0) {
+            this.props.edit(this.props.id, {
+                title: ['', null, undefined].includes(title) ? 'Exercise' : title,
+                data
+            })
         }
     }
 
