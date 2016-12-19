@@ -209,7 +209,6 @@ class PlayerPage extends Component {
 
     infinityPlay = () => {
         this.sound.file.play(() => {
-            console.log(this.duration, this.state.isLoop)
             if (this.state.isPlaying) {
                 this.infinityPlay()
             } else if (!this.duration && this.state.isLoop) {
