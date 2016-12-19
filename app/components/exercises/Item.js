@@ -10,8 +10,10 @@ import {
     Text,
     TextInput,
     TouchableOpacity,
+    TouchableWithoutFeedback,
     View
 } from 'react-native'
+import dismissKeyboard from 'dismissKeyboard'
 import {Actions} from 'react-native-router-flux'
 import {bindActionCreators} from 'redux'
 import {connect} from 'react-redux'
@@ -262,7 +264,7 @@ class Exercise extends Component {
 
     onDeleteExercise = () => {
         Alert.alert(
-            'Remove this practice?',
+            'Remove this exercise?',
             null,
             [
                 {
@@ -294,16 +296,24 @@ class Exercise extends Component {
             title: ['', null, undefined].includes(title) ? 'Exercise' : title,
             data
         })
+        dismissKeyboard()
         Actions.pop()
     }
 
     onBack = () => {
         const {title, data} = this.state
-        this.props.edit(this.props.id, {
-            title: ['', null, undefined].includes(title) ? 'Exercise' : title,
-            data
-        })
-        Actions.pop()
+
+        dismissKeyboard()
+
+        if (Object.values(data).filter(item => item.type === Types.PRACTICE).length === 0) {
+            alert('You can\'t leave exercise without practices')
+        } else {
+            this.props.edit(this.props.id, {
+                title: ['', null, undefined].includes(title) ? 'Exercise' : title,
+                data
+            })
+            Actions.pop()
+        }
     }
 
     renderLeftButton = () => {
@@ -318,6 +328,9 @@ class Exercise extends Component {
 
     renderRightButton = () => {
         if (this.props.id) return null
+
+        if (Object.values(this.state.data).filter(item => item.type === Types.PRACTICE).length === 0) return null
+
         return (
             <TouchableOpacity style={styles.navBarRightButton} onPress={this.onSubmit}>
                 <Icon name="ios-checkmark-outline" size={40} style={[styles.navBarIcon, {color: '#24CB58'}]}/>
@@ -451,41 +464,43 @@ class Exercise extends Component {
         if (!mounted || shouldRerender) return null
 
         return (
-            <View style={styles.scene}>
-                <View style={styles.title}>
-                    <Text style={[styles.icon, styles.iconText]}>A</Text>
-                    <TextInput
-                        style={styles.input}
-                        editable
-                        placeholder="Type here to set name of practice"
-                        placeholderTextColor="#CBD3D8"
-                        onChangeText={this.onTitleChange}
-                        value={title}
-                    />
-                </View>
-
-                {items.length !== 0 &&
-                    <View style={styles.wrapper}>
-                        <View style={styles.container}>
-                            <SortableList
-                                contentContainerStyle={styles.content}
-                                data={data}
-                                renderRow={({data, active, index}) => this.renderRow(data, index, active)}
-                                onChangeOrder={(order) => this.setState({order})}
-                                onReleaseRow={this.onOrderChange}
-                            />
-                        </View>
+            <TouchableWithoutFeedback style={styles.scene} onPress={()=> dismissKeyboard()}>
+                <View style={styles.scene}>
+                    <View style={styles.title}>
+                        <Text style={[styles.icon, styles.iconText]}>A</Text>
+                        <TextInput
+                            style={styles.input}
+                            editable
+                            placeholder="Type here to set name of practice"
+                            placeholderTextColor="#CBD3D8"
+                            onChangeText={this.onTitleChange}
+                            value={title}
+                        />
                     </View>
-                }
 
-                {this.props.id &&
+                    {items.length !== 0 &&
+                        <View style={styles.wrapper}>
+                            <View style={styles.container}>
+                                <SortableList
+                                    contentContainerStyle={styles.content}
+                                    data={data}
+                                    renderRow={({data, active, index}) => this.renderRow(data, index, active)}
+                                    onChangeOrder={(order) => this.setState({order})}
+                                    onReleaseRow={this.onOrderChange}
+                                />
+                            </View>
+                        </View>
+                    }
+
                     <View style={styles.buttons}>
-                        <TouchableOpacity
-                            style={styles.button}
-                            activeOpacity={1}
-                        >
-                            <Icon name="ios-play-outline" size={28} color="#24CB58"/>
-                        </TouchableOpacity>
+                        {this.props.id &&
+                            <TouchableOpacity
+                                style={styles.button}
+                                activeOpacity={1}
+                            >
+                                <Icon name="ios-play-outline" size={28} color="#24CB58"/>
+                            </TouchableOpacity>
+                        }
                         <ActionButton
                             buttonColor="#24CB58"
                             hideShadow={true}
@@ -518,35 +533,37 @@ class Exercise extends Component {
                                 <Icon name="ios-clock-outline" size={28} style={styles.actionButtonIcon}/>
                             </ActionButton.Item>
                         </ActionButton>
-                        <TouchableOpacity
-                            onPress={this.onDeleteExercise}
-                            style={styles.button}
-                            activeOpacity={1}
-                        >
-                            <Icon name="ios-trash-outline" size={28} color="#FC4E54"/>
-                        </TouchableOpacity>
+                        {this.props.id &&
+                            <TouchableOpacity
+                                onPress={this.onDeleteExercise}
+                                style={styles.button}
+                                activeOpacity={1}
+                            >
+                                <Icon name="ios-trash-outline" size={28} color="#FC4E54"/>
+                            </TouchableOpacity>
+                        }
                     </View>
-                }
 
-                <CustomPicker
-                    visible={this.state.showPracticePicker}
-                    onCancel={() => this.setState({showPracticePicker: false})}
-                    onSelect={this.onPracticeSelected}
-                    current={this.props.practices.practices[0].id}
-                    title="Practice"
-                >
-                    <PracticePicker items={this.props.practices.practices}/>
-                </CustomPicker>
+                    <CustomPicker
+                        visible={this.state.showPracticePicker}
+                        onCancel={() => this.setState({showPracticePicker: false})}
+                        onSelect={this.onPracticeSelected}
+                        current={this.props.practices.practices[0].id}
+                        title="Practice"
+                    >
+                        <PracticePicker items={this.props.practices.practices}/>
+                    </CustomPicker>
 
-                <CustomPicker
-                    visible={this.state.showIntervalPicker}
-                    onCancel={() => this.setState({showIntervalPicker: false})}
-                    onSelect={this.onIntervalSelected}
-                    title="Pause"
-                >
-                    <IntervalPicker/>
-                </CustomPicker>
-            </View>
+                    <CustomPicker
+                        visible={this.state.showIntervalPicker}
+                        onCancel={() => this.setState({showIntervalPicker: false})}
+                        onSelect={this.onIntervalSelected}
+                        title="Pause"
+                    >
+                        <IntervalPicker/>
+                    </CustomPicker>
+                </View>
+            </TouchableWithoutFeedback>
         )
     }
 }
