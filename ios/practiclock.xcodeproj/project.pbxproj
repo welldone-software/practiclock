@@ -43,6 +43,7 @@
 		BF64F80D1DFA3292009438DD /* finger_cymbals_crash_choke.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = BF64F8081DFA3292009438DD /* finger_cymbals_crash_choke.mp3 */; };
 		BF64F80E1DFA3292009438DD /* fisher_price.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = BF64F8091DFA3292009438DD /* fisher_price.mp3 */; };
 		BF64F80F1DFA3292009438DD /* spanner_chime_damped_soft_4.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = BF64F80A1DFA3292009438DD /* spanner_chime_damped_soft_4.mp3 */; };
+		BF9D10BB1E081AE400B9B982 /* silence.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = BF9D10BA1E081AE400B9B982 /* silence.mp3 */; };
 		D6794A87E7284BF5AB3CBC7E /* libRNOverlay.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 110A22CC0F804322B6D8BDFE /* libRNOverlay.a */; };
 		E7F3BA2571DA4F7388EACEC7 /* libRNSVG.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6011BCFC700A4C26B2AD6325 /* libRNSVG.a */; };
 /* End PBXBuildFile section */
@@ -292,6 +293,7 @@
 		BF64F8091DFA3292009438DD /* fisher_price.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = fisher_price.mp3; sourceTree = "<group>"; };
 		BF64F80A1DFA3292009438DD /* spanner_chime_damped_soft_4.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = spanner_chime_damped_soft_4.mp3; sourceTree = "<group>"; };
 		BF6F86A68BAA4ECB9C6172C1 /* FontAwesome.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = FontAwesome.ttf; path = "../node_modules/react-native-vector-icons/Fonts/FontAwesome.ttf"; sourceTree = "<group>"; };
+		BF9D10BA1E081AE400B9B982 /* silence.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = silence.mp3; sourceTree = "<group>"; };
 		C4E7AA456D4A4467A03F0018 /* RNSpinkit.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNSpinkit.xcodeproj; path = "../node_modules/react-native-spinkit/ios/RNSpinkit.xcodeproj"; sourceTree = "<group>"; };
 		E5BF2E2B0EF4490A80790705 /* RNBlur.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNBlur.xcodeproj; path = "../node_modules/react-native-blur/ios/RNBlur.xcodeproj"; sourceTree = "<group>"; };
 		F28B9D18B5D44A54A55D65C5 /* Ionicons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Ionicons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Ionicons.ttf"; sourceTree = "<group>"; };
@@ -565,6 +567,7 @@
 				BF64F8071DFA3292009438DD /* ceramic_bell.mp3 */,
 				BF64F8081DFA3292009438DD /* finger_cymbals_crash_choke.mp3 */,
 				BF64F8091DFA3292009438DD /* fisher_price.mp3 */,
+				BF9D10BA1E081AE400B9B982 /* silence.mp3 */,
 				BF64F80A1DFA3292009438DD /* spanner_chime_damped_soft_4.mp3 */,
 			);
 			name = sounds;
@@ -981,6 +984,7 @@
 				2D94448CAB5F4103B928AF0D /* Foundation.ttf in Resources */,
 				55697BB65C5C43A08B15EFD6 /* Ionicons.ttf in Resources */,
 				221073BCA38E45339AD8420E /* MaterialIcons.ttf in Resources */,
+				BF9D10BB1E081AE400B9B982 /* silence.mp3 in Resources */,
 				BF64F80B1DFA3292009438DD /* burnttoys_chime.mp3 in Resources */,
 				2FF6F3345BCC49EFA6A468F3 /* Octicons.ttf in Resources */,
 				3A73F10790B647C9AFD7B408 /* SimpleLineIcons.ttf in Resources */,
