@@ -18,7 +18,6 @@ export default props => {
             paddingRight: 15,
             paddingTop: 15,
             paddingBottom: 15,
-            height: 100,
             flexDirection: 'column',
             justifyContent: 'space-around',
             borderBottomWidth: 1,
@@ -39,7 +38,13 @@ export default props => {
     return (
         <TouchableOpacity
             onPress={props.onPress}
-            style={[styles.container, {backgroundColor: props.active ? '#F3F6F6' : '#fff'}]}
+            style={[
+                styles.container,
+                {
+                    backgroundColor: props.active ? '#F3F6F6' : '#fff',
+                    height: props.type === 'pause' ? 60 : 100
+                }
+            ]}
             activeOpacity={1}
         >
             <View style={styles.content}>
