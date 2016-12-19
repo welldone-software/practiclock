@@ -48,7 +48,9 @@ export default props => {
                     <Text style={styles.subText}>{props.remain} s</Text>
                 }
             </View>
-            <SvgIndicator time={props.active ? percent : 0} active={props.active}/>
+            {props.type !== 'pause' &&
+                <SvgIndicator time={props.active ? percent : 0} active={props.active}/>
+            }
         </TouchableOpacity>
     )
 }

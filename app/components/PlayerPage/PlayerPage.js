@@ -106,7 +106,7 @@ class PlayerPage extends Component {
                     isPause: true,
                     repeat: 1,
                     sound: {
-                        file: '', // TODO(George): please add proper silence mp3 in here
+                        file: 'silence.mp3',
                         name: 'silence'
                     },
                     title: 'pause'
@@ -115,6 +115,7 @@ class PlayerPage extends Component {
         }
 
         this.soundPromises = Promise.all(items.map(item => ({
+            type: item.isPause ? 'pause' : 'practice',
             duration: item.duration * item.repeat,
             realDuration: item.duration,
             repeat: item.repeat,
@@ -249,17 +250,20 @@ class PlayerPage extends Component {
         return (
             <View style={styles.scene}>
                 <ScrollView style={{flex: 10, marginBottom: 50}}>
-                    {this.sounds.map((s, index) => <SoundListItem
-                        onPress={() => this.playByIndex(index)}
-                        key={index}
-                        title={s.data.title}
-                        duration={this.formatTime(s.data.realDuration)}
-                        repeat={s.data.repeat}
-                        name={s.data.name}
-                        active={index === this.index}
-                        percent={this.time/this.duration}
-                        remain={this.formatTime(this.time - this.duration)}
-                    />)}
+                    {this.sounds.map((s, index) => (
+                        <SoundListItem
+                            type={s.data.type}
+                            onPress={() => this.playByIndex(index)}
+                            key={index}
+                            title={s.data.title}
+                            duration={this.formatTime(s.data.realDuration)}
+                            repeat={s.data.repeat}
+                            name={s.data.name}
+                            active={index === this.index}
+                            percent={this.time/this.duration}
+                            remain={this.formatTime(this.time - this.duration)}
+                        />
+                    ))}
                 </ScrollView>
                 <View style={styles.buttons}>
                     <TouchableOpacity onPress={this.onPrev} style={styles.button}>

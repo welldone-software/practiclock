@@ -149,7 +149,7 @@ const styles = StyleSheet.create({
 
 class Practice extends Component {
     onTitleChange = title => this.setState({title})
-    onDurationChange = duration => this.setState({duration, showDurationPicker: false})
+    onDurationChange = duration => this.setState({duration, showDurationPicker: false})
     onRepetitionChange = repeat => this.setState({repeat})
     onSoundSelected = sound => this.setState({sound, showSoundPicker: false})
 
@@ -369,6 +369,7 @@ class Practice extends Component {
                             <TouchableOpacity
                                 style={styles.button}
                                 activeOpacity={1}
+                                onPress={()=> Actions.playerOpen({id: this.props.id + '-practices'})}
                             >
                                 <Icon name="ios-play-outline" size={28} color="#24CB58"/>
                             </TouchableOpacity>
@@ -388,6 +389,7 @@ class Practice extends Component {
                          onSelect={this.onDurationChange}
                          current={duration}
                          title="Duration"
+                         min={10000}
                      >
                          <DurationPicker/>
                      </CustomPicker>

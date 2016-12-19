@@ -98,11 +98,17 @@ export default class CustomPicker extends Component {
         visible: PropTypes.bool,
         onCancel: PropTypes.func,
         onSelect: PropTypes.func,
-        title: PropTypes.string
+        title: PropTypes.string,
+        min: PropTypes.number
     }
 
     onChange = (current) => {
-        this.setState({current})
+        const {min} = this.props
+        if (min !== undefined) {
+            this.setState({current: min > current ? min : current})
+        } else {
+            this.setState({current})
+        }
     }
 
     constructor(props) {

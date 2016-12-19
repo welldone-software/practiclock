@@ -497,6 +497,7 @@ class Exercise extends Component {
                             <TouchableOpacity
                                 style={styles.button}
                                 activeOpacity={1}
+                                onPress={()=> Actions.playerOpen({id: this.props.id + '-exercises'})}
                             >
                                 <Icon name="ios-play-outline" size={28} color="#24CB58"/>
                             </TouchableOpacity>
@@ -558,6 +559,8 @@ class Exercise extends Component {
                         visible={this.state.showIntervalPicker}
                         onCancel={() => this.setState({showIntervalPicker: false})}
                         onSelect={this.onIntervalSelected}
+                        min={10000}
+                        current={10000}
                         title="Pause"
                     >
                         <IntervalPicker/>
